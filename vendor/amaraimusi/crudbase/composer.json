@@ -1,0 +1,28 @@
+{
+	"name" : "amaraimusi/crudbase",
+	"description" : "CRUD support library",
+	"keywords" : [
+		"CRUD",
+		"web service",
+		"管理画面"
+	],
+	"type" : "library",
+	"license" : "MIT",
+	"homepage" : "https://amaraimusi.sakura.ne.jp/CrudBase",
+	"authors" : [{
+			"name" : "amaraimusi",
+			"email" : "amaraimusi@gmail.com",
+			"homepage" : "https://amaraimusi.sakura.ne.jp/",
+			"role" : "Developer"
+		}
+	],
+	"minimum-stability" : "dev",
+	"require-dev" : {
+		"phpunit/phpunit" : "^9.0"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"CrudBase\\" : "src/crudbase/"
+		}
+	}
+}
