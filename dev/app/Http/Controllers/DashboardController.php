@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Controllers\BaseXController;
+use App\Http\Controllers\CrudBaseController;
 use Illuminate\Http\Request;
 use Illuminate¥Support¥Facades¥DB;
 
-class DashboardController extends BaseXController
+class DashboardController extends CrudBaseController
 {
 	
 	// 当画面のバージョン（バージョンを変更するとjs, css読込のキャッシュ読込対策が行われる）

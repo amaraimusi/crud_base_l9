@@ -60,7 +60,7 @@ $ver_str = '?v=' . $this_page_version;
 			
 			<div class="row">
 				<label for="sales_amt" class="col-12 col-md-5 col-form-label">売上額</label>
-				<div class="col-12 col-md-7">&yen;{{ BaseXHelper::amount($ent->sales_amt) ?? ' - ' }}</div>
+				<div class="col-12 col-md-7">&yen;{{ CrudBaseHelper::amount($ent->sales_amt) ?? ' - ' }}</div>
 			</div>
 			
 			<div class="row">
@@ -75,7 +75,7 @@ $ver_str = '?v=' . $this_page_version;
 			
 			<div class="row">
 				<label for="billing_amt" class="col-12 col-md-5 col-form-label">請求額</label>
-				<div class="col-12 col-md-7">&yen;{{ BaseXHelper::amount($ent->billing_amt) ?? ' - ' }}</div>
+				<div class="col-12 col-md-7">&yen;{{ CrudBaseHelper::amount($ent->billing_amt) ?? ' - ' }}</div>
 			</div>
 			
 			<div class="row">
@@ -85,12 +85,12 @@ $ver_str = '?v=' . $this_page_version;
 			
 			<div class="row">
 				<label for="payment_amt" class="col-12 col-md-5 col-form-label">入金額</label>
-					<div class="col-12 col-md-7">&yen;{{ BaseXHelper::amount($ent->payment_amt) ?? ' - '  }}</div>
+					<div class="col-12 col-md-7">&yen;{{ CrudBaseHelper::amount($ent->payment_amt) ?? ' - '  }}</div>
 			</div>
 			
 			<div class="row">
 				<label for="commission" class="col-12 col-md-5 col-form-label">手数料</label>
-				<div class="col-12 col-md-7">&yen;{{ BaseXHelper::amount($ent->commission) ?? ' - '  }}</div>
+				<div class="col-12 col-md-7">&yen;{{ CrudBaseHelper::amount($ent->commission) ?? ' - '  }}</div>
 			</div>
 			
 			<div class="row">

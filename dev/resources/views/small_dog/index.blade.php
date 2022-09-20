@@ -126,21 +126,21 @@ $ver_str = '?v=' . $this_page_version;
 	<thead>
 		<tr>
 			<!-- CBBXS-3035 -->
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'id', 'id') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'dog_val', 'イヌ数値') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'small_dog_name', '子犬名') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'small_dog_date', '子犬日付') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'dog_type', '犬種') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'dog_dt', '子犬保護日時') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'neko_flg', 'ネコフラグ') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'img_fn', '画像ファイル名') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'note', '備考') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'sort_no', '順番') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'delete_flg', '無効フラグ') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'update_user_id', '更新者') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'ip_addr', 'IPアドレス') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'created_at', '生成日時') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'small_dog', 'updated_at', '更新日') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'id', 'id') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'dog_val', 'イヌ数値') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'small_dog_name', '子犬名') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'small_dog_date', '子犬日付') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'dog_type', '犬種') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'dog_dt', '子犬保護日時') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'neko_flg', 'ネコフラグ') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'img_fn', '画像ファイル名') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'note', '備考') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'sort_no', '順番') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'delete_flg', '無効フラグ') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'update_user_id', '更新者') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'ip_addr', 'IPアドレス') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'created_at', '生成日時') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'small_dog', 'updated_at', '更新日') !!}</th>
 
 			<!-- CBBXE -->
 			<th style="width:280px"></th>
@@ -169,11 +169,11 @@ $ver_str = '?v=' . $this_page_version;
 				<!-- CBBXE -->
 				<td>
 					
-					{!! BaseXHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
+					{!! CrudBaseHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
 					<a href="small_dog/show?id={{$ent->id}}" class="btn btn-info btn-sm text-light">詳細</a>
 					<a href="small_dog/edit?id={{$ent->id}}" class="btn btn-primary btn-sm">編集</a>
-					{!! BaseXHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
-					{!! BaseXHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
+					{!! CrudBaseHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
+					{!! CrudBaseHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
 					
 					
 				</td>
@@ -193,8 +193,8 @@ $ver_str = '?v=' . $this_page_version;
 
 <!-- JSON埋め込み -->
 <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" >
-{!! BaseXHelper::embedJson('search_json', $searches) !!}
-{!! BaseXHelper::embedJson('data_json', $data) !!}
+{!! CrudBaseHelper::embedJson('search_json', $searches) !!}
+{!! CrudBaseHelper::embedJson('data_json', $data) !!}
 
 </body>
 </html>

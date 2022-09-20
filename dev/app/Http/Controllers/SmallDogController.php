@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\NekoType;
+use App\Models\SmallDog;
 
 
-class NekoTypeController extends CrudBaseController{
+class SmallDogController extends CrudBaseController{
 	
 	// 画面のバージョン → 開発者はこの画面を修正したらバージョンを変更すること。バージョンを変更するとキャッシュやセッションのクリアが自動的に行われます。
 	public $this_page_version = '1.0.1';
@@ -29,7 +29,7 @@ class NekoTypeController extends CrudBaseController{
 			'per_page' => 'nullable|numeric',
 		]);
 		
-		$sesSearches = session('neko_type_searches_key');// セッションからセッション検索データを受け取る
+		$sesSearches = session('small_dog_searches_key');// セッションからセッション検索データを受け取る
 
 		// セッション検索データの画面から旧画面バージョンを受け取る
 		$new_version = $this->judgeNewVersion($sesSearches, $this->this_page_version);
@@ -43,17 +43,24 @@ class NekoTypeController extends CrudBaseController{
 				
 				// CBBXS-3000
 				'id' => $request->id, // id
-				'neko_type_name' => $request->neko_type_name, // ネコ種別
+				'dog_val' => $request->dog_val, // イヌ数値
+				'small_dog_name' => $request->small_dog_name, // 子犬名
+				'small_dog_date' => $request->small_dog_date, // 子犬日付
+				'dog_type' => $request->dog_type, // 犬種
+				'dog_dt' => $request->dog_dt, // 子犬保護日時
+				'neko_flg' => $request->neko_flg, // ネコフラグ
+				'img_fn' => $request->img_fn, // 画像ファイル名
+				'note' => $request->note, // 備考
 				'sort_no' => $request->sort_no, // 順番
 				'delete_flg' => $request->delete_flg, // 無効フラグ
-				'update_user_id' => $request->update_user_id, // 更新ユーザーID
+				'update_user_id' => $request->update_user_id, // 更新者
 				'ip_addr' => $request->ip_addr, // IPアドレス
 				'created_at' => $request->created_at, // 生成日時
 				'updated_at' => $request->updated_at, // 更新日
 
 				// CBBXE
-			    
-			    'update_user' => $request->update_user, // 更新者
+				
+				'update_user' => $request->update_user, // 更新者
 				'sort' => $request->sort, // 並びフィールド
 				'desc' => $request->desc, // 並び向き
 				'per_page' => $request->per_page, // 行制限数
@@ -66,18 +73,28 @@ class NekoTypeController extends CrudBaseController{
 
 		$searches['this_page_version'] = $this->this_page_version; // 画面バージョン
 		$searches['new_version'] = $new_version; // 新バージョンフラグ
-		session(['neko_type_searches_key' => $searches]); // セッションに検索データを書き込む
+		session(['small_dog_searches_key' => $searches]); // セッションに検索データを書き込む
 
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
 		
-		$model = new NekoType();
+		$model = new SmallDog();
 		$data = $model->getData($searches);
+		
+		// CBBXS-3020
+		$dogTypeList = $model->getDogTypeList(); // 犬種
 
-	   return view('neko_type.index', [
-			'data'=>$data,
-			'searches'=>$searches,
-			'userInfo'=>$userInfo,
-			'this_page_version'=>$this->this_page_version,
+        // CBBXE
+        
+		return view('small_dog.index', [
+		    'data'=>$data,
+		    'searches'=>$searches,
+		    'userInfo'=>$userInfo,
+		    'this_page_version'=>$this->this_page_version,
+		    
+		    // CBBXS-3020B
+		$dogTypeList = $model->getDogTypeList(); // 犬種
+
+		    // CBBXE
 	   ]);
 		
 	}
@@ -96,7 +113,7 @@ class NekoTypeController extends CrudBaseController{
 		
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
 		
-		return view('neko_type.create', [
+		return view('small_dog.create', [
 			'userInfo'=>$userInfo,
 			'this_page_version'=>$this->this_page_version,
 			
@@ -118,7 +135,10 @@ class NekoTypeController extends CrudBaseController{
 		$request->validate([
 			// CBBXS-3030
 			'id' => 'nullable|numeric',
-	        'neko_type_name' => 'nullable|max:255',
+			'dog_val' => 'nullable|numeric',
+	        'small_dog_name' => 'nullable|max:255',
+			'small_dog_date' => 'nullable|date',
+	        'img_fn' => 'nullable|max:256',
 			'sort_no' => 'nullable|numeric',
 			'update_user_id' => 'nullable|numeric',
 	        'ip_addr' => 'nullable|max:40',
@@ -128,9 +148,16 @@ class NekoTypeController extends CrudBaseController{
 		
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
 		
-		$model = new NekoType();
+		$model = new SmallDog();
 		// CBBXS-3032
-		$model->neko_type_name = $request->neko_type_name; // ネコ種別
+		$model->dog_val = $request->dog_val; // イヌ数値
+		$model->small_dog_name = $request->small_dog_name; // 子犬名
+		$model->small_dog_date = $request->small_dog_date; // 子犬日付
+		$model->dog_type = $request->dog_type; // 犬種
+		$model->dog_dt = $request->dog_dt; // 子犬保護日時
+		$model->neko_flg = $request->neko_flg; // ネコフラグ
+		$model->img_fn = $request->img_fn; // 画像ファイル名
+		$model->note = $request->note; // 備考
 
 		// CBBXE
 		
@@ -141,7 +168,7 @@ class NekoTypeController extends CrudBaseController{
 
 		$model->save();
 		
-		return redirect('/neko_type');
+		return redirect('/small_dog');
 		
 	}
 	
@@ -157,7 +184,7 @@ class NekoTypeController extends CrudBaseController{
 		// ログアウトになっていたらログイン画面にリダイレクト
 		if(\Auth::id() == null) return redirect('login');
 		
-		$model = new NekoType();
+		$model = new SmallDog();
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
 		
 		$id = $request->id;
@@ -166,9 +193,9 @@ class NekoTypeController extends CrudBaseController{
 			die;
 		}
 		
-		$ent = NekoType::find($id);
+		$ent = SmallDog::find($id);
 
-		return view('neko_type.show', [
+		return view('small_dog.show', [
 			'ent'=>$ent,
 			'userInfo'=>$userInfo,
 			'this_page_version'=>$this->this_page_version,
@@ -189,7 +216,7 @@ class NekoTypeController extends CrudBaseController{
 		// ログアウトになっていたらログイン画面にリダイレクト
 		if(\Auth::id() == null) return redirect('login');
 
-		$model = new NekoType();
+		$model = new SmallDog();
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
 		
 		$id = $request->id;
@@ -198,9 +225,9 @@ class NekoTypeController extends CrudBaseController{
 			die;
 		}
 	
-		$ent = NekoType::find($id);
+		$ent = SmallDog::find($id);
 		
-		return view('neko_type.edit', [
+		return view('small_dog.edit', [
 			'ent'=>$ent,
 			'userInfo'=>$userInfo,
 			'this_page_version'=>$this->this_page_version,
@@ -225,7 +252,10 @@ class NekoTypeController extends CrudBaseController{
 		$request->validate([
 		   // CBBXS-3031
 			'id' => 'nullable|numeric',
-	        'neko_type_name' => 'nullable|max:255',
+			'dog_val' => 'nullable|numeric',
+	        'small_dog_name' => 'nullable|max:255',
+			'small_dog_date' => 'nullable|date',
+	        'img_fn' => 'nullable|max:256',
 			'sort_no' => 'nullable|numeric',
 			'update_user_id' => 'nullable|numeric',
 	        'ip_addr' => 'nullable|max:40',
@@ -233,12 +263,19 @@ class NekoTypeController extends CrudBaseController{
 			// CBBXE
 		]);
 		
-		$model = NekoType::find($request->id);
+		$model = SmallDog::find($request->id);
 
 		$model->id = $request->id;
 		
 		// CBBXS-3033
-		$model->neko_type_name = $request->neko_type_name; // ネコ種別
+		$model->dog_val = $request->dog_val; // イヌ数値
+		$model->small_dog_name = $request->small_dog_name; // 子犬名
+		$model->small_dog_date = $request->small_dog_date; // 子犬日付
+		$model->dog_type = $request->dog_type; // 犬種
+		$model->dog_dt = $request->dog_dt; // 子犬保護日時
+		$model->neko_flg = $request->neko_flg; // ネコフラグ
+		$model->img_fn = $request->img_fn; // 画像ファイル名
+		$model->note = $request->note; // 備考
 
 		// CBBXE
 		
@@ -248,7 +285,7 @@ class NekoTypeController extends CrudBaseController{
 		
  		$model->update();
 		
-		return redirect('/neko_type');
+		return redirect('/small_dog');
 		
 	}
 	
@@ -269,7 +306,7 @@ class NekoTypeController extends CrudBaseController{
 		$id = $param['id'];
 		$action_flg =  $param['action_flg'];
 
-		$model = NekoType::find($id);
+		$model = SmallDog::find($id);
 		
 		if(empty($action_flg)){
 			$model->delete_flg = 0; // 削除フラグをOFFにする
@@ -304,7 +341,7 @@ class NekoTypeController extends CrudBaseController{
 		$param = json_decode($json,true);//JSON文字を配列に戻す
 		$id = $param['id'];
 		
-		$model = new NekoType();
+		$model = new SmallDog();
 		$model->destroy($id);// idを指定して抹消（データベースかDELETE）
 		
 		$res = ['success'];
@@ -330,7 +367,7 @@ class NekoTypeController extends CrudBaseController{
 		
 		$data = json_decode($json,true);//JSON文字を配列に戻す
 		
-		$model = new NekoType();
+		$model = new SmallDog();
 		$model->saveAll($data);
 
 		$res = ['success'];
@@ -350,15 +387,15 @@ class NekoTypeController extends CrudBaseController{
 		// ログアウトになっていたらログイン画面にリダイレクト
 		if(\Auth::id() == null) return redirect('login');
 
-		$searches = session('neko_type_searches_key');// セッションからセッション検索データを受け取る
+		$searches = session('small_dog_searches_key');// セッションからセッション検索データを受け取る
 
-		$model = new NekoType();
+		$model = new SmallDog();
 		$data = $model->getData($searches, 'csv');
 		
 		// データ件数が0件ならCSVダウンロードを中断し、一覧画面にリダイレクトする。
 		$count = count($data);
 		if($count == 0){
-			return redirect('/neko_type');
+			return redirect('/small_dog');
 		}
 		
 		// ダブルクォートで値を囲む
@@ -382,7 +419,7 @@ class NekoTypeController extends CrudBaseController{
 		//CSVファイル名を作成
 		$date = new \DateTime();
 		$strDate=$date->format("Y-m-d");
-		$fn='neko_type'.$strDate.'.csv';
+		$fn='small_dog'.$strDate.'.csv';
 		
 		//CSVダウンロード
 		$this->csvOutput($fn, $data);

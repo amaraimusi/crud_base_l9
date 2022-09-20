@@ -112,17 +112,17 @@ $ver_str = '?v=' . $this_page_version;
 	<thead>
 		<tr>
 			<!-- CBBXS-3035 -->
-			<th>{!! BaseXHelper::sortLink($searches, 'client', 'id', 'ID') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'clients', 'client_name', '顧客名') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'clients', 'tell', '電話番号') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'clients', 'address', '住所') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'client', 'note', '備考') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'client', 'sort_no', '順番') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'client', 'delete_flg', '有効/無効') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'client', 'update_user', '更新者') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'client', 'ip_addr', 'IPアドレス') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'client', 'created_at', '生成日時') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'client', 'updated_at', '更新日') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'client', 'id', 'ID') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'clients', 'client_name', '顧客名') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'clients', 'tell', '電話番号') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'clients', 'address', '住所') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'client', 'note', '備考') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'client', 'sort_no', '順番') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'client', 'delete_flg', '有効/無効') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'client', 'update_user', '更新者') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'client', 'ip_addr', 'IPアドレス') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'client', 'created_at', '生成日時') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'client', 'updated_at', '更新日') !!}</th>
 			<!-- CBBXE -->
 			<th style="width:280px"></th>
 		</tr>
@@ -145,11 +145,11 @@ $ver_str = '?v=' . $this_page_version;
 				<!-- CBBXE -->
 				<td>
 					
-					{!! BaseXHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
+					{!! CrudBaseHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
 					<a href="client/show?id={{$ent->id}}" class="btn btn-info btn-sm text-light">詳細</a>
 					<a href="client/edit?id={{$ent->id}}" class="btn btn-primary btn-sm">編集</a>
-					{!! BaseXHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
-					{!! BaseXHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
+					{!! CrudBaseHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
+					{!! CrudBaseHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
 					
 					
 				</td>
@@ -169,8 +169,8 @@ $ver_str = '?v=' . $this_page_version;
 
 <!-- JSON埋め込み -->
 <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" >
-{!! BaseXHelper::embedJson('search_json', $searches) !!}
-{!! BaseXHelper::embedJson('data_json', $data) !!}
+{!! CrudBaseHelper::embedJson('search_json', $searches) !!}
+{!! CrudBaseHelper::embedJson('data_json', $data) !!}
 
 </body>
 </html>

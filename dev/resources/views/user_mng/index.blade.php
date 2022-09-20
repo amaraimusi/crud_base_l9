@@ -115,17 +115,17 @@ $ver_str = '?v=' . $this_page_version;
 <table id="user_mng_mng_tbl" class="table table-striped table-bordered table-condensed" style="margin-top:20px;">
 	<thead>
 		<tr>
-			<th>{!! BaseXHelper::sortLink($searches, 'user_mng', 'id', 'ID') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'user_mngs', 'name', 'ユーザー名') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'user_mngs', 'email', 'メールアドレス') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'user_mngs', 'nickname', '名前') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'user_mngs', 'role', '権限') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'user_mng', 'sort_no', '順番') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'user_mng', 'delete_flg', '有効/無効') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'user_mng', 'update_user', '更新者') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'user_mng', 'ip_addr', 'IPアドレス') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'user_mng', 'created_at', '生成日時') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'user_mng', 'updated_at', '更新日') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'user_mng', 'id', 'ID') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'user_mngs', 'name', 'ユーザー名') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'user_mngs', 'email', 'メールアドレス') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'user_mngs', 'nickname', '名前') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'user_mngs', 'role', '権限') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'user_mng', 'sort_no', '順番') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'user_mng', 'delete_flg', '有効/無効') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'user_mng', 'update_user', '更新者') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'user_mng', 'ip_addr', 'IPアドレス') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'user_mng', 'created_at', '生成日時') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'user_mng', 'updated_at', '更新日') !!}</th>
 			<th style="width:280px"></th>
 		</tr>
 	</thead>
@@ -145,11 +145,11 @@ $ver_str = '?v=' . $this_page_version;
 				<td>{{$ent->updated_at}}</td>
 				<td>
 					
-					{!! BaseXHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
+					{!! CrudBaseHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
 					<a href="user_mng/show?id={{$ent->id}}" class="btn btn-info btn-sm text-light">詳細</a>
 					<a href="user_mng/edit?id={{$ent->id}}" class="btn btn-primary btn-sm">編集</a>
-					{!! BaseXHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
-					{!! BaseXHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
+					{!! CrudBaseHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
+					{!! CrudBaseHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
 					
 					
 				</td>
@@ -169,8 +169,8 @@ $ver_str = '?v=' . $this_page_version;
 
 <!-- JSON埋め込み -->
 <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" >
-{!! BaseXHelper::embedJson('search_json', $searches) !!}
-{!! BaseXHelper::embedJson('data_json', $data) !!}
+{!! CrudBaseHelper::embedJson('search_json', $searches) !!}
+{!! CrudBaseHelper::embedJson('data_json', $data) !!}
 
 </body>
 </html>

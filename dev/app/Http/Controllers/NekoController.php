@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Neko;
 
 
-class NekoController extends BaseXController{
+class NekoController extends CrudBaseController{
 	
 	// 画面のバージョン → 開発者はこの画面を修正したらバージョンを変更すること。バージョンを変更するとキャッシュやセッションのクリアが自動的に行われます。
 	public $this_page_version = '1.0.1';

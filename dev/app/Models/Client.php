@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use App\Models\BaseX;
+use App\Models\CrudBase;
 
-class Client extends BaseX
+class Client extends CrudBase
 {
 	protected $table = 'clients'; // 紐づけるテーブル名
 	

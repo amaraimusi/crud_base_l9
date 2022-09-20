@@ -15,7 +15,8 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    //'name' => env('APP_NAME', '○○システム'),
+    'name' => '見本管理システム Laravel9版　MPA型',
 
     /*
     |--------------------------------------------------------------------------
@@ -69,7 +70,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    //'timezone' => 'UTC',
+    'timezone' => 'Asia/Tokyo',
 
     /*
     |--------------------------------------------------------------------------
@@ -82,7 +84,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'ja',
 
     /*
     |--------------------------------------------------------------------------
@@ -209,7 +211,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'ExampleClass' => App\Example\ExampleClass::class,
+        'CrudBaseHelper' => App\Helpers\CrudBaseHelper::class, // 当システム共通ヘルパー
     ])->toArray(),
 
 ];

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use App\Models\BaseX;
+use App\Models\CrudBase;
 
-class SmallDog extends BaseX
+class SmallDog extends CrudBase
 {
 	protected $table = 'small_dogs'; // 紐づけるテーブル名
 	

@@ -112,14 +112,14 @@ $ver_str = '?v=' . $this_page_version;
 	<thead>
 		<tr>
 			<!-- CBBXS-3035 -->
-			<th>{!! BaseXHelper::sortLink($searches, 'neko_type', 'id', 'id') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'neko_type', 'neko_type_name', 'ネコ種別') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'neko_type', 'sort_no', '順番') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'neko_type', 'delete_flg', '無効フラグ') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'neko_type', 'update_user_id', '更新ユーザーID') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'neko_type', 'ip_addr', 'IPアドレス') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'neko_type', 'created_at', '生成日時') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'neko_type', 'updated_at', '更新日') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'neko_type', 'id', 'id') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'neko_type', 'neko_type_name', 'ネコ種別') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'neko_type', 'sort_no', '順番') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'neko_type', 'delete_flg', '無効フラグ') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'neko_type', 'update_user_id', '更新ユーザーID') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'neko_type', 'ip_addr', 'IPアドレス') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'neko_type', 'created_at', '生成日時') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'neko_type', 'updated_at', '更新日') !!}</th>
 
 			<!-- CBBXE -->
 			<th style="width:280px"></th>
@@ -141,11 +141,11 @@ $ver_str = '?v=' . $this_page_version;
 				<!-- CBBXE -->
 				<td>
 					
-					{!! BaseXHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
+					{!! CrudBaseHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
 					<a href="neko_type/show?id={{$ent->id}}" class="btn btn-info btn-sm text-light">詳細</a>
 					<a href="neko_type/edit?id={{$ent->id}}" class="btn btn-primary btn-sm">編集</a>
-					{!! BaseXHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
-					{!! BaseXHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
+					{!! CrudBaseHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
+					{!! CrudBaseHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
 					
 					
 				</td>
@@ -165,8 +165,8 @@ $ver_str = '?v=' . $this_page_version;
 
 <!-- JSON埋め込み -->
 <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" >
-{!! BaseXHelper::embedJson('search_json', $searches) !!}
-{!! BaseXHelper::embedJson('data_json', $data) !!}
+{!! CrudBaseHelper::embedJson('search_json', $searches) !!}
+{!! CrudBaseHelper::embedJson('data_json', $data) !!}
 
 </body>
 </html>

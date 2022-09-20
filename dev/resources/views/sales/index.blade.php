@@ -118,23 +118,23 @@ $ver_str = '?v=' . $this_page_version;
 <table id="sales_mng_tbl" class="table table-striped table-bordered table-condensed" style="margin-top:20px;">
 	<thead>
 		<tr>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'id', 'ID') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'clients', 'client_name', '顧客') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'sales_amt', '売上額') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'status', 'ステータス') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'billing_date', '請求日') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'billing_amt', '請求額') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'payment_date', '入金日') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'payment_amt', '入金額') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'commission', '手数料') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'tax', '消費税') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'note', '備考') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'sort_no', '順番') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'delete_flg', '有効/無効') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'update_user', '更新者') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'ip_addr', 'IPアドレス') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'created_at', '生成日時') !!}</th>
-			<th>{!! BaseXHelper::sortLink($searches, 'sales', 'updated_at', '更新日') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'id', 'ID') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'clients', 'client_name', '顧客') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'sales_amt', '売上額') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'status', 'ステータス') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'billing_date', '請求日') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'billing_amt', '請求額') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'payment_date', '入金日') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'payment_amt', '入金額') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'commission', '手数料') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'tax', '消費税') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'note', '備考') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'sort_no', '順番') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'delete_flg', '有効/無効') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'update_user', '更新者') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'ip_addr', 'IPアドレス') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'created_at', '生成日時') !!}</th>
+			<th>{!! CrudBaseHelper::sortLink($searches, 'sales', 'updated_at', '更新日') !!}</th>
 			<th style="width:280px"></th>
 		</tr>
 	</thead>
@@ -160,11 +160,11 @@ $ver_str = '?v=' . $this_page_version;
 				<td>{{$ent->updated_at}}</td>
 				<td>
 					
-					{!! BaseXHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
+					{!! CrudBaseHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
 					<a href="sales/show?id={{$ent->id}}" class="btn btn-info btn-sm text-light">詳細</a>
 					<a href="sales/edit?id={{$ent->id}}" class="btn btn-primary btn-sm">編集</a>
-					{!! BaseXHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
-					{!! BaseXHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
+					{!! CrudBaseHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
+					{!! CrudBaseHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
 					
 					
 				</td>
@@ -181,8 +181,8 @@ $ver_str = '?v=' . $this_page_version;
 
 <!-- JSON埋め込み -->
 <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" >
-{!! BaseXHelper::embedJson('search_json', $searches) !!}
-{!! BaseXHelper::embedJson('data_json', $data) !!}
+{!! CrudBaseHelper::embedJson('search_json', $searches) !!}
+{!! CrudBaseHelper::embedJson('data_json', $data) !!}
 
 </body>
 </html>

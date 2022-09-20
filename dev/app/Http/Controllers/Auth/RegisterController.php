@@ -8,8 +8,9 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\CrudBaseController;
 
-class RegisterController extends Controller
+class RegisterController extends CrudBaseController
 {
     /*
     |--------------------------------------------------------------------------
@@ -40,6 +41,13 @@ class RegisterController extends Controller
     {
         $this->middleware('guest');
     }
+    
+    // 画面表示アクション
+    protected function showRegistrationForm(){
+
+        $userInfo = $this->getUserInfo();
+        return view('auth.register');
+    }
 
     /**
      * Get a validator for an incoming registration request.
@@ -52,6 +60,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'role' => ['required', 'string'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -64,9 +73,11 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+       
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'role' => $data['role'],
             'password' => Hash::make($data['password']),
         ]);
     }

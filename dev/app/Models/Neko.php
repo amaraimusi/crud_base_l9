@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use App\Models\BaseX;
+use App\Models\CrudBase;
 
-class Neko extends BaseX
+class Neko extends CrudBase
 {
 	protected $table = 'nekos'; // 紐づけるテーブル名
 	
