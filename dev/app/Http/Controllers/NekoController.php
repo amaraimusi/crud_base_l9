@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Neko;
+use CrudBase\CrudBase;
 
 
 class NekoController extends CrudBaseController{
@@ -19,6 +20,7 @@ class NekoController extends CrudBaseController{
 	 * @return \Illuminate\View\View
 	 */
 	public function index(Request $request){
+	    echo CrudBase::version(); // ■■■□□□■■■□□□
 
 		// ログアウトになっていたらログイン画面にリダイレクト
 		if(\Auth::id() == null) return redirect('login');

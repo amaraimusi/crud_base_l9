@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Controllers\AppController;
+use App\Http\Controllers\CrudBaseController;
 use Illuminate\Http\Request;
 use App\Models\BigCat;
 use Illuminate¥Support¥Facades¥DB;
+use CrudBase\CrudBase;
 
-class BigCatController extends AppController
+class BigCatController extends CrudBaseController
 {
 	
 	// 当画面バージョン (バージョンを変更すると画面に新バージョン通知とクリアボタンが表示されます。）
@@ -19,6 +20,9 @@ class BigCatController extends AppController
 	 * 有名猫CRUDページ
 	 */
 	public function index(){
+	    
+	    
+	    echo CrudBase::version(); // ■■■□□□■■■□□□
 	    
 // 	    // ログアウトになっていたらログイン画面にリダイレクト
 //         if(\Auth::id() == null){

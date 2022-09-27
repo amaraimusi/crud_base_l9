@@ -82,6 +82,15 @@ Route::post('small_dog/disabled', 'App\Http\Controllers\SmallDogController@disab
 Route::post('small_dog/destroy', 'App\Http\Controllers\SmallDogController@destroy');
 Route::get('small_dog/csv_download', 'App\Http\Controllers\SmallDogController@csv_download');
 
+// 有名猫管理画面（SPA型の見本管理画面）
+Route::get('big_cat', 'App\Http\Controllers\BigCatController@index');
+Route::post('big_cat/ajax_reg', 'App\Http\Controllers\BigCatController@ajax_reg');
+Route::post('big_cat/ajax_delete', 'App\Http\Controllers\BigCatController@ajax_delete');
+Route::post('big_cat/auto_save', 'App\Http\Controllers\BigCatController@auto_save');
+Route::post('big_cat/ajax_pwms', 'App\Http\Controllers\BigCatController@ajax_pwms');
+Route::get('big_cat/csv_download', 'App\Http\Controllers\BigCatController@csv_download');
+Route::post('big_cat/bulk_reg', 'App\Http\Controllers\BigCatController@bulk_reg');
+
 
 // ユーザー管理画面
 Route::get('user_mng', 'App\Http\Controllers\UserMngController@index');
