@@ -1,6 +1,7 @@
 <?php 
 
-namespace App\Consts;
+namespace App\Consts
+;
 
 /**
  * ユーザー関連定数クラス
@@ -37,6 +38,17 @@ class ConstCrudBase{
             'level'=>10,
         ]
     ];
+    
+    public function __construct(){
+        var_dump('__construct');//■■■□□□■■■□□□)
+    }
+    
+
+//     public const CRUD_BASE_ROOT = dirname(__FILE__) . DIRECTORY_SEPARATOR; // プロジェクトディレクトリの絶対ルートパス。 例→"C:\Users\user\git\CrudBase\laravel7\dev\"
+    
+    
+//     $crud_base_root = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+//     define('CRUD_BASE_ROOT', $crud_base_root);
     
     
 }

@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CrudBase;
 
-class BigCat extends AppModel
+class BigCat extends CrudBase
 {
 	protected $table = 'big_cats'; // 紐づけるテーブル名
 	//protected $guarded = ['id']; // 予期せぬ代入をガード。 通常、主キーフィールドや、パスワードフィールドなどが指定される。

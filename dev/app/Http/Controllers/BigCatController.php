@@ -10,8 +10,8 @@ use CrudBase\CrudBase;
 class BigCatController extends CrudBaseController
 {
 	
-	// 当画面バージョン (バージョンを変更すると画面に新バージョン通知とクリアボタンが表示されます。）
-	public $this_page_version = '1.0.0';
+    // 画面のバージョン → 開発者はこの画面を修正したらバージョンを変更すること。バージョンを変更するとキャッシュやセッションのクリアが自動的に行われます。
+    public $this_page_version = '1.0.0';
 	
 	protected $cb; // CrudBase制御クラス
 	protected $md; // モデル
@@ -21,15 +21,19 @@ class BigCatController extends CrudBaseController
 	 */
 	public function index(){
 	    
+	    // ログアウトになっていたらログイン画面にリダイレクト
+	    if(\Auth::id() == null) return redirect('login');
+
+	    $crudBaseData = $this->init();
 	    
-	    echo CrudBase::version(); // ■■■□□□■■■□□□
-	    
+	    dump($crudBaseData);//■■■□□□■■■□□□)
+	    die();
 // 	    // ログアウトになっていたらログイン画面にリダイレクト
 //         if(\Auth::id() == null){
 //             return redirect('login');
 //         }
 
-		$this->init();
+		//$this->init();
 		
  		// CrudBase共通処理（前）
  		$crudBaseData = $this->cb->indexBefore();//indexアクションの共通先処理(CrudBaseController)
@@ -79,6 +83,8 @@ class BigCatController extends CrudBaseController
 	 * 編集登録と新規入力登録の両方に対応している。
 	 */
 	public function ajax_reg(){
+	    
+	    
 		
 		$this->init();
 		
@@ -249,7 +255,7 @@ class BigCatController extends CrudBaseController
 	 * フィールド関連の定義をする。
 	 *
 	 */
-	private function init(){
+	protected function init($crudBaseData = []){
 		
 		
 		
@@ -382,32 +388,33 @@ class BigCatController extends CrudBaseController
 		unset($fEnt);
 		
 		
-		$crud_base_path = CRUD_BASE_PATH;
-		$crud_base_js = CRUD_BASE_JS;
-		$crud_base_css = CRUD_BASE_CSS;
-		require_once $crud_base_path . 'CrudBaseController.php';
+// 		//$crud_base_path = CRUD_BASE_PATH;■■■□□□■■■□□□
+// 		$crud_base_js = CRUD_BASE_JS;
+// 		$crud_base_css = CRUD_BASE_CSS;
+		//require_once $crud_base_path . 'CrudBaseController.php';■■■□□□■■■□□□
 		
 		$model = new BigCat(); // モデルクラス
 		
 		$crudBaseData = [
-				'fw_type' => 'laravel7',
-				'model_name_c' => 'BigCat',
-				'tbl_name' => 'big_cats', // テーブル名をセット
-				'kensakuJoken' => $kensakuJoken, //検索条件情報
-				'fieldData' => $fieldData, //フィールドデータ
-				'crud_base_path' => $crud_base_path,
-				'crud_base_js' => $crud_base_js,
-				'crud_base_css' => $crud_base_css,
+                'model_name_c' => 'BigCat',
+                'kensakuJoken' => $kensakuJoken, //検索条件情報
+                'fieldData' => $fieldData, //フィールドデータ
+	           'this_page_version' => $this->this_page_version,
 		];
 		
-		$crudBaseCon = new \CrudBaseController($this, $model, $crudBaseData);
 		
-		$model->init($crudBaseCon);
+		$crudBaseData = parent::init($crudBaseData);
 		
-		$this->md = $model;
-		$this->cb =$crudBaseCon;
+		//■■■□□□■■■□□□
+		//$crudBaseCon = new \CrudBaseController($this, $model, $crudBaseData);
 		
-		$crudBaseData = $crudBaseCon->getCrudBaseData();
+		//■■■□□□■■■□□□
+// 		$model->init($crudBaseCon);
+		
+// 		$this->md = $model;
+// 		$this->cb =$crudBaseCon;
+		
+		//$crudBaseData = $crudBaseCon->getCrudBaseData();
 		return $crudBaseData;
 		
 	}

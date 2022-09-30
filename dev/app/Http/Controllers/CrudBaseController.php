@@ -1,8 +1,12 @@
 <?php
-
+//require_once 'crud_base_config.php';
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Consts;
+
+use App\Http\Controllers\Controller;
+//use Illuminate\Http\Request;
+use CrudBase\CrudBase;
 
 /**
  * 基本コントローラ
@@ -11,13 +15,80 @@ use App\Consts;
 class CrudBaseController extends Controller{
 	
 	
+    /**
+     * 初期化
+     * @param [] crudBaseData
+     * @return [] crudBaseData
+     */
+    protected function init($crudBaseData = []){
+        
+        global $crudBaseConfig;
+        if(!empty($crudBaseConfig)){
+            foreach($crudBaseConfig as $config_key => $config_value){
+                $crudBaseData[$config_key] = $config_value;
+            }
+        }
+        
+        $crudBaseData['fw_type'] = $crudBaseData['fw_type'] ?? 'laravel9';
+        
+        // キャメル記法のモデル名をセット
+        $model_name_c = $crudBaseData['model_name_c'] ?? '';
+        $crudBaseData['model_name_c'] = $model_name_c;
+        $crudBaseData['main_model_name_c'] = $model_name_c;
+        
+        // スネーク記法のモデル名
+        $main_model_name_s = $crudBaseData['main_model_name_s'] ?? CrudBase::snakize($model_name_c);
+        $crudBaseData['main_model_name_s'] = $main_model_name_s;
+        
+        // DBテーブル名
+        $tbl_name = $crudBaseData['tbl_name'] ?? CrudBase::camelToTableName($model_name_c);
+        $crudBaseData['tbl_name'] = $tbl_name;
+        
+        // デフォルトソートフィールド
+        $crudBaseData['def_sort_feild'] = $crudBaseData['def_sort_feild'] ?? 'sort_no';
+        
+        // デフォルトソートタイプ 0:昇順 1:降順
+        $crudBaseData['def_sort_type'] = $crudBaseData['def_sort_type'] ?? 0;
+
+        // デフォルトページ情報を取得する
+        $crudBaseData['defPages'] = $this->getDefPages($crudBaseData); // デフォルトページ情報を取得する
+
+        
+
+        return $crudBaseData;
+    }
+    
+    /**
+     * デフォルトページ情報を取得する
+     * @param [] $crudBaseData
+     * @return [] デフォルトページ情報
+     */
+    private function getDefPages(&$crudBaseData){
+        
+        $defPages = [];
+        if(!empty($crudBaseData['defPages'])){
+            $defPages = $crudBaseData['defPages'];
+        }
+        
+        if(empty($defPages['page_no'])) $defPages['page_no'] = 0;
+        if(empty($defPages['row_limit'])) $defPages['row_limit'] = 50;
+        
+        $def_sort_feild =  $crudBaseData['def_sort_feild']; // デフォルトソートフィールド
+        $def_sort_type =  $crudBaseData['def_sort_type']; // デフォルトソートタイプ 0:昇順 1:降順
+        if(empty($defPages['sort_field'])) $defPages['sort_field'] = $def_sort_feild;
+        if(empty($defPages['sort_desc'])) $defPages['sort_desc'] = $def_sort_type;
+        
+        return $defPages;
+    }
+    
+    
 	/**
 	 * ユーザー情報を取得する
 	 *
 	 * @return [] <mixied> ユーザー情報
 	 */
 	public function getUserInfo($param=[]){
-		
+
 		// ユーザー情報の構造
 		$userInfo = [
 			'id'=> 0,
