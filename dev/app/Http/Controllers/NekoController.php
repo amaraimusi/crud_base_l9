@@ -26,7 +26,6 @@ class NekoController extends CrudBaseController{
 		// ログアウトになっていたらログイン画面にリダイレクト
 		if(\Auth::id() == null) return redirect('login');
 		
-
 		// 検索データのバリデーション
 		$validated = $request->validate([
 			'id' => 'nullable|numeric',
@@ -35,7 +34,7 @@ class NekoController extends CrudBaseController{
 		
 		$sesSearches = session('neko_searches_key');// セッションからセッション検索データを受け取る
 
-		// セッション検索データの画面から旧画面バージョンを受け取る
+		// 新バージョンチェック  0:バージョン変更なし（通常）, 1:新しいバージョン
 		$new_version = $this->judgeNewVersion($sesSearches, $this->this_page_version);
 
 		$searches = []; // 検索データ

@@ -19,57 +19,126 @@ class BigCatController extends CrudBaseController
 	/**
 	 * 有名猫CRUDページ
 	 */
-	public function index(){
+	public function index(Request $request){
 	    
 	    // ログアウトになっていたらログイン画面にリダイレクト
 	    if(\Auth::id() == null) return redirect('login');
 
-	    $crudBaseData = $this->init();
+	    $crudBaseData = $this->init(); // 初期化
+
+	    $userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
+	    $crudBaseData['userInfo'] = $userInfo;
 	    
+	    $oldCrudBaseData = session('big_cat_old') ?? []; // 旧CrudBaseデータをセッションから取得する (前リクエストのデータ）
+	    
+	    // 新バージョンチェック  0:バージョン変更なし（通常）, 1:新しいバージョン
+	    $new_version = $this->judgeNewVersion($oldCrudBaseData, $this->this_page_version);
+	    $crudBaseData['new_version'] = $new_version; // 新バージョンチェック    0:バージョン変更なし（通常）, 1:新しいバージョン
+	    
+	    // リクエストのパラメータが空でない、または新バージョンフラグがONである場合、リクエストから検索データを受け取る（GET、POSTの両方に対応）
+	    $searches = [];
+	    $oldSearches = $crudBaseData['oldSearches'] ?? [];
+	    if(!empty($request->all()) || $new_version == 1){
+	        $searches = [
+	            'main_search' => $request->main_search, // メイン検索
+	            
+	            // CBBXS-3000
+	            'id' => $request->id, // id
+	            'neko_val' => $request->neko_val, // neko_val
+	            'neko_name' => $request->neko_name, // neko_name
+	            'neko_date' => $request->neko_date, // neko_date
+	            'neko_type' => $request->neko_type, // 猫種別
+	            'neko_dt' => $request->neko_dt, // neko_dt
+	            'neko_flg' => $request->neko_flg, // ネコフラグ
+	            'img_fn' => $request->img_fn, // 画像ファイル名
+	            'note' => $request->note, // 備考
+	            'sort_no' => $request->sort_no, // 順番
+	            'delete_flg' => $request->delete_flg, // 無効フラグ
+	            'update_user_id' => $request->update_user_id, // 更新者
+	            'ip_addr' => $request->ip_addr, // IPアドレス
+	            'created_at' => $request->created_at, // 生成日時
+	            'updated_at' => $request->updated_at, // 更新日
+	            
+	            // CBBXE
+	            
+	            'update_user' => $request->update_user, // 更新者
+	            'sort' => $request->sort, // 並びフィールド
+	            'desc' => $request->desc, // 並び向き
+	            'per_page' => $request->per_page, // 行制限数
+	        ];
+	        
+	    }else{
+	        // リクエストのパラメータが空かつ新バージョンフラグがOFFである場合、セッション検索データを検索データにセットする
+	        $searches = $oldSearches;
+	    }
+	    
+	    $crudBaseData['oldSearches'] = $searches;
+	    $crudBaseData['searches'] = $searches;
+	    
+	    $model = new BigCat();
+	    $data = $model->getData($searches);
+	    
+	    
+	    dump('A1');//■■■□□□■■■□□□)
 	    dump($crudBaseData);//■■■□□□■■■□□□)
-	    die();
-// 	    // ログアウトになっていたらログイン画面にリダイレクト
-//         if(\Auth::id() == null){
-//             return redirect('login');
-//         }
+	    
+	    
+	    session(['big_cat_old' => $crudBaseData]);
+	    
 
-		//$this->init();
+
+// 		//$this->init();
 		
- 		// CrudBase共通処理（前）
- 		$crudBaseData = $this->cb->indexBefore();//indexアクションの共通先処理(CrudBaseController)
+//  		// CrudBase共通処理（前）
+//  		$crudBaseData = $this->cb->indexBefore();//indexアクションの共通先処理(CrudBaseController)
  		
- 		$userInfo = $this->getUserInfo();
-		$crudBaseData['userInfo'] = $userInfo;
- 		// CBBXS-2019
+//  		// CBBXS-2019
 
- 		// CBBXE
+//  		// CBBXE
 		
-		//一覧データを取得
-		$res = $this->md->getData($crudBaseData);
-		$data = $res['data'];
-		$non_limit_count = $res['non_limit_count']; // LIMIT制限なし・データ件数
+// 		//一覧データを取得
+// 		$res = $this->md->getData($crudBaseData);
+// 		$data = $res['data'];
+// 		$non_limit_count = $res['non_limit_count']; // LIMIT制限なし・データ件数
 
-		// CrudBase共通処理（後）
-		$crudBaseData = $this->cb->indexAfter($crudBaseData, ['non_limit_count'=>$non_limit_count]);
+// 		// CrudBase共通処理（後）
+// 		$crudBaseData = $this->cb->indexAfter($crudBaseData, ['non_limit_count'=>$non_limit_count]);
 		
-		$masters = []; // マスターリスト群
+// 		$masters = []; // マスターリスト群
 		
-		// CBBXS-2020
+// 		// CBBXS-2020
 
-		// 有名猫種別リスト
-		$bigCatTypeList = $this->md->getBigCatTypeList();
-		$masters['bigCatTypeList'] = $bigCatTypeList;
+// 		// 有名猫種別リスト
+// 		$bigCatTypeList = $this->md->getBigCatTypeList();
+// 		$masters['bigCatTypeList'] = $bigCatTypeList;
 
-		// 価格リスト
-		$priceList = $this->md->getPriceList();
-		$masters['priceList'] = $priceList;
+// 		// 価格リスト
+// 		$priceList = $this->md->getPriceList();
+// 		$masters['priceList'] = $priceList;
 
-		// CBBXE
+// 		// CBBXE
+		
+// 		$crudBaseData['masters'] = $masters;
 
-		$crudBaseData['masters'] = $masters;
 		
 		$crud_base_json = json_encode($crudBaseData,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
-		return view('big_cat.index', compact('data', 'crudBaseData', 'crud_base_json'));
+		
+		die();//■■■□□□■■■□□□
+		
+		//return view('big_cat.index', compact('data', 'crudBaseData', 'crud_base_json'));
+		
+		return view('big_cat.index', [
+		    'data'=>$data,
+		    'searches'=>$searches,
+		    'userInfo'=>$userInfo,
+		    'this_page_version'=>$this->this_page_version,
+		    'crud_base_json'=>$crud_base_json,
+		    
+		    
+		    // CBBXS-3020B
+		    'bigCatTypeList'=>$bigCatTypeList,
+		    // CBBXE
+		]);
 		
 		
 	}

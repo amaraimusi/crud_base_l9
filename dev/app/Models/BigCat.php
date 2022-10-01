@@ -3,332 +3,253 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use App\Models\CrudBase;
 
 class BigCat extends CrudBase
 {
 	protected $table = 'big_cats'; // 紐づけるテーブル名
-	//protected $guarded = ['id']; // 予期せぬ代入をガード。 通常、主キーフィールドや、パスワードフィールドなどが指定される。
 	
-	// ホワイトリスト（DB保存時にこのホワイトリストでフィルタリングが施される）
-	public $fillable = [
-			// CBBXS-2009
-			'id',
-			'big_cat_name',
-			'public_date',
-			'big_cat_type',
-			'price',
-			'subsc count',
-			'work_dt',
-			'big_cat_flg',
-			'img_fn',
-			'note',
-			'sort_no',
-			'delete_flg',
-			'update_user_id',
-			'ip_addr',
-			'created_at',
-			'updated_at',
+	const CREATED_AT = 'created_at';
+	const UPDATED_AT = 'updated_at';
+	
+	/**
+	 * The attributes that are mass assignable.
+	 * DB保存時、ここで定義してあるDBフィールドのみ保存対象にします。
+	 * ここの存在しないDBフィールドは保存対象外になりますのでご注意ください。
+	 *
+	 * @var array<int, string>
+	 */
+	protected $fillable = [
+		// CBBXS-3009
+		'id',
+		'big_cat_val',
+		'big_cat_name',
+		'big_cat_date',
+		'big_cat_type',
+		'big_cat_dt',
+		'big_cat_flg',
+		'img_fn',
+		'note',
+		'sort_no',
+		'delete_flg',
+		'update_user_id',
+		'ip_addr',
+		'created_at',
+		'updated_at',
 
-			// CBBXE
+		// CBBXE
 	];
-	
-	// CBBXS-2012
-	const CREATED_AT = 'created';
-
-	// CBBXE
-	
-	//public $timestamps = false; // タイムスタンプ。 trueならcreated_atフィールド、updated_atフィールドに適用される。（それ以外のフィールドを設定で指定可）
-	
-	
-	protected $cb; // CrudBase制御クラス
 	
 	
 	public function __construct(){
-	    parent::__construct();
+		parent::__construct();
 		
 	}
 	
-	
 	/**
-	 * 初期化
-	 * @param CrudBaseController $cb
+	 *
+	 * @param [] $searches 検索データ
+	 * @param int $use_type 用途タイプ 　index:一覧データ用（デフォルト）, csv:CSVダウンロード用
+	 * @return [] 一覧データ
 	 */
-	public function init($cb){
-		$this->cb = $cb;
+	public function getData($searches, $use_type='index'){
 		
-		// ホワイトリストをセット
-		$cbParam = $this->cb->getCrudBaseData();
-		$fields = $cbParam['fields'];
-		$this->fillable = $fields;
+		// 一覧データを取得するSQLの組立。
+		$query = DB::table('big_cats')->
+			leftJoin('users', 'big_cats.update_user_id', '=', 'users.id');
 		
-		parent::init($cb);
-		$this->setTableName($this->table); // 親クラスにテーブル名をセット
-	}
-	
-	
-	/**
-	 * SQLを実行してエンティティを取得する
-	 * @param string $sql
-	 * @return [] エンティティ
-	 */
-	public function selectEntity2($sql){
-	    $res = \DB::select($sql);
-	    
-	    $ent = [];
-	    if(!empty($res)){
-	        $ent = current($res);
-	        $ent = (array)$ent;
-	    }
-	    
-	    return $ent;
-	}
-	
-	/**
-	 * 検索条件とページ情報を元にDBからデータを取得する
-	 * @param array $crudBaseData
-	 * @return number[]|unknown[]
-	 *  - array data データ
-	 *  - int non_limit_count LIMIT制限なし・データ件数
-	 */
-	public function getData($crudBaseData){
-		
-	    $fields = $crudBaseData['fields']; // フィールド
-	    
-	    $kjs = $crudBaseData['kjs'];//検索条件情報
-	    $pages = $crudBaseData['pages'];//ページネーション情報
-	    
-	    // ▽ SQLインジェクション対策
-	    $kjs = $this->sqlSanitizeW($kjs);
-	    $pages = $this->sqlSanitizeW($pages);
-	    
-	    $page_no = $pages['page_no']; // ページ番号
-	    $row_limit = $pages['row_limit']; // 表示件数
-	    $sort_field = $pages['sort_field']; // ソートフィールド
-	    $sort_desc = $pages['sort_desc']; // ソートタイプ 0:昇順 , 1:降順
-	    $offset = $page_no * $row_limit;
-	    
-	    // 外部SELECT文字列を作成する。
-	    $outer_selects_str = $this->makeOuterSelectStr($crudBaseData);
-	    
-	    // 外部結合文字列を作成する。
-	    $outer_join_str = $this->makeOuterJoinStr($crudBaseData);
-	    
-	    //条件を作成
-	    $conditions=$this->createKjConditions($kjs);
-	    if(empty($conditions)) $conditions = '1=1'; // 検索条件なしの対策
-	    
-	    $sort_type = '';
-	    if(!empty($sort_desc)) $sort_type = 'DESC';
-	    $main_tbl_name = $this->table;
-	    
-	    $sql =
-	    "
-				SELECT SQL_CALC_FOUND_ROWS BigCat.* {$outer_selects_str}
-				FROM {$main_tbl_name} AS BigCat
-				{$outer_join_str}
-				WHERE {$conditions}
-				ORDER BY {$sort_field} {$sort_type}
-				LIMIT {$offset}, {$row_limit}
-			";
-				
-		$data = $this->cb->selectData($sql);
-		
-		// LIMIT制限なし・データ件数
-		$non_limit_count = 0;
-		if(!empty($data)){
-		    $non_limit_count = $this->cb->selectValue('SELECT FOUND_ROWS()');
-		}
-		
-		return ['data' => $data, 'non_limit_count' => $non_limit_count];
-		
-	}
-	
-	
-	/**
-	 * 検索条件情報からWHERE情報を作成。
-	 * @param array $kjs	検索条件情報
-	 * @return string WHERE情報
-	 */
-	private function createKjConditions($kjs){
+		$query = $query->select(
+		    // CBBXS-3034
+			'big_cats.id as id',
+			'big_cats.big_cat_val as big_cat_val',
+			'big_cats.big_cat_name as big_cat_name',
+			'big_cats.big_cat_date as big_cat_date',
+			'big_cats.big_cat_type as big_cat_type',
+			'big_cats.big_cat_dt as big_cat_dt',
+			'big_cats.big_cat_flg as big_cat_flg',
+			'big_cats.img_fn as img_fn',
+			'big_cats.note as note',
+			'big_cats.sort_no as sort_no',
+			'big_cats.delete_flg as delete_flg',
+		    'big_cats.update_user_id as update_user_id',
+		    'users.nickname as update_user',
+			'big_cats.ip_addr as ip_addr',
+			'big_cats.created_at as created_at',
+			'big_cats.updated_at as updated_at',
 
-		$cnds=null;
+		    // CBBXE
+			);
 		
-		$kjs = $this->cb->xssSanitizeW($kjs); // SQLサニタイズ
-		
-		if(!empty($kjs['kj_main'])){
-			$cnds[]="CONCAT( IFNULL(BigCat.big_cat_name, '') ,IFNULL(BigCat.note, '')) LIKE '%{$kjs['kj_main']}%'";
+		// メイン検索
+		if(!empty($searches['main_search'])){
+			$concat = DB::raw("CONCAT( IFNULL(big_cats.big_cat_name, '') , IFNULL(big_cats.note, '') ) ");
+			$query = $query->where($concat, 'LIKE', "%{$searches['main_search']}%");
 		}
 		
-		// CBBXS-1003
-		if(!empty($kjs['kj_id']) || $kjs['kj_id'] ==='0' || $kjs['kj_id'] ===0){
-			$cnds[]="BigCat.id = {$kjs['kj_id']}";
+		$query = $this->addWheres($query, $searches); // 詳細検索情報をクエリビルダにセットする
+		
+		$sort_field = $searches['sort'] ?? 'sort_no'; // 並びフィールド
+		$dire = 'asc'; // 並び向き
+		if(!empty($searches['desc'])){
+			$dire = 'desc';
 		}
-		if(!empty($kjs['kj_big_cat_name'])){
-			$cnds[]="BigCat.big_cat_name LIKE '%{$kjs['kj_big_cat_name']}%'";
+		$query = $query->orderBy($sort_field, $dire);
+		
+		// 一覧用のデータ取得。ページネーションを考慮している。
+		if($use_type == 'index'){
+			
+			$per_page = $searches['per_page'] ?? 50; // 行制限数(一覧の最大行数) デフォルトは50行まで。
+			$data = $query->paginate($per_page);
+			return $data;
+			
 		}
-		if(!empty($kjs['kj_public_date1'])){
-			$cnds[]="BigCat.public_date >= '{$kjs['kj_public_date1']}'";
-		}
-		if(!empty($kjs['kj_public_date2'])){
-			$cnds[]="BigCat.public_date <= '{$kjs['kj_public_date2']}'";
-		}
-		if(!empty($kjs['kj_big_cat_type']) || $kjs['kj_big_cat_type'] ==='0' || $kjs['kj_big_cat_type'] ===0){
-			$cnds[]="BigCat.big_cat_type = {$kjs['kj_big_cat_type']}";
-		}
-		if(!empty($kjs['kj_price']) || $kjs['kj_price'] ==='0' || $kjs['kj_price'] ===0){
-			$cnds[]="BigCat.price = {$kjs['kj_price']}";
-		}
-		if(!empty($kjs['kj_subsc count1'])){
-			$cnds[]="BigCat.subsc count >= {$kjs['kj_subsc count1']}";
-		}
-		if(!empty($kjs['kj_subsc count2'])){
-			$cnds[]="BigCat.subsc count <= {$kjs['kj_subsc count2']}";
-		}
-		if(!empty($kjs['kj_work_dt'])){
-			$kj_work_dt = $kjs['kj_work_dt'];
-			$dtInfo = $this->CrudBase->guessDatetimeInfo($kj_work_dt);
-			$cnds[]="DATE_FORMAT(BigCat.work_dt,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
-		}
-		$kj_big_cat_flg = $kjs['kj_big_cat_flg'];
-		if(!empty($kjs['kj_big_cat_flg']) || $kjs['kj_big_cat_flg'] ==='0' || $kjs['kj_big_cat_flg'] ===0){
-			if($kjs['kj_big_cat_flg'] != -1){
-				$cnds[]="BigCat.big_cat_flg = {$kjs['kj_big_cat_flg']}";
+		
+		// CSV用の出力。Limitなし
+		elseif($use_type == 'csv'){
+			$data = $query->get();
+			$data2 = [];
+			foreach($data as $ent){
+				$data2[] = (array)$ent;
 			}
+			return $data2;
 		}
-		if(!empty($kjs['kj_img_fn'])){
-			$cnds[]="BigCat.img_fn LIKE '%{$kjs['kj_img_fn']}%'";
-		}
-		if(!empty($kjs['kj_note'])){
-			$cnds[]="BigCat.note LIKE '%{$kjs['kj_note']}%'";
-		}
-		if(!empty($kjs['kj_sort_no']) || $kjs['kj_sort_no'] ==='0' || $kjs['kj_sort_no'] ===0){
-			$cnds[]="BigCat.sort_no = {$kjs['kj_sort_no']}";
-		}
-		$kj_delete_flg = $kjs['kj_delete_flg'];
-		if(!empty($kjs['kj_delete_flg']) || $kjs['kj_delete_flg'] ==='0' || $kjs['kj_delete_flg'] ===0){
-			if($kjs['kj_delete_flg'] != -1){
-			   $cnds[]="BigCat.delete_flg = {$kjs['kj_delete_flg']}";
-			}
-		}
-		if(!empty($kjs['kj_update_user_id']) || $kjs['kj_update_user_id'] ==='0' || $kjs['kj_update_user_id'] ===0){
-			$cnds[]="BigCat.update_user_id = {$kjs['kj_update_user_id']}";
-		}
-		if(!empty($kjs['kj_ip_addr'])){
-			$cnds[]="BigCat.ip_addr LIKE '%{$kjs['kj_ip_addr']}%'";
-		}
-		if(!empty($kjs['kj_created_at'])){
-			$kj_created_at=$kjs['kj_created_at'].' 00:00:00';
-			$cnds[]="BigCat.created_at >= '{$kj_created_at}'";
-		}
-		if(!empty($kjs['kj_updated_at'])){
-			$kj_updated_at = $kjs['kj_updated_at'];
-			$dtInfo = $this->CrudBase->guessDatetimeInfo($kj_updated_at);
-			$cnds[]="DATE_FORMAT(BigCat.updated_at,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
-		}
+		
+		
+	}
+	
+	/**
+	 * 詳細検索情報をクエリビルダにセットする
+	 * @param object $query クエリビルダ
+	 * @param [] $searches　検索データ
+	 * @return object $query クエリビルダ
+	 */
+	private function addWheres($query, $searches){
+		
+	    // CBBXS-3003
+
+	    // id
+	    if(!empty($searches['id'])){
+	        $query = $query->where('big_cats.id',$searches['id']);
+	    }
+
+	    // big_cat_val
+	    if(!empty($searches['big_cat_val'])){
+	        $query = $query->where('big_cats.big_cat_val',$searches['big_cat_val']);
+	    }
+
+	    // big_cat_name
+	    if(!empty($searches['big_cat_name'])){
+	        $query = $query->where('big_cats.big_cat_name', 'LIKE', "%{$searches['big_cat_name']}%");
+	    }
+
+	    // big_cat_date
+	    if(!empty($searches['big_cat_date'])){
+	        $query = $query->where('big_cats.big_cat_date',$searches['big_cat_date']);
+	    }
+
+	    // 猫種別
+	    if(!empty($searches['big_cat_type'])){
+	        $query = $query->where('big_cats.big_cat_type',$searches['big_cat_type']);
+	    }
+
+	    // big_cat_dt
+	    if(!empty($searches['big_cat_dt'])){
+	        $query = $query->where('big_cats.big_cat_dt',$searches['big_cat_dt']);
+	    }
+
+	    // 無効フラグ
+	    if(!empty($searches['delete_flg'])){
+	        $query = $query->where('big_cats.delete_flg',$searches['delete_flg']);
+	    }else{
+	        $query = $query->where('big_cats.delete_flg', 0);
+	    }
+
+	    // 画像ファイル名
+	    if(!empty($searches['img_fn'])){
+	        $query = $query->where('big_cats.img_fn', 'LIKE', "%{$searches['img_fn']}%");
+	    }
+
+	    // 備考
+	    if(!empty($searches['note'])){
+	        $query = $query->where('big_cats.note', 'LIKE', "%{$searches['note']}%");
+	    }
+
+	    // 順番
+	    if(!empty($searches['sort_no'])){
+	        $query = $query->where('big_cats.sort_no',$searches['sort_no']);
+	    }
+
+	    // 無効フラグ
+	    if(!empty($searches['delete_flg'])){
+	        $query = $query->where('big_cats.delete_flg',$searches['delete_flg']);
+	    }else{
+	        $query = $query->where('big_cats.delete_flg', 0);
+	    }
+
+	    // 更新者
+	    if(!empty($searches['update_user'])){
+	        $query = $query->where('users.nickname',$searches['update_user']);
+	    }
+
+	    // IPアドレス
+	    if(!empty($searches['ip_addr'])){
+	        $query = $query->where('big_cats.ip_addr', 'LIKE', "%{$searches['ip_addr']}%");
+	    }
+
+	    // 生成日時
+	    if(!empty($searches['created_at'])){
+	        $query = $query->where('big_cats.created_at',$searches['created_at']);
+	    }
+
+	    // 更新日
+	    if(!empty($searches['updated_at'])){
+	        $query = $query->where('big_cats.updated_at',$searches['updated_at']);
+	    }
 
 		// CBBXE
 		
-		$cnd=null;
-		if(!empty($cnds)){
-			$cnd=implode(' AND ',$cnds);
-		}
+		return $query;
+	}
+	
+	
+	/**
+	 * 次の順番を取得する
+	 * @return int 順番
+	 */
+	public function nextSortNo(){
+		$query = DB::table('big_cats')->selectRaw('MAX(sort_no) AS max_sort_no');
+		$res = $query->first();
+		$sort_no = $res->max_sort_no ?? 0;
+		$sort_no++;
 		
-		return $cnd;
-		
+		return $sort_no;
 	}
-	
-	
-	/**
-	 * トランザクション・スタート
-	 */
-	public function begin(){
-		$this->cb->begin();
-	}
-	
-	/**
-	 * トランザクション・ロールバック
-	 */
-	public function rollback(){
-		$this->cb->rollback();
-	}
-	
-	/**
-	 * トランザクション・コミット
-	 */
-	public function commit(){
-		$this->cb->commit();
-	}
-	
-	
-	// CBBXS-2021
-	/**
-	 * 有名猫種別リストをDBから取得する
-	 */
-	public function getBigCatTypeList(){
-
-		// DBからデータを取得
-		$query = \DB::table('big_cat_types')->
-		whereRaw("delete_flg = 0")->
-		orderBy('sort_no', 'ASC');
-		$data = $query->get();
-
-		// リスト変換
-		$list = [];
-		foreach($data as $ent){
-			$ent = (array)$ent;
-			$id = $ent['id'];
-			$name = $ent['big_cat_type_name'];
-			$list[$id] = $name;
-		}
-
-		return $list;
-		
-	}
-	/**
-	 * 価格リストをDBから取得する
-	 */
-	public function getPriceList(){
-
-		// DBからデータを取得
-		$query = \DB::table('prices')->
-		whereRaw("delete_flg = 0")->
-		orderBy('sort_no', 'ASC');
-		$data = $query->get();
-
-		// リスト変換
-		$list = [];
-		foreach($data as $ent){
-			$ent = (array)$ent;
-			$id = $ent['id'];
-			$name = $ent['price_name'];
-			$list[$id] = $name;
-		}
-
-		return $list;
-		
-	}
-
-	// CBBXE
-	
 	
 	
 	/**
 	 * エンティティのDB保存
+	 * @note エンティティのidが空ならINSERT, 空でないならUPDATEになる。
 	 * @param [] $ent エンティティ
-	 * @param [] DB保存パラメータ
-	 *  - form_type フォーム種別  new_inp:新規入力 edit:編集 delete:削除
-	 *  - ni_tr_place 新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
-	 *  - tbl_name DBテーブル名
-	 *  - whiteList ホワイトリスト（省略可)
 	 * @return [] エンティティ(insertされた場合、新idがセットされている）
 	 */
-	public function saveEntity(&$ent, $regParam=[]){
-	    
-		return $this->cb->saveEntity($ent, $regParam);
-
+	public function saveEntity(&$ent){
+		
+		if(empty($ent['id'])){
+			
+			// ▽ idが空であればINSERTをする。
+			$ent = array_intersect_key($ent, array_flip($this->fillable)); // ホワイトリストによるフィルタリング
+			$id = $this->insertGetId($ent); // INSERT
+			$ent['id'] = $id;
+		}else{
+			
+			// ▽ idが空でなければUPDATEする。
+			$ent = array_intersect_key($ent, array_flip($this->fillable)); // ホワイトリストによるフィルタリング
+			$this->updateOrCreate(['id'=>$ent['id']], $ent); // UPDATE
+		}
+		
+		return $ent;
 	}
-	
 	
 	
 	/**
@@ -337,76 +258,36 @@ class BigCat extends CrudBase
 	 * @return [] データ(insertされた場合、新idがセットされている）
 	 */
 	public function saveAll(&$data){
-		return $this->cb->saveAll($data);
-	}
-	
-	/**
-	 * エンティティのDB保存
-	 * @param [] $ent エンティティ
-	 * @return [] エンティティ(insertされた場合、新idがセットされている）
-	 */
-	public function saveEntity2($ent){
-	    
-	    $ent = $this->setCommonToEntity($ent);
-	    
-	    $ent = array_intersect_key($ent, array_flip($this->fillable));
-	    
-	    // 患者テーブルへDB更新
-	    if(empty($ent['id'])){
-	        // ▽ idが空であればINSERTをする。
-	        $id = $this->insertGetId($ent); // INSERT
-	        $ent['id'] = $id;
-	    }else{
-	        
-	        // ▽ idが空でなければUPDATEする。
-	        $this->updateOrCreate(['id'=>$ent['id']], $ent); // UPDATE
-	    }
-	    
-	    return $ent;
-	    
-	}
-	
-	
-	/**
-	 * データのDB保存
-	 * @param [] $data データ←エンティティの配列
-	 */
-	public function saveData($data){
-	    $data2 = [];
-	    foreach($data as $ent){
-	        $ent2 = $this->saveEntity($ent);
-	        $data2[] = $ent2;
-	    }
-	    return $data2;
-	}
-	
-	
-	/**
-	 * 複数レコードのINSERT
-	 * @param [] $data データ（エンティティの配列）
-	 */
-	public function insertAll($data){
 		
-		if(empty($data)) return;
-		
+		$data2 = [];
 		foreach($data as &$ent){
-			$ent = array_intersect_key($ent, array_flip($this->fillable));
-			unset($ent['id']);
+			$data2[] = $this->saveEntity($ent);
+			
 		}
 		unset($ent);
-
-		$this->insert($data);
-		
-		
+		return $data2;
 	}
 	
-	
-	
-	
-	// CBBXS-2022
+	// CBBXS-3021
+	/**
+	 *  有名猫種別リストを取得する
+	 *  @return [] 有名猫種別リスト
+	 */
+	public function getBigCatTypeList(){
+	    
+	    $query = DB::table('big_cat_types')->
+	       select(['id', 'big_cat_type_name'])->
+	       where('delete_flg',0);
+	    
+	    $res = $query->get();
+	    $list = [];
+	    foreach($res as $ent){
+	        $list[$ent->id] = $ent->big_cat_type_name;
+	    }
 
+	    return $list;
+	}
 	// CBBXE
-	
 	
 }
 
