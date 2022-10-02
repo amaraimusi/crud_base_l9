@@ -18,7 +18,7 @@ class BigCat extends CrudBase
 			'public_date',
 			'big_cat_type',
 			'price',
-			'subsc count',
+			'subsc_count',
 			'work_dt',
 			'big_cat_flg',
 			'img_fn',
@@ -179,11 +179,11 @@ class BigCat extends CrudBase
 		if(!empty($kjs['kj_price']) || $kjs['kj_price'] ==='0' || $kjs['kj_price'] ===0){
 			$cnds[]="BigCat.price = {$kjs['kj_price']}";
 		}
-		if(!empty($kjs['kj_subsc count1'])){
-			$cnds[]="BigCat.subsc count >= {$kjs['kj_subsc count1']}";
+		if(!empty($kjs['kj_subsc_count1'])){
+			$cnds[]="BigCat.subsc_count >= {$kjs['kj_subsc_count1']}";
 		}
-		if(!empty($kjs['kj_subsc count2'])){
-			$cnds[]="BigCat.subsc count <= {$kjs['kj_subsc count2']}";
+		if(!empty($kjs['kj_subsc_count2'])){
+			$cnds[]="BigCat.subsc_count <= {$kjs['kj_subsc_count2']}";
 		}
 		if(!empty($kjs['kj_work_dt'])){
 			$kj_work_dt = $kjs['kj_work_dt'];

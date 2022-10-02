@@ -67,7 +67,7 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 		$cbh->inputKjMoDateRng('kj_public_date','公開日');
 		$cbh->inputKjSelect('kj_big_cat_type','有名猫種別', $masters['bigCatTypeList']); 
 		$cbh->inputKjSelect('kj_price','価格', $masters['priceList']); 
-		$cbh->inputKjNumRange('subsc count','サブスク数'); 
+		$cbh->inputKjNumRange('subsc_count','サブスク数'); 
 		$cbh->inputKjText('kj_work_dt','作業日時');
 		$cbh->inputKjFlg('kj_big_cat_flg','ネコフラグ');
 		$cbh->inputKjText('kj_img_fn','画像ファイル名');
@@ -191,7 +191,7 @@ foreach($data as $i=>&$ent){
 	$cbh->tdPlain($ent, 'public_date');
 	$cbh->tdList($ent, 'big_cat_type', $bigCatTypeList);
 	$cbh->tdList($ent, 'price', $priceList);
-	$cbh->tdPlain($ent, 'subsc count');
+	$cbh->tdPlain($ent, 'subsc_count');
 	$cbh->tdPlain($ent, 'work_dt');
 	$cbh->tdFlg($ent, 'big_cat_flg');
 	$cbh->tdImage($ent, 'img_fn');
@@ -297,8 +297,8 @@ foreach($data as $i=>&$ent){
 		<div class="cbf_inp_wrap">
 			<div class='cbf_inp_label' >サブスク数: </div>
 			<div class='cbf_input'>
-				<input type="text" name="subsc count" class="valid" value="" pattern="^[+-]?([0-9]*[.])?[0-9]+$" maxlength="11" title="数値を入力してください" />
-				<label class="text-danger" for="subsc count" ></label>
+				<input type="text" name="subsc_count" class="valid" value="" pattern="^[+-]?([0-9]*[.])?[0-9]+$" maxlength="11" title="数値を入力してください" />
+				<label class="text-danger" for="subsc_count" ></label>
 			</div>
 		</div>
 		<div class="cbf_inp_wrap">
@@ -418,8 +418,8 @@ foreach($data as $i=>&$ent){
 		<div class="cbf_inp_wrap">
 			<div class='cbf_inp' >サブスク数: </div>
 			<div class='cbf_input'>
-				<input type="text" name="subsc count" class="valid " value=""  maxlength="11" title="11文字以内で入力してください" />
-				<label class="text-danger" for="subsc count"></label>
+				<input type="text" name="subsc_count" class="valid " value=""  maxlength="11" title="11文字以内で入力してください" />
+				<label class="text-danger" for="subsc_count"></label>
 			</div>
 		</div>
 

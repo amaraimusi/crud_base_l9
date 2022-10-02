@@ -23,14 +23,15 @@ class BigCat extends CrudBase
 	protected $fillable = [
 		// CBBXS-3009
 		'id',
-		'big_cat_val',
-		'big_cat_name',
-		'big_cat_date',
-		'big_cat_type',
-		'big_cat_dt',
-		'big_cat_flg',
-		'img_fn',
-		'note',
+	    'big_cat_name', // ネコ名
+	    'public_date', // 公開日
+	    'big_cat_type', // 有名猫種別
+	    'price', // 価格
+	    'subsc count', // サブスク数
+	    'work_dt', // 作業日時
+	    'big_cat_flg', // ネコフラグ
+	    'img_fn', // 画像ファイル名
+	    'note', // 備考
 		'sort_no',
 		'delete_flg',
 		'update_user_id',
@@ -61,15 +62,16 @@ class BigCat extends CrudBase
 		
 		$query = $query->select(
 		    // CBBXS-3034
-			'big_cats.id as id',
-			'big_cats.big_cat_val as big_cat_val',
-			'big_cats.big_cat_name as big_cat_name',
-			'big_cats.big_cat_date as big_cat_date',
-			'big_cats.big_cat_type as big_cat_type',
-			'big_cats.big_cat_dt as big_cat_dt',
-			'big_cats.big_cat_flg as big_cat_flg',
-			'big_cats.img_fn as img_fn',
-			'big_cats.note as note',
+		    'big_cats.id as id',
+		    'big_cats.big_cat_name as big_cat_name', // ネコ名
+		    'big_cats.public_date as public_date', // 公開日
+		    'big_cats.big_cat_type as big_cat_type', // 有名猫種別
+		    'big_cats.price as price', // 価格
+		    'big_cats.subsc_count as subsc count', // サブスク数
+		    'big_cats.work_dt as work_dt', // 作業日時
+		    'big_cats.big_cat_flg as big_cat_flg', // ネコフラグ
+		    'big_cats.img_fn as img_fn', // 画像ファイル名
+		    'big_cats.note as note', // 備考
 			'big_cats.sort_no as sort_no',
 			'big_cats.delete_flg as delete_flg',
 		    'big_cats.update_user_id as update_user_id',
@@ -132,37 +134,40 @@ class BigCat extends CrudBase
 	    if(!empty($searches['id'])){
 	        $query = $query->where('big_cats.id',$searches['id']);
 	    }
-
-	    // big_cat_val
-	    if(!empty($searches['big_cat_val'])){
-	        $query = $query->where('big_cats.big_cat_val',$searches['big_cat_val']);
-	    }
-
-	    // big_cat_name
+	    
+	    // ネコ名
 	    if(!empty($searches['big_cat_name'])){
 	        $query = $query->where('big_cats.big_cat_name', 'LIKE', "%{$searches['big_cat_name']}%");
 	    }
-
-	    // big_cat_date
-	    if(!empty($searches['big_cat_date'])){
-	        $query = $query->where('big_cats.big_cat_date',$searches['big_cat_date']);
+	    
+	    // 公開日
+	    if(!empty($searches['public_date'])){
+	        $query = $query->where('big_cats.public_date',$searches['public_date']);
 	    }
-
+	    
 	    // 猫種別
 	    if(!empty($searches['big_cat_type'])){
 	        $query = $query->where('big_cats.big_cat_type',$searches['big_cat_type']);
 	    }
-
-	    // big_cat_dt
-	    if(!empty($searches['big_cat_dt'])){
-	        $query = $query->where('big_cats.big_cat_dt',$searches['big_cat_dt']);
+	    
+	    // 価格
+	    if(!empty($searches['price'])){
+	        $query = $query->where('big_cats.price',$searches['price']);
+	    }
+	    
+	    // サブスク数
+	    if(!empty($searches['subsc_count'])){
+	        $query = $query->where('big_cats.subsc_count',$searches['subsc_count']);
 	    }
 
-	    // 無効フラグ
-	    if(!empty($searches['delete_flg'])){
-	        $query = $query->where('big_cats.delete_flg',$searches['delete_flg']);
-	    }else{
-	        $query = $query->where('big_cats.delete_flg', 0);
+	    // 作業日時
+	    if(!empty($searches['work_dt'])){
+	        $query = $query->where('big_cats.work_dt',$searches['work_dt']);
+	    }
+
+	    // ネコフラグ
+	    if(isset($searches['big_cat_flg'])){
+	        $query = $query->where('big_cats.big_cat_flg',$searches['big_cat_flg']);
 	    }
 
 	    // 画像ファイル名

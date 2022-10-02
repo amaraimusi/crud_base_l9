@@ -11,7 +11,7 @@ class BigCatController extends CrudBaseController
 {
 	
     // 画面のバージョン → 開発者はこの画面を修正したらバージョンを変更すること。バージョンを変更するとキャッシュやセッションのクリアが自動的に行われます。
-    public $this_page_version = '1.0.0';
+    public $this_page_version = '1.0.1';
 	
 	protected $cb; // CrudBase制御クラス
 	protected $md; // モデル
@@ -104,13 +104,13 @@ class BigCatController extends CrudBaseController
 // 		// CrudBase共通処理（後）
 // 		$crudBaseData = $this->cb->indexAfter($crudBaseData, ['non_limit_count'=>$non_limit_count]);
 		
-// 		$masters = []; // マスターリスト群
+ 		$masters = []; // マスターリスト群
 		
 // 		// CBBXS-2020
 
-// 		// 有名猫種別リスト
-// 		$bigCatTypeList = $this->md->getBigCatTypeList();
-// 		$masters['bigCatTypeList'] = $bigCatTypeList;
+		// 有名猫種別リスト
+		$bigCatTypeList = $model->getBigCatTypeList();
+		$masters['bigCatTypeList'] = $bigCatTypeList;
 
 // 		// 価格リスト
 // 		$priceList = $this->md->getPriceList();
@@ -123,21 +123,22 @@ class BigCatController extends CrudBaseController
 		
 		$crud_base_json = json_encode($crudBaseData,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 		
-		die();//■■■□□□■■■□□□
-		
+
 		//return view('big_cat.index', compact('data', 'crudBaseData', 'crud_base_json'));
 		
 		return view('big_cat.index', [
-		    'data'=>$data,
-		    'searches'=>$searches,
-		    'userInfo'=>$userInfo,
-		    'this_page_version'=>$this->this_page_version,
-		    'crud_base_json'=>$crud_base_json,
+		        'data'=>$data,
+		        'masters'=>$masters,
+		        'searches'=>$searches,
+		        'userInfo'=>$userInfo,
+		        'this_page_version'=>$this->this_page_version,
+		        'crudBaseData'=>$crudBaseData,
+		        'crud_base_json'=>$crud_base_json,
 		    
 		    
-		    // CBBXS-3020B
-		    'bigCatTypeList'=>$bigCatTypeList,
-		    // CBBXE
+		        // CBBXS-3020B
+		        'bigCatTypeList'=>$bigCatTypeList,
+		         // CBBXE
 		]);
 		
 		
@@ -340,8 +341,8 @@ class BigCatController extends CrudBaseController
 				['name'=>'kj_public_date2', 'def'=>null, 'field'=>'public_date'],
 				['name'=>'kj_big_cat_type', 'def'=>null],
 				['name'=>'kj_price', 'def'=>null],
-				['name'=>'kj_subsc count1', 'def'=>null, 'field'=>'subsc count'],
-				['name'=>'kj_subsc count2', 'def'=>null, 'field'=>'subsc count'],
+				['name'=>'kj_subsc_count1', 'def'=>null, 'field'=>'subsc_count'],
+				['name'=>'kj_subsc_count2', 'def'=>null, 'field'=>'subsc_count'],
 				['name'=>'kj_work_dt', 'def'=>null],
 				['name'=>'kj_big_cat_flg', 'def'=>null],
 				['name'=>'kj_img_fn', 'def'=>null],
@@ -389,9 +390,9 @@ class BigCatController extends CrudBaseController
 					'row_order'=>'BigCat.price',
 					'clm_show'=>1,
 			],
-			'subsc count'=>[
+			'subsc_count'=>[
 					'name'=>'サブスク数',
-					'row_order'=>'BigCat.subsc count',
+					'row_order'=>'BigCat.subsc_count',
 					'clm_show'=>1,
 			],
 			'work_dt'=>[

@@ -96,7 +96,7 @@ function init(){
 			{'field':'id', 'inp_type':'textarea'}, 
 			{'field':'big_cat_type', 'inp_type':'select', 'list':bigCatTypeList, 'def':0}, 
 			{'field':'price', 'inp_type':'select', 'list':priceList, 'def':0}, 
-			{'field':'subsc count', 'inp_type':'textarea'}, 
+			{'field':'subsc_count', 'inp_type':'textarea'}, 
 			{'field':'big_cat_flg', 'inp_type':'textarea'}, 
 			{'field':'sort_no', 'inp_type':'textarea'}, 
 			{'field':'delete_flg', 'inp_type':'textarea'}, 
