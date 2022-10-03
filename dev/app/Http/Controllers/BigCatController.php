@@ -38,18 +38,24 @@ class BigCatController extends CrudBaseController
 	    // リクエストのパラメータが空でない、または新バージョンフラグがONである場合、リクエストから検索データを受け取る（GET、POSTの両方に対応）
 	    $searches = [];
 	    $oldSearches = $crudBaseData['oldSearches'] ?? [];
-	    if(!empty($request->all()) || $new_version == 1){
+	    
+
+	    //　リクエストパラメータ無し、セッション有、新バージョンフラグOFF である場合のみ
+	    if(empty($request->all()) && !empty($oldSearches) && empty($new_version)){
+	        $searches = $oldSearches;
+	    }else{
 	        $searches = [
 	            'main_search' => $request->main_search, // メイン検索
 	            
 	            // CBBXS-3000
 	            'id' => $request->id, // id
-	            'neko_val' => $request->neko_val, // neko_val
-	            'neko_name' => $request->neko_name, // neko_name
-	            'neko_date' => $request->neko_date, // neko_date
-	            'neko_type' => $request->neko_type, // 猫種別
-	            'neko_dt' => $request->neko_dt, // neko_dt
-	            'neko_flg' => $request->neko_flg, // ネコフラグ
+	            'big_cat_name' => $request->big_cat_name, // ネコ名
+	            'public_date' => $request->public_date, // 公開日
+	            'big_cat_type' => $request->big_cat_type, // 有名猫種別
+	            'price' => $request->price, // 価格
+	            'subsc_count' => $request->subsc_count, // サブスク数
+	            'work_dt' => $request->work_dt, // 作業日時
+	            'big_cat_flg' => $request->big_cat_flg, // ネコフラグ
 	            'img_fn' => $request->img_fn, // 画像ファイル名
 	            'note' => $request->note, // 備考
 	            'sort_no' => $request->sort_no, // 順番
@@ -67,11 +73,11 @@ class BigCatController extends CrudBaseController
 	            'per_page' => $request->per_page, // 行制限数
 	        ];
 	        
-	    }else{
-	        // リクエストのパラメータが空かつ新バージョンフラグがOFFである場合、セッション検索データを検索データにセットする
-	        $searches = $oldSearches;
 	    }
 	    
+	    
+	    
+	    //$searches['main_search'] = 'test';■■■□□□■■■□□□
 	    $crudBaseData['oldSearches'] = $searches;
 	    $crudBaseData['searches'] = $searches;
 	    
@@ -129,15 +135,15 @@ class BigCatController extends CrudBaseController
 		return view('big_cat.index', [
 		        'data'=>$data,
 		        'masters'=>$masters,
-		        'searches'=>$searches,
-		        'userInfo'=>$userInfo,
-		        'this_page_version'=>$this->this_page_version,
+//		        'searches'=>$searches,
+// 		        'userInfo'=>$userInfo,
+// 		        'this_page_version'=>$this->this_page_version,
 		        'crudBaseData'=>$crudBaseData,
 		        'crud_base_json'=>$crud_base_json,
 		    
 		    
 		        // CBBXS-3020B
-		        'bigCatTypeList'=>$bigCatTypeList,
+		        //'bigCatTypeList'=>$bigCatTypeList,
 		         // CBBXE
 		]);
 		

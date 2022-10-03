@@ -55,7 +55,7 @@ $ver_str = '?v=' . $this_page_version;
 <!-- 検索フォーム -->
 <form method="GET" action="neko">
 		
-	<input type="search" placeholder="検索" name="main_search" value="{{ old('main_search', $searches['main_search'])}}" title="ネコ名、電話番号、住所、備考を部分検索します" class="form-control search_btn_x">
+	<input type="search" placeholder="検索" name="main_search" value="{{ old('main_search', $searches['main_search'])}}" title="ネコ名、備考を部分検索します" class="form-control search_btn_x">
 	<div style="display:inline-block;">
 		<div id="search_dtl_div" style="display:none;">
 

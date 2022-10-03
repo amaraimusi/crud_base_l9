@@ -3,6 +3,32 @@ namespace App\Helpers;
 
 class CrudBaseHelper
 {
+    
+    private $crudBaseData;
+    
+    public function __construct(&$crudBaseData){
+        $this->crudBaseData = $crudBaseData;
+    }
+
+    /**
+     * 新バージョン通知区分を表示
+     */
+    public function divNewPageVarsion(){
+        
+        $new_version = $this->crudBaseData['new_version'];
+        $this_page_version = $this->crudBaseData['this_page_version'];
+        
+        if(empty($new_version)) return;
+        $html = "
+			<div style='padding:10px;background-color:#fac9cc'>
+				<div>新バージョン：{$this_page_version}</div>
+				<div class='text-danger'>当画面は新しいバージョンに変更されています。
+				セッションクリアボタンを押してください。</div>
+				<input type='button' class='btn btn-danger btn-sm' value='セッションクリア' onclick='sessionClear()' >
+			</div>
+		";
+        echo $html;
+    }
 
     /**
      * ソート機能付きのth要素を作成する

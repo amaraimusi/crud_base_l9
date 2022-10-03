@@ -1,9 +1,10 @@
 <?php 
 
+//phpinfo();
 extract($crudBaseData, EXTR_REFS);
 extract($masters, EXTR_REFS);
 
-dump('xxx');//■■■□□□■■■□□□)
+
 //require_once $crud_base_path . 'CrudBaseHelper.php';
 $cbh = new CrudBaseHelper($crudBaseData);
 $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバージョン文字列
@@ -33,8 +34,6 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 
 <div class="container-fluid">
 
-<div id="app"><!-- vue.jsの場所・未使用 --></div>
-
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
 	<li class="breadcrumb-item"><a href="{{ url('/') }}">ホーム</a></li>
@@ -42,28 +41,15 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
   </ol>
 </nav>
 
-<!-- バリデーションエラーの表示 -->
-@if ($errors->any())
-	<div class="alert alert-danger">
-		<ul>
-			@foreach ($errors->all() as $error)
-				<li>{{ $error }}</li>
-			@endforeach
-		</ul>
-	</div>
-@endif
-<div id="err" class="text-danger"></div>
-<?php $cbh->divNewPageVarsion(); // 新バージョン通知区分を表示?>
-
-<!-- 検索フォーム -->
-<form method="GET" action="big_cat">
+<div class="cb_func_line">
 
 
 	<div id="ajax_login_with_cake"></div><!-- ログイン or ログアウト 　AjaxLoginWithCake.js　-->
 	<div class="cb_kj_main">
 	<!-- 検索条件入力フォーム -->
 	<div class="form_kjs" id="big_catIndexForm" method="post" accept-charset="utf-8">
-		<input type="search" placeholder="検索" name="main_search" value="{{ old('main_search', $searches['main_search'])}}" title="ネコ名、備考を部分検索します" class="form-control search_btn_x">
+		
+		<?php $cbh->inputKjMain('kj_main','',null,'有名猫名、備考を検索する');?>
 		<input type='button' value='検索' onclick='searchKjs()' class='search_kjs_btn btn btn-success btn-sm' />
 		<div class="btn-group">
 			<button type="button" class="btn btn-secondary btn-sm" title="詳細検索項目を表示する" onclick="jQuery('.cb_kj_detail').toggle(300)">詳細検索</button>
@@ -74,51 +60,29 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 				<td>詳細検索</td>
 				<td style="text-align:right"><button type="button" class="btn btn-secondary btn-sm"  onclick="jQuery('.cb_kj_detail').toggle(300);">閉じる</button></td>
 			</tr></tbody></table>
-			
-		<input type="search" placeholder="ID" name="id" value="{{ old('id', $searches['id']) }}" class="form-control search_btn_x">
-		<input type="search" placeholder="ネコ名" name="big_cat_name" value="{{ old('big_cat_name', $searches['big_cat_name']) }}" class="form-control search_btn_x">
-		<input type="search" placeholder="公開日" name="public_date" value="{{ old('public_date', $searches['public_date']) }}" class="form-control search_btn_x">
-		
-		<select name="big_cat_type" class="form-control search_btn_x">
-				<option value=""> - 猫種別 - </option>
-				@foreach ($bigCatTypeList as $big_cat_type => $big_cat_type_name)
-					<option value="{{ $big_cat_type }}" @selected(old('big_cat_type', $searches['big_cat_type']) == $big_cat_type)>
-						{{ $big_cat_type_name }}
-					</option>
-				@endforeach
-		</select>
-		
-		<input type="search" placeholder="価格" name="price" value="{{ old('price', $searches['price']) }}" class="form-control search_btn_x">
-		<input type="search" placeholder="サブスク" name="subsc_count" value="{{ old('subsc_count', $searches['subsc_count']) }}" class="form-control search_btn_x">
-		<input type="search" placeholder="作業日時" name="work_dt" value="{{ old('work_dt', $searches['work_dt']) }}" class="form-control search_btn_x">
-		
-		<select name="big_cat_flg" class="form-control search_btn_x">
-			<option value=""> - ネコフラグ - </option>
-			<option value="0" @selected(old('big_cat_flg', $searches['big_cat_flg']) == 0)>OFF</option>
-			<option value="1" @selected(old('big_cat_flg', $searches['big_cat_flg']) == 1)>ON</option>
-		</select>
-		
-		<input type="search" placeholder="画像ファイル名" name="img_fn" value="{{ old('img_fn', $searches['img_fn']) }}" class="form-control search_btn_x">
-		<input type="search" placeholder="備考" name="note" value="{{ old('note', $searches['note']) }}" class="form-control search_btn_x">
-		<input type="search" placeholder="順番" name="sort_no" value="{{ old('sort_no', $searches['sort_no']) }}" class="form-control search_btn_x">
-		
-			<input type="search" placeholder="IPアドレス" name="ip_addr" value="{{ old('ip_addr', $searches['ip_addr']) }}" class="form-control search_btn_x">
-
-			<!-- CBBXE -->
-			
-			<select name="delete_flg" class="form-control search_btn_x">
-				<option value=""> - 有効/削除 - </option>
-				<option value="0" @selected(old('delete_flg', $searches['delete_flg']) == 0)>有効</option>
-				<option value="1" @selected(old('delete_flg', $searches['delete_flg']) == 1)>削除</option>
-			</select>
-			
-			<input type="search" placeholder="更新者" name="update_user" value="{{ old('update_user', $searches['update_user']) }}" class="form-control search_btn_x">
-			
-			<input type="number" placeholder="一覧の最大行数" name="per_page" value="{{ old('per_page', $searches['per_page']) }}" class="form-control search_btn_x" title="一覧に表示する行数">
-			<button type="button" class ="btn btn-outline-secondary" onclick="$('#search_dtl_div').toggle(300);">＜ 閉じる</button>
 		<?php 
 		
+		// --- CBBXS-2004
+		$cbh->inputKjId(); 
+		$cbh->inputKjText('kj_big_cat_name','ネコ名');
+		$cbh->inputKjMoDateRng('kj_public_date','公開日');
+		$cbh->inputKjSelect('kj_big_cat_type','有名猫種別', $masters['bigCatTypeList']); 
+		$cbh->inputKjSelect('kj_price','価格', $masters['priceList']); 
+		$cbh->inputKjNumRange('subsc_count','サブスク数'); 
+		$cbh->inputKjText('kj_work_dt','作業日時');
+		$cbh->inputKjFlg('kj_big_cat_flg','ネコフラグ');
+		$cbh->inputKjText('kj_img_fn','画像ファイル名');
+		$cbh->inputKjText('kj_note','備考');
+		$cbh->inputKjHidden('kj_sort_no');
+		$cbh->inputKjDeleteFlg();
+		$cbh->inputKjText('kj_update_user_id','更新者');
+		$cbh->inputKjText('kj_ip_addr','IPアドレス');
+		$cbh->inputKjCreated();
+		$cbh->inputKjText('kj_updated_at','更新日');
 
+		// --- CBBXE
+		
+		$cbh->inputKjLimit();
 		echo "<input type='button' value='検索' onclick='searchKjs()' class='search_kjs_btn btn btn-success' />";
 		
 		
@@ -135,35 +99,16 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 	<div id="cb_func_btns" class="btn-group" >
 		<button type="button" onclick="jQuery('#detail_div').toggle(300);" class="btn btn-secondary btn-sm">ツール</button>
 	</div>
-</form>
-
-
-<div style="margin-top:0.4em;">
-	
-	<div class="tool_btn_w">
-		<a href="neko/create" class="btn btn-success">新規登録</a>
-	</div>
-
-	<div class="tool_btn_w">
-		<a href="neko/csv_download" class="btn btn-secondary">CSV</a>
-	</div>
-	
-	<!-- 列表示切替機能 -->
-	<div class="tool_btn_w">
-		<button class="btn btn-secondary" onclick="$('#csh_div_w').toggle(300);">列表示切替</button>
-		<div id="csh_div_w" style="width:100vw;" >
-			<div id="csh_div" ></div><!-- 列表示切替機能の各種チェックボックスの表示場所 -->
-		</div>
-	</div>
-	
-	
-    <!-- 一括追加機能  -->
-    <div id="crud_base_bulk_add" style="display:none"></div>
-</div>
+</div><!-- cb_func_line -->
 
 
 <div style="clear:both"></div>
 
+<!-- 一括追加機能  -->
+<div id="crud_base_bulk_add" style="display:none"></div>
+
+<?php $cbh->divNewPageVarsion(); // 新バージョン通知区分を表示?>
+<div id="err" class="text-danger"><?php echo $errMsg;?></div>
 
 <div style="clear:both"></div>
 
@@ -172,7 +117,9 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 	<div id="main_tools" style="margin-bottom:10px;margin-top:4px">
 		<div style="display:inline-block;width:75%; ">
 			<?php 
-
+				// 列表示切替機能
+				$cbh->divCsh();
+				
 				// CSVエクスポート機能
 	 			$csv_dl_url =  'big_cat/csv_download';
 	 			$cbh->makeCsvBtns($csv_dl_url);

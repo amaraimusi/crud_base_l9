@@ -27,7 +27,7 @@ class BigCat extends CrudBase
 	    'public_date', // 公開日
 	    'big_cat_type', // 有名猫種別
 	    'price', // 価格
-	    'subsc count', // サブスク数
+	    'subsc_count', // サブスク数
 	    'work_dt', // 作業日時
 	    'big_cat_flg', // ネコフラグ
 	    'img_fn', // 画像ファイル名
@@ -67,7 +67,7 @@ class BigCat extends CrudBase
 		    'big_cats.public_date as public_date', // 公開日
 		    'big_cats.big_cat_type as big_cat_type', // 有名猫種別
 		    'big_cats.price as price', // 価格
-		    'big_cats.subsc_count as subsc count', // サブスク数
+		    'big_cats.subsc_count as subsc_count', // サブスク数
 		    'big_cats.work_dt as work_dt', // 作業日時
 		    'big_cats.big_cat_flg as big_cat_flg', // ネコフラグ
 		    'big_cats.img_fn as img_fn', // 画像ファイル名
