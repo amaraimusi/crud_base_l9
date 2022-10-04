@@ -84,9 +84,8 @@ class BigCatController extends CrudBaseController
 	    $model = new BigCat();
 	    $data = $model->getData($searches);
 	    
-	    
-	    dump('A1');//■■■□□□■■■□□□)
-	    dump($crudBaseData);//■■■□□□■■■□□□)
+	    dump($data);//■■■□□□■■■□□□)
+
 	    
 	    
 	    session(['big_cat_old' => $crudBaseData]);

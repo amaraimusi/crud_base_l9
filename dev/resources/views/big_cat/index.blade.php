@@ -144,8 +144,9 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 		<a href="neko/create" class="btn btn-success">新規登録</a>
 	</div>
 
+	<!-- CSVダウンロード機能 -->
 	<div class="tool_btn_w">
-		<a href="neko/csv_download" class="btn btn-secondary">CSV</a>
+		@include('layouts.csv_form', ['path_a'=>'big_cat'])
 	</div>
 	
 	<!-- 列表示切替機能 -->
@@ -171,12 +172,7 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 	
 	<div id="main_tools" style="margin-bottom:10px;margin-top:4px">
 		<div style="display:inline-block;width:75%; ">
-			<?php 
 
-				// CSVエクスポート機能
-	 			$csv_dl_url =  'big_cat/csv_download';
-	 			$cbh->makeCsvBtns($csv_dl_url);
-			?>
 			
 			<button id="crud_base_bulk_add_btn" type="button" class="btn btn-secondary btn-sm" onclick="crudBase.crudBaseBulkAdd.showForm()" >一括追加</button>
 			
@@ -204,7 +200,8 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 
 <div id="new_inp_form_point"></div><!-- 新規入力フォーム表示地点 -->
 
-<?php $cbh->divPagenation(); // ページネーション ?>
+<?php //$cbh->divPagenation(); // ページネーション■■■□□□■■■□□□ ?>
+<div>{{$data->appends(request()->query())->links('pagination::bootstrap-4')}} </div><!-- ページネーション -->
 
 <div id="calendar_view_k"></div>
 
@@ -217,74 +214,69 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 
 
 <!-- 一覧テーブル -->
-<table id="big_cat_tbl" class="table table-striped table-bordered table-condensed" style="display:none;margin-bottom:0px">
+<table id="big_cat_tbl" class="table table-striped table-bordered table-condensed" style="margin-bottom:0px">
 
 <thead>
 <tr>
-	<?php
-	foreach($fieldData as $ent){
-		$row_order=$ent['row_order'];
-		echo "<th class='{$ent['id']}'>{$pages['sorts'][$row_order]}</th>";
-	}
-	?>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'id', 'ID') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'big_cat_name', 'ネコ名') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'public_date', '公開日') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'big_cat_type', '有名猫種別') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'price', '価格') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'subsc_count', 'サブスク数') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'work_dt', '作業日時') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'big_cat_flg', 'ネコフラグ') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'img_fn', '画像ファイル名') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'note', '備考') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'sort_no', '順番') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'delete_flg', '無効フラグ') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'update_user_id', '更新者') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'ip_addr', 'IPアドレス') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'created_at', '生成日時') !!}</th>
+	<th>{!! $cbh->sortLink($searches, 'big_cat', 'updated_at', '更新日') !!}</th>
 	<th style="min-width:207px"></th>
 </tr>
 </thead>
 <tbody>
-<?php
+		@foreach ($data as $ent)
+			<tr>
+				<!-- CBBXS-3005 -->
+				<td>{{$ent->id}}</td>
+				<td>{{$ent->big_cat_name}}</td>
+				<td>{!! CrudBaseHelper::tdDate($ent->public_date) !!}</td>
+				<td>{{ $bigCatTypeList[$ent->big_cat_type] ?? '' }}</td>
+				<td>{{$ent->price}}</td>
+				<td>{{$ent->subsc_count}}</td>
+				<td>{!! CrudBaseHelper::tdDate($ent->work_dt) !!}</td>
+				<td>{!! CrudBaseHelper::tdFlg($ent->big_cat_flg) !!}</td>
+				<td>{{$ent->img_fn}}</td>
+				<td>{!! CrudBaseHelper::tdNote($ent->note, 'note', 30) !!}</td>
+				<td>{{$ent->sort_no}}</td>
+				<td>{!! CrudBaseHelper::tdDeleteFlg($ent->delete_flg) !!}</td>
+				<td>{{$ent->update_user_id}}</td>
+				<td>{{$ent->ip_addr}}</td>
+				<td>{{$ent->created_at}}</td>
+				<td>{{$ent->updated_at}}</td>
 
-// td要素出力を列並モードに対応させる
-$cbh->startClmSortMode();
+				<!-- CBBXE -->
+				<td>
+					
+					{!! CrudBaseHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
+					<a href="neko/show?id={{$ent->id}}" class="btn btn-info btn-sm text-light">詳細</a>
+					<a href="neko/edit?id={{$ent->id}}" class="btn btn-primary btn-sm">編集</a>
+					{!! CrudBaseHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
+					{!! CrudBaseHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
+					
+					
+				</td>
+			</tr>
+		@endforeach
 
-foreach($data as $i=>&$ent){
-
-	echo "<tr id='ent{$ent['id']}' >";
-	// CBBXS-2005
-	$cbh->tdId($ent,'id', ['checkbox_name'=>'pwms']);
-	$cbh->tdStr($ent, 'big_cat_name');
-	$cbh->tdPlain($ent, 'public_date');
-	$cbh->tdList($ent, 'big_cat_type', $bigCatTypeList);
-	$cbh->tdList($ent, 'price', $priceList);
-	$cbh->tdPlain($ent, 'subsc_count');
-	$cbh->tdPlain($ent, 'work_dt');
-	$cbh->tdFlg($ent, 'big_cat_flg');
-	$cbh->tdImage($ent, 'img_fn');
-	$cbh->tdNote($ent, 'note');
-	$cbh->tdPlain($ent, 'sort_no');
-	$cbh->tdDeleteFlg($ent, 'delete_flg');
-	$cbh->tdPlain($ent, 'update_user_id');
-	$cbh->tdStr($ent, 'ip_addr');
-	$cbh->tdPlain($ent, 'created_at');
-	$cbh->tdPlain($ent, 'updated_at');
-
-	// CBBXE
-	
-	$cbh->tdsEchoForClmSort();// 列並に合わせてTD要素群を出力する
-	
-	// 行のボタン類
-	echo "<td><div style='display:inline-block'>";
-	$id = $ent['id'];
-	echo  "<input type='button' value='↑↓' onclick='rowExchangeShowForm(this)' class='row_exc_btn btn btn-info btn-sm' />";
-	$cbh->rowEditBtn($id);
-	$cbh->rowCopyBtn($id);
-	echo "</div>&nbsp;";
-	echo "<div style='display:inline-block'>";
-	$cbh->rowDeleteBtn($ent); // 削除ボタン
-	$cbh->rowEnabledBtn($ent); // 有効ボタン
-	echo "&nbsp;";
-	$cbh->rowEliminateBtn($ent);// 抹消ボタン
-	echo "</div>";
-	echo "</td>";
-	echo "</tr>";
-}
-
-?>
 </tbody>
 </table>
 
-<?php $cbh->divPagenationB(); ?>
-<br>
-	
+<div>{{$data->appends(request()->query())->links('pagination::bootstrap-4')}} </div><!-- ページネーション -->
+
 <button type="button" class="btn btn-warning btn-sm" onclick="newInpShow(this, 'add_to_bottom');">新規追加</button>	
 
 <?php $cbh->divPwms(); // 複数有効/削除の区分を表示する ?>
@@ -343,8 +335,8 @@ foreach($data as $i=>&$ent){
 		<div class="cbf_inp_wrap">
 			<div class='cbf_inp_label' >価格: </div>
 			<div class='cbf_input'>
-				<?php $cbh->selectX('price',null,$priceList,null);?>
-				<label class="text-danger" for="price"></label>
+				<input type="text" name="price" class="valid" value="" pattern="^[+-]?([0-9]*[.])?[0-9]+$" maxlength="11" title="数値を入力してください" />
+				<label class="text-danger" for="price" ></label>
 			</div>
 		</div>
 
@@ -464,8 +456,8 @@ foreach($data as $i=>&$ent){
 		<div class="cbf_inp_wrap">
 			<div class='cbf_inp_label' >価格: </div>
 			<div class='cbf_input'>
-				<?php $cbh->selectX('price',null,$priceList,null);?>
-				<label class="text-danger" for="price"></label>
+				<input type="text" name="price" class="valid" value="" pattern="^[+-]?([0-9]*[.])?[0-9]+$" maxlength="11" title="数値を入力してください" />
+				<label class="text-danger" for="price" ></label>
 			</div>
 		</div>
 

@@ -242,4 +242,79 @@ class CrudBaseHelper
         
     }
     
+    
+    /**
+     * 複数有効/削除の区分を表示する
+     * @param [] $option
+     * - help_flg string ヘルプフラグ 0:ヘルプ表示しない, 1:ヘルプを表示（デフォルト）$this
+     * - help_msg string ヘルプメッセージ
+     */
+    public function divPwms($option=[]){
+        
+        $help_flg = $option['help_flg'] ?? 1;
+        $help_msg = $option['help_msg'] ?? "※ID列の左側にあるチェックボックスにチェックを入れてから「削除」ボタンを押すと、まとめて削除されます。<br>削除の復元は画面下側のヘルプボタンを参照してください。<br>";
+        
+        $help_html = '';
+        if($help_flg) $help_html = "<aside>{$help_msg}</aside>";
+        
+        $html = "
+			<div style='margin-top:10px;margin-bottom:10px'>
+				<label for='pwms_all_select'>すべてチェックする <input type='checkbox' name='pwms_all_select' onclick='crudBase.pwms.switchAllSelection(this);' /></label>
+				<button type='button' onclick='crudBase.pwms.action(10)' class='btn btn-success btn-sm'>有効</button>
+				<button type='button' onclick='crudBase.pwms.action(11)' class='btn btn-danger btn-sm'>削除</button>
+				{$help_html}
+			</div>
+		";
+				echo $html;
+    }
+    
+    
+    /**
+     * シンプルなSELECT要素を作成
+     * @param string $name SELECTのname属性
+     * @param string $value 初期値
+     * @param array $list 選択肢
+     * @param array $option オプション  要素の属性情報
+     * @param array $empty 未選択状態に表示する選択肢名。nullをセットすると未選択項目は表示しない
+     *
+     */
+    public function selectX($name,$value,$list,$option=null,$empty=null){
+        
+        // オプションから各種属性文字を作成する。
+        $optionStr = "";
+        if(!empty($option)){
+            foreach($option as $attr_name => $v){
+                $str = $attr_name.'="'.$v.'" ';
+                $optionStr.= $str;
+            }
+        }
+        
+        
+        $def_op_name = '';
+        
+        echo "<select  name='{$name}' {$optionStr} >";
+        
+        if($empty!==null){
+            $selected = '';
+            if($value===null){
+                $selected='selected';
+            }
+            echo "<option value='' {$selected}>{$empty}</option>";
+        }
+        
+        foreach($list as $v=>$n){
+            $selected = '';
+            if($value==$v){
+                $selected='selected';
+            }
+            
+            $n = str_replace(array('<','>'),array('&lt;','&gt;'),$n);
+            
+            echo "<option value='{$v}' {$selected}>{$n}</option>";
+            
+        }
+        
+        echo "</select>";
+    }
+    
 }
