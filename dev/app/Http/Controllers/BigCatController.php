@@ -58,6 +58,8 @@ class BigCatController extends CrudBaseController
 	            'big_cat_flg' => $request->big_cat_flg, // ネコフラグ
 	            'img_fn' => $request->img_fn, // 画像ファイル名
 	            'note' => $request->note, // 備考
+	            // CBBXE
+	            
 	            'sort_no' => $request->sort_no, // 順番
 	            'delete_flg' => $request->delete_flg, // 無効フラグ
 	            'update_user_id' => $request->update_user_id, // 更新者
@@ -65,7 +67,6 @@ class BigCatController extends CrudBaseController
 	            'created_at' => $request->created_at, // 生成日時
 	            'updated_at' => $request->updated_at, // 更新日
 	            
-	            // CBBXE
 	            
 	            'update_user' => $request->update_user, // 更新者
 	            'sort' => $request->sort, // 並びフィールド

@@ -249,7 +249,7 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 				<td>{{$ent->subsc_count}}</td>
 				<td>{!! CrudBaseHelper::tdDate($ent->work_dt) !!}</td>
 				<td>{!! CrudBaseHelper::tdFlg($ent->big_cat_flg) !!}</td>
-				<td>{{$ent->img_fn}}</td>
+				<td>{!! $cbh->tdImg($ent, 'img_fn'); !!}</td>
 				<td>{!! CrudBaseHelper::tdNote($ent->note, 'note', 30) !!}</td>
 				<td>{{$ent->sort_no}}</td>
 				<td>{!! CrudBaseHelper::tdDeleteFlg($ent->delete_flg) !!}</td>

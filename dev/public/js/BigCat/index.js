@@ -1,5 +1,7 @@
 
 
+var crudBase;//AjaxによるCRUD
+
 jQuery(()=> {
 	init();//初期化
 	
@@ -8,7 +10,6 @@ jQuery(()=> {
 });
 
 
-var crudBase;//AjaxによるCRUD
 
 /**
  *  有名猫画面の初期化
@@ -17,6 +18,9 @@ var crudBase;//AjaxによるCRUD
  * @since 2022-1-25
  */
 function init(){
+	
+	
+	
 	let csrf_token = jQuery('#csrf_token').val(); // CSRFトークンを取得（Ajaxで必要）
 
 	let crud_base_json = jQuery('#crud_base_json').val();

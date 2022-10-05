@@ -1,5 +1,6 @@
 <?php 
 namespace App\Helpers;
+use CrudBase\CrudBase;
 
 class CrudBaseHelper
 {
@@ -151,6 +152,33 @@ class CrudBaseHelper
                 {$note_detail_open_html}
 			</div>";
         return $td;
+    }
+    
+    
+    /**
+     * TD要素用の画像表示
+     * @param [] $ent
+     * @param string $field
+     * @return string html
+     */
+    public static function tdImg($ent, $field){
+//         dump('ヌガー');//■■■□□□■■■□□□)
+//         dump($ent->$field);//■■■□□□■■■□□□)
+//         $class_name = get_class($ent);
+//         dump($class_name);//■■■□□□■■■□□□)
+        $fp = $ent->$field ?? null;
+        
+        if(empty($fp)){
+            return "<img src='img/icon/none.gif' />";
+        }
+        
+        // サニタイズ
+        $fp = h($fp);
+        
+        $thum_fp = CrudBase::toThumnailPath($fp);
+        
+        $html = "<img src='{$thum_fp}' />";
+        return $html;
     }
     
     
