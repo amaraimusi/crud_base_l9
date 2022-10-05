@@ -177,7 +177,11 @@ class CrudBaseHelper
         
         $thum_fp = CrudBase::toThumnailPath($fp);
         
-        $html = "<img src='{$thum_fp}' />";
+        $html = "
+            <a href='{$fp}'>
+                <img src='{$thum_fp}' class='js_show_modal_big_img' />
+            </a>
+        ";
         return $html;
     }
     

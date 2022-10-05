@@ -3,7 +3,9 @@
 var crudBase;//AjaxによるCRUD
 
 jQuery(()=> {
-	init();//初期化
+	
+	
+	//init();//初期化
 	
 	$('#big_cat_tbl').show();// 高速表示のためテーブルは最後に表示する
 	
