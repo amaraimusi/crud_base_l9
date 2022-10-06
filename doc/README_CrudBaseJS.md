@@ -52,11 +52,21 @@ gulp CrudBase
 上記コマンドを実行すると「/crud_base_l9/dev/resources/js/CrudBase」に存在するjsファイル群をコンパイル（一つにまとめる）し、/crud_base_l9/dev/public/jsにCrudBase.min.jsとして出力あるいは更新します。
 
 
-CrudBase.min.cssも同様な感じでコンパイルできます。
+## CrudBase.min.cssのコンパイル
+
+CrudBase.min.cssもjsと同様な感じでコンパイルできます。
 
 ```
 gulp CrudBaseForCss
 ```
+「/crud_base_l9/dev/resources/css/CrudBase」にあるcssファイル群をコンパイル（一つにまとめる）し、/crud_base_l9/dev/public/cssにCrudBase.min.cssとして出力します。
+
+## コンパイルの設定を見る
+
+コンパイルの設定は**gulpfile.js**に書かれています。
+gulpfile.jsはプロジェクトのルートディレクトリに存在しています。
+
+--------------
 
 
 
