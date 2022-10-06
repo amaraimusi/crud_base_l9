@@ -1,3 +1,4 @@
 /shell/
 /.settings/
 /.buildpath
+/node_modules/
