@@ -128,12 +128,13 @@ class BigCatController extends CrudBaseController
 
 		
 		$crud_base_json = json_encode($crudBaseData,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
-		
+		$data_json = json_encode($data,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 
 		//return view('big_cat.index', compact('data', 'crudBaseData', 'crud_base_json'));
 		
 		return view('big_cat.index', [
 		        'data'=>$data,
+		        'data_json'=>$data_json,
 		        'masters'=>$masters,
 //		        'searches'=>$searches,
 // 		        'userInfo'=>$userInfo,

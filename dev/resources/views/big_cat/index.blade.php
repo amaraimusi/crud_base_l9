@@ -18,12 +18,13 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 	<title>有名猫管理画面</title>
 	
 	<script src="{{ asset('/js/app.js') }}" defer></script>
-	<script src="{{ $crud_base_js . $ver_str }}" defer></script>
+	<script src="{{ asset('/js/jquery-3.6.1.min.js') }}" defer></script>
+	<script src="{{ asset('/js/CrudBase.min.js')  . $ver_str }}" defer></script>
 	<script src="{{ asset('/js/BigCat/index.js')  . $ver_str }}" defer></script>
 	<link href="{{ asset('/css/app.css') }}" rel="stylesheet">
 	<link href="{{ asset('/js/font/css/open-iconic.min.css') }}" rel="stylesheet">
-	<link href="{{ $crud_base_css . $ver_str }}" rel="stylesheet">
-	<link href="{{ asset('/css/common.css')  . $ver_str}}" rel="stylesheet">
+	<link href="{{ asset('/css/CrudBase.min.css') . $ver_str }}" rel="stylesheet">
+	<link href="{{ asset('/css/common/common.css')  . $ver_str}}" rel="stylesheet">
 	<link href="{{ asset('/css/BigCat/index.css') . $ver_str }}" rel="stylesheet">
 	
 </head>
@@ -128,6 +129,7 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 				</div>
 				
 				<input id="crud_base_json" type="hidden" value='<?php echo $crud_base_json?>' />
+				<input id="data_json" type="hidden" value='<?php echo $data_json?>' />
 		</div>
 		<div id="app"></div><!-- vue.js -->
 	</div><!-- form_kjs -->
@@ -205,8 +207,8 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 
 <div id="calendar_view_k"></div>
 
-
-<div id="crud_base_auto_save_msg" style="height:20px;" class="text-success"></div>
+<!-- 自動保存機能(CrudBaseAutoSave.js)が関係する区分要素。 自動保存メッセージの出力場所です。 -->
+<div id="js_auto_save_msg" style="height:20px;" class="text-success"></div>
 
 <?php if(!empty($data)){ ?>
 	<button type="button" class="btn btn-warning btn-sm" onclick="newInpShow(this, 'add_to_top');">新規追加</button>
@@ -214,7 +216,7 @@ $ver_str = '?v=' . $this_page_version; // キャッシュ回避のためのバ�
 
 
 <!-- 一覧テーブル -->
-<table id="big_cat_tbl" class="table table-striped table-bordered table-condensed" style="margin-bottom:0px">
+<table id="big_cat_h_tbl" class="table table-striped table-bordered table-condensed" style="margin-bottom:0px">
 
 <thead>
 <tr>

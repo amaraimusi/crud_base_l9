@@ -1,11 +1,10 @@
 
-
 var crudBase;//AjaxによるCRUD
 
 jQuery(()=> {
 	
 	
-	//init();//初期化
+	init();//初期化
 	
 	$('#big_cat_tbl').show();// 高速表示のためテーブルは最後に表示する
 	
@@ -20,109 +19,123 @@ jQuery(()=> {
  * @since 2022-1-25
  */
 function init(){
-	
-	
-	
-	let csrf_token = jQuery('#csrf_token').val(); // CSRFトークンを取得（Ajaxで必要）
 
 	let crud_base_json = jQuery('#crud_base_json').val();
 	let crudBaseData = jQuery.parseJSON(crud_base_json);
+	
+	// 一覧データを取得します。
+	let data_json = jQuery('#data_json').val();
+	let data = jQuery.parseJSON(data_json);
+	
+	// CSRFトークンの取得およびセット。CSRFトークンはAjax通信で必須なパラメータです。セキュリティのためです。
+	let csrf_token = jQuery('#csrf_token').val();
 	crudBaseData['csrf_token'] = csrf_token;
-
-	crudBaseData['ni_tr_place'] = 1; // 新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
-	crudBaseData['configData'] = {delete_alert_flg:1} // 削除アラートフラグ    1:一覧行の削除ボタンを押したときアラートを表示する
 	
+	// 一覧テーブルid。  データ一覧テーブルのid属性です。
+	crudBaseData['h_tbl_xid'] = 'big_cat_h_tbl';
+	
+	// 自動保存機能(CrudBaseAutoSave.js)のパラメータ。自動保存メッセージの出力先要素のid属性を指定しています。
+	crudBaseData['auto_save_xid'] = 'js_auto_save_msg'; 
+	
+	// 自動保存機能(CrudBaseAutoSave.js)のAjax通信先URL。 このURLはLaravel側のアクションを指します。
+	crudBaseData['auto_save_url'] = 'big_cat/auto_save';
+	
+	console.log(crudBaseData);//■■■□□□■■■□□□
+//
+//	crudBaseData['ni_tr_place'] = 1; // 新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
+//	crudBaseData['configData'] = {delete_alert_flg:1} // 削除アラートフラグ    1:一覧行の削除ボタンを押したときアラートを表示する
+//	
 	// CRUD基本クラス
-	crudBase = new CrudBase(crudBaseData);
+	crudBase = new CrudBase(crudBaseData, data);
+//	
+//	// 検索条件バリデーション情報のセッター
+//	let validMethods =_getValidMethods();
+//	crudBase.setKjsValidationForJq(
+//			'#big_catIndexForm',
+//			crudBaseData,
+//			validMethods,
+//	);
+//
+//	
+//	
+//
+//	// 表示フィルターデータの定義とセット
+//	var disFilData = {
+//			// CBBXS-1008
+//			'big_cat_flg':{
+//				'fil_type':'flg',
+//				'option':{'list':['OFF','ON']}
+//			},
+//			'delete_flg':{
+//				'fil_type':'delete_flg',
+//			},
+//
+//			// CBBXE
+//			
+//	};
+//	
+//	// CBBXS-2023
+//	// 有名猫種別リストJSON
+//	let bigCatTypeList = crudBaseData.masters.bigCatTypeList;
+//	disFilData['big_cat_type'] ={'fil_type':'select','option':{'list':bigCatTypeList}};
+//	// 価格リストJSON
+//	let priceList = crudBaseData.masters.priceList;
+//	disFilData['price'] ={'fil_type':'select','option':{'list':priceList}};
+//
+//	// CBBXE
+//
+//	
+//	crudBase.setDisplayFilterData(disFilData);
+//
+//	//列並替変更フラグがON（列並べ替え実行）なら列表示切替情報をリセットする。
+//	if(localStorage.getItem('clm_sort_chg_flg') == 1){
+//		this.crudBase.csh.reset();//列表示切替情報をリセット
+//		localStorage.removeItem('clm_sort_chg_flg');
+//	}
+//
+//	// 新規入力フォームのinput要素にEnterキー押下イベントを組み込む。
+//	$('#ajax_crud_new_inp_form input').keypress(function(e){
+//		if(e.which==13){ // Enterキーである場合
+//			newInpReg(); // 登録処理
+//		}
+//	});
+//	
+//	// 編集フォームのinput要素にEnterキー押下イベントを組み込む。
+//	$('#ajax_crud_edit_form input').keypress(function(e){
+//		if(e.which==13){ // Enterキーである場合
+//			editReg(); // 登録処理
+//		}
+//	});
+//	
+//	// CrudBase一括追加機能の初期化
+//	var today = new Date().toLocaleDateString();
+//	crudBase.crudBaseBulkAdd.init(
+//		[
+//			// CBBXS-2010
+//			{'field':'id', 'inp_type':'textarea'}, 
+//			{'field':'big_cat_type', 'inp_type':'select', 'list':bigCatTypeList, 'def':0}, 
+//			{'field':'price', 'inp_type':'select', 'list':priceList, 'def':0}, 
+//			{'field':'subsc_count', 'inp_type':'textarea'}, 
+//			{'field':'big_cat_flg', 'inp_type':'textarea'}, 
+//			{'field':'sort_no', 'inp_type':'textarea'}, 
+//			{'field':'delete_flg', 'inp_type':'textarea'}, 
+//			{'field':'update_user_id', 'inp_type':'textarea'}, 
+//
+//			// CBBXE
+//			
+////			{'field':'big_cat_group', 'inp_type':'select', 'list':big_catGroupList, 'def':2}, 
+////			{'field':'big_cat_date', 'inp_type':'date', 'def':today}, 
+////			{'field':'note', 'inp_type':'text', 'def':'TEST'}, 
+////			{'field':'sort_no', 'inp_type':'sort_no', 'def':1}, 
+//		],
+//		{
+//			ajax_url:'big_cat/bulk_reg',
+//			csrf_token:csrf_token,
+//			ta_placeholder:"Excelからコピーした有名猫名、有名猫数値を貼り付けてください。（タブ区切りテキスト）\n(例)\n有名猫名A\t100\n有名猫名B\t101\n",
+//		}
+//	);
 	
-	// 検索条件バリデーション情報のセッター
-	let validMethods =_getValidMethods();
-	crudBase.setKjsValidationForJq(
-			'#big_catIndexForm',
-			crudBaseData,
-			validMethods,
-	);
-
-	
-	
-
-	// 表示フィルターデータの定義とセット
-	var disFilData = {
-			// CBBXS-1008
-			'big_cat_flg':{
-				'fil_type':'flg',
-				'option':{'list':['OFF','ON']}
-			},
-			'delete_flg':{
-				'fil_type':'delete_flg',
-			},
-
-			// CBBXE
-			
-	};
-	
-	// CBBXS-2023
-	// 有名猫種別リストJSON
-	let bigCatTypeList = crudBaseData.masters.bigCatTypeList;
-	disFilData['big_cat_type'] ={'fil_type':'select','option':{'list':bigCatTypeList}};
-	// 価格リストJSON
-	let priceList = crudBaseData.masters.priceList;
-	disFilData['price'] ={'fil_type':'select','option':{'list':priceList}};
-
-	// CBBXE
-
-	
-	crudBase.setDisplayFilterData(disFilData);
-
-	//列並替変更フラグがON（列並べ替え実行）なら列表示切替情報をリセットする。
-	if(localStorage.getItem('clm_sort_chg_flg') == 1){
-		this.crudBase.csh.reset();//列表示切替情報をリセット
-		localStorage.removeItem('clm_sort_chg_flg');
-	}
-
-	// 新規入力フォームのinput要素にEnterキー押下イベントを組み込む。
-	$('#ajax_crud_new_inp_form input').keypress(function(e){
-		if(e.which==13){ // Enterキーである場合
-			newInpReg(); // 登録処理
-		}
-	});
-	
-	// 編集フォームのinput要素にEnterキー押下イベントを組み込む。
-	$('#ajax_crud_edit_form input').keypress(function(e){
-		if(e.which==13){ // Enterキーである場合
-			editReg(); // 登録処理
-		}
-	});
-	
-	// CrudBase一括追加機能の初期化
-	var today = new Date().toLocaleDateString();
-	crudBase.crudBaseBulkAdd.init(
-		[
-			// CBBXS-2010
-			{'field':'id', 'inp_type':'textarea'}, 
-			{'field':'big_cat_type', 'inp_type':'select', 'list':bigCatTypeList, 'def':0}, 
-			{'field':'price', 'inp_type':'select', 'list':priceList, 'def':0}, 
-			{'field':'subsc_count', 'inp_type':'textarea'}, 
-			{'field':'big_cat_flg', 'inp_type':'textarea'}, 
-			{'field':'sort_no', 'inp_type':'textarea'}, 
-			{'field':'delete_flg', 'inp_type':'textarea'}, 
-			{'field':'update_user_id', 'inp_type':'textarea'}, 
-
-			// CBBXE
-			
-//			{'field':'big_cat_group', 'inp_type':'select', 'list':big_catGroupList, 'def':2}, 
-//			{'field':'big_cat_date', 'inp_type':'date', 'def':today}, 
-//			{'field':'note', 'inp_type':'text', 'def':'TEST'}, 
-//			{'field':'sort_no', 'inp_type':'sort_no', 'def':1}, 
-		],
-		{
-			ajax_url:'big_cat/bulk_reg',
-			csrf_token:csrf_token,
-			ta_placeholder:"Excelからコピーした有名猫名、有名猫数値を貼り付けてください。（タブ区切りテキスト）\n(例)\n有名猫名A\t100\n有名猫名B\t101\n",
-		}
-	);
-	
-	crudBase.newVersionReload(); // 新バージョンリロード
+//	crudBase.newVersionReload(); // 新バージョンリロード
 }
 
 
