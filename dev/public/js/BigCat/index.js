@@ -44,6 +44,13 @@ function init(){
 //
 //	crudBaseData['ni_tr_place'] = 1; // 新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
 //	crudBaseData['configData'] = {delete_alert_flg:1} // 削除アラートフラグ    1:一覧行の削除ボタンを押したときアラートを表示する
+
+	// フック。特定のイベントが実行されたタイミングで実行されるコールバック関数をセットします。
+	$hooks = {
+		'afterRowExchange':afterRowRxchange,
+		'afterAutoSave':afterAutoSave,
+	};
+	
 //	
 	// CRUD基本クラス
 	crudBase = new CrudBase(crudBaseData, data);
@@ -137,6 +144,34 @@ function init(){
 	
 //	crudBase.newVersionReload(); // 新バージョンリロード
 }
+
+
+/**
+ * 行入替後コールバック関数。
+ * 
+ * @desc
+ * 行入替機能(RowExchange.js)の行入替後に実行されます
+ * 
+ */
+function afterRowExchange(){
+	console.log('■■■□□□■■■□□□afterRowExchange');//■■■□□□■■■□□□
+}
+
+
+/**
+ * 自動保存後コールバック関数。
+ * 
+ * @desc
+ * 自動保存機能(CrudBaseAutoSave.js)のDB更新後に実行されます。
+ * いわゆるAjax通信後のレスポンス時に実行される処理です。
+ * 当然ながらDB更新はバックエンド側で行われます。
+ * 
+ */
+function afterAutoSave(){
+	console.log('■■■□□□■■■□□□afterAutoSave');//■■■□□□■■■□□□
+	location.reload(true); // ブラウザをリロードする
+}
+
 
 
 /**

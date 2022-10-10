@@ -50,8 +50,8 @@ class CrudBase{
 	 * @param {} crudBaseData PHP側のcrudBaseDataと同じデータ。様々なデータが詰め込まれています。
 	 * @param {} data 一覧データ
 	 * @param {} hooks フック群。 特定のイベントが実行されたタイミングで実行されるコールバック関数群が格納されます。キーでどのイベントと紐づいているか指定します。
-	 *                         - after_row_rxchange 行入替後コールバック関数。行入替機能(RowExchange.js)の行入替後に実行するコールバック関数を指定します。
-	 *                         - after_auto_save 自動保存後コールバック関数。自動保存機能(CrudBaseAutoSave.js)のDB更新後に実行するコールバック関数を指定します。
+	 *                         - afterRowExchange 行入替後コールバック関数。行入替機能(RowExchange.js)の行入替後に実行するコールバック関数を指定します。
+	 *                         - afterAutoSave 自動保存後コールバック関数。自動保存機能(CrudBaseAutoSave.js)のDB更新後に実行するコールバック関数を指定します。
 	 */
 	constructor(crudBaseData, data, hooks){
 		
@@ -77,8 +77,8 @@ class CrudBase{
 			h_tbl_xid, 
 			data, 
 			crudBaseData.auto_save_url,
-			hooks.after_row_rxchange,
-			hooks.after_auto_save);
+			hooks.afterRowExchange,
+			hooks.afterAutoSave);
 
 	
 
@@ -91,11 +91,11 @@ class CrudBase{
 	 * @param string h_tbl_xid データ一覧テーブル要素のid属性
 	 * @param [] data 一覧データ
 	 * @param string auto_save_url 自動保存Ajax URL。 このURLはLaravel側のアクションを指します。
-	 * @param function rowExchangeCb 行入替直後コールバック。　行入替え直後に実行するコールバック関数
-	 * @param function afterCallback 自動保存後コールバック関数。DB更新後（Ajax通信後）に実行するコールバック関数を指定します。
+	 * @param function afterRowExchange 行入替直後コールバック。　行入替え直後に実行するコールバック関数
+	 * @param function afterAutoSave 自動保存後コールバック関数。DB更新後（Ajax通信後）に実行するコールバック関数を指定します。
 	 * @reutrn CrudBaseRowExchange 行入替機能・コンポーネント
 	 */
-	factoryRowExchange(h_tbl_xid, data, auto_save_url, rowExchangeCb, autoSaveCb){
+	factoryRowExchange(h_tbl_xid, data, auto_save_url, afterRowExchange, afterAutoSave){
 		
 		if(this.rowExchange) return this.rowExchange;
 
@@ -103,12 +103,12 @@ class CrudBase{
 		let rowExchange = new RowExchange(h_tbl_xid, data, null, (param)=>{
 			
 			// 行入替直後コールバックを実行する
-			if(rowExchangeCb) rowExchangeCb(param);
+			if(afterRowExchange) afterRowExchange(param);
 			
 			// 行入替後、再び行入替しなければ3秒後に自動DB保存が実行される。
 			autoSave.saveRequest(param.data, auto_save_url, ()=>{
 				
-				if(autoSaveCb) autoSaveCb(param); // DB保存後のコールバック
+				if(afterAutoSave) afterAutoSave(param); // DB保存後のコールバック
 				
 				//location.reload(true); // ブラウザをリロードする■■■□□□■■■□□□
 			});
