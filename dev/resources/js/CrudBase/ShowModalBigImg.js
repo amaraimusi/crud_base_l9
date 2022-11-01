@@ -41,6 +41,7 @@ class ShowModalBigImg{
 	_onClick(aElm){
 		
 		let orig_img_url = aElm.attr('href');
+		console.log('orig_img_url=' + orig_img_url);//■■■□□□■■■□□□
 		
 		let xhr = new XMLHttpRequest();
 		xhr.open('GET', orig_img_url, true);

@@ -153,7 +153,7 @@ function init(){
  * 行入替機能(RowExchange.js)の行入替後に実行されます
  * 
  */
-function afterRowExchange(){
+function afterRowRxchange(){
 	console.log('■■■□□□■■■□□□afterRowExchange');//■■■□□□■■■□□□
 }
 

@@ -80,7 +80,9 @@ class CrudBase{
 			hooks.afterRowExchange,
 			hooks.afterAutoSave);
 
-	
+		// モーダル大画像表示モジュールの生成と初期化
+		//    一覧に表示されているサムネイル画像をクリックするとモーダルで画像拡大表示させるための機能です。
+		this.showModalBigImg = new ShowModalBigImg('.js_show_modal_big_img');
 
 		
 	}
@@ -114,7 +116,7 @@ class CrudBase{
 			});
 		});
 		
-//		// 行入替機能の初期化
+//		// 行入替機能の初期化 // ■■■□□□■■■□□□
 //		let rowExchange = new CrudBaseRowExchange(this,null,()=>{
 //			this.rowExchangeAfter();
 //		});
