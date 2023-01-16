@@ -60,7 +60,7 @@ class CrudBaseHelper
                 $url = "?{$query_param_str}&sort={$field}&desc=1";
             }else{ // 並び向きが降順である場合
                 $arrow = '▼';
-                $url = "?{$query_param_str}&sort={$field}";
+                $url = "?{$query_param_str}&sort={$field}&desc=0";
             }
         }else{
             $url = "?{$query_param_str}&sort={$field}";
