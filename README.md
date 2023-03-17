@@ -71,7 +71,11 @@ SPAの見本管理画面は下記の機能を備えます。
 
 ## 開発について
 
-[開発環境構築手順](doc/README_Environment2.md "開発環境構築手順")
+
+[ローカルへの開発環境構築手順](doc/README_Env_local.md "ローカルへの開発環境構築手順")
+
+
+[旧・ローカルへの開発環境構築手順](doc/README_Environment2.md "旧・開発環境構築手順")
 
 
 [CrudBase.min.jsおよびCrudBase.min.cssのコンパイル方法](doc/README_CrudBaseJS.md "CrudBase.min.jsおよびCrudBase.min.cssのコンパイル方法")
