@@ -87,15 +87,30 @@ class NekoController extends CrudBaseController{
 		$nekoTypeList = $model->getNekoTypeList(); // ネコ種別リスト
         // CBBXE
         
+		$crudBaseData = [
+				'data'=>$data,
+				'searches'=>$searches,
+				'userInfo'=>$userInfo,
+				'this_page_version'=>$this->this_page_version,
+				
+				// CBBXS-3020B
+				'nekoTypeList'=>$nekoTypeList,
+				// CBBXE
+		];
+        
 		return view('neko.index', [
-		    'data'=>$data,
-		    'searches'=>$searches,
-		    'userInfo'=>$userInfo,
-		    'this_page_version'=>$this->this_page_version,
+			    'data'=>$data,
+			    'searches'=>$searches,
+			    'userInfo'=>$userInfo,
+			    'this_page_version'=>$this->this_page_version,
+			    
+			    // CBBXS-3020B
+			    'nekoTypeList'=>$nekoTypeList,
+			    // CBBXE
 		    
-		    // CBBXS-3020B
-		    'nekoTypeList'=>$nekoTypeList,
-		    // CBBXE
+				
+				'crudBaseData'=>$crudBaseData,
+				
 	   ]);
 		
 	}

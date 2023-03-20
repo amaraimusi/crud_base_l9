@@ -1,5 +1,8 @@
 <?php 
 $ver_str = '?v=' . $this_page_version;
+
+$cbh = new CrudBaseHelper($crudBaseData);
+
 ?>
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -127,21 +130,21 @@ $ver_str = '?v=' . $this_page_version;
 	<thead>
 		<tr>
 			<!-- CBBXS-3035 -->
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'id', 'id') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'neko_val', 'neko_val') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'neko_name', 'neko_name') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'neko_date', 'neko_date') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'neko_type', '猫種別') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'neko_dt', 'neko_dt') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'neko_flg', 'ネコフラグ') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'img_fn', '画像ファイル名') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'note', '備考') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'sort_no', '順番') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'delete_flg', '無効フラグ') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'update_user_id', '更新者') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'ip_addr', 'IPアドレス') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'created_at', '生成日時') !!}</th>
-			<th>{!! CrudBaseHelper::sortLink($searches, 'neko', 'updated_at', '更新日') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'id', 'id') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_val', 'neko_val') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_name', 'neko_name') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_date', 'neko_date') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_type', '猫種別') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_dt', 'neko_dt') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_flg', 'ネコフラグ') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'img_fn', '画像ファイル名') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'note', '備考') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'sort_no', '順番') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'delete_flg', '無効フラグ') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'update_user_id', '更新者') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'ip_addr', 'IPアドレス') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'created_at', '生成日時') !!}</th>
+			<th>{!! $cbh->sortLink($searches, 'neko', 'updated_at', '更新日') !!}</th>
 
 			<!-- CBBXE -->
 			<th style="width:280px"></th>
@@ -154,14 +157,14 @@ $ver_str = '?v=' . $this_page_version;
 				<td>{{$ent->id}}</td>
 				<td>{{$ent->neko_val}}</td>
 				<td>{{$ent->neko_name}}</td>
-				<td>{!! CrudBaseHelper::tdDate($ent->neko_date) !!}</td>
+				<td>{!! $cbh->tdDate($ent->neko_date) !!}</td>
 				<td>{{ $nekoTypeList[$ent->neko_type] ?? '' }}</td>
-				<td>{!! CrudBaseHelper::tdDate($ent->neko_dt) !!}</td>
-				<td>{!! CrudBaseHelper::tdFlg($ent->neko_flg) !!}</td>
+				<td>{!! $cbh->tdDate($ent->neko_dt) !!}</td>
+				<td>{!! $cbh->tdFlg($ent->neko_flg) !!}</td>
 				<td>{{$ent->img_fn}}</td>
-				<td>{!! CrudBaseHelper::tdNote($ent->note, 'note', 30) !!}</td>
+				<td>{!! $cbh->tdNote($ent->note, 'note', 30) !!}</td>
 				<td>{{$ent->sort_no}}</td>
-				<td>{!! CrudBaseHelper::tdDeleteFlg($ent->delete_flg) !!}</td>
+				<td>{!! $cbh->tdDeleteFlg($ent->delete_flg) !!}</td>
 				<td>{{$ent->update_user_id}}</td>
 				<td>{{$ent->ip_addr}}</td>
 				<td>{{$ent->created_at}}</td>
@@ -170,11 +173,11 @@ $ver_str = '?v=' . $this_page_version;
 				<!-- CBBXE -->
 				<td>
 					
-					{!! CrudBaseHelper::rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
+					{!! $cbh->rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
 					<a href="neko/show?id={{$ent->id}}" class="btn btn-info btn-sm text-light">詳細</a>
 					<a href="neko/edit?id={{$ent->id}}" class="btn btn-primary btn-sm">編集</a>
-					{!! CrudBaseHelper::disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
-					{!! CrudBaseHelper::destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
+					{!! $cbh->disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
+					{!! $cbh->destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
 					
 					
 				</td>
@@ -194,8 +197,8 @@ $ver_str = '?v=' . $this_page_version;
 
 <!-- JSON埋め込み -->
 <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" >
-{!! CrudBaseHelper::embedJson('search_json', $searches) !!}
-{!! CrudBaseHelper::embedJson('data_json', $data) !!}
+{!! $cbh->embedJson('search_json', $searches) !!}
+{!! $cbh->embedJson('data_json', $data) !!}
 
 </body>
 </html>
