@@ -188,6 +188,10 @@ $cbh = new CrudBaseHelper($crudBaseData);
 
 <div>{{$data->appends(request()->query())->links('pagination::bootstrap-4')}} </div><!-- ページネーション -->
 
+
+@include('neko.create_spa')
+
+
 </main>
 </div><!-- d-flex -->
 
