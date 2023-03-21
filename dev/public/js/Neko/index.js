@@ -1,20 +1,31 @@
 var csh; // 列表示切替機能
 var rowExchange; // 行入替機能
+var crudBaseData;
 var data; // 一覧データ
 var searches; // 検索データ
 var csrf_token; // CSRFトークン
 var baseXHelper; // 基本X
+
 
 var autoSave;
 $(()=>{
 	
 	baseXHelper = new BaseXHelper();
 	
+    /** ■■■□□□■■■□□□
+    
 	let data_json = $('#data_json').val();
-	data = JSON.parse(data_json);
 	
 	let search_json = $('#search_json').val();
 	searches = JSON.parse(search_json);
+    */
+    
+    let crud_base_json = $('#crud_base_json').val();
+    crudBaseData = JSON.parse(crud_base_json);
+    data = crudBaseData.data;
+    searches = crudBaseData.searches;
+    
+
 	
 	csrf_token = $('#csrf_token').val();
 	

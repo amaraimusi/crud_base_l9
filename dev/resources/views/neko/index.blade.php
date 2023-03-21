@@ -197,8 +197,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 
 <!-- JSON埋め込み -->
 <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" >
-{!! $cbh->embedJson('search_json', $searches) !!}
-{!! $cbh->embedJson('data_json', $data) !!}
+{!! $cbh->embedJson('crud_base_json', $crudBaseData) !!}
 
 </body>
 </html>
