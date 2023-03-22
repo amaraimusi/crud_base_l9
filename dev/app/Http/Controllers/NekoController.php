@@ -81,6 +81,7 @@ class NekoController extends CrudBaseController{
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
 		
 		$model = new Neko();
+		$fieldData = $model->getFieldData();
 		$data = $model->getData($searches);
 		
 		// CBBXS-3020

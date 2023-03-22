@@ -47,6 +47,70 @@ class Neko extends CrudBase
 		
 	}
 	
+	
+	/**
+	 * フィールドデータを取得する
+	 * @return [] $fieldData フィールドデータ
+	 */
+	public function getFieldData(){
+	    $fieldData = [
+	        'id' => [], // ID
+	        'neko_val' => [], // ネコ数値
+	        'neko_name' => [], // ネコ名
+	        'neko_date' => [], // ネコ日付
+	        'neko_type' => [ // 猫種別
+	            'outer_table' => 'neko_types',
+	            'outer_field' => 'neko_type_name', 
+	        ],
+	        'neko_dt' => [], // ネコ日時
+	        'neko_flg' => [], // ネコフラグ
+	        'img_fn' => [], // 画像ファイル名
+	        'note' => [], // 備考
+	        'sort_no' => [], // 順番
+	        'delete_flg' => [], // 無効フラグ
+	        'update_user_id' => [], // 更新者
+	        'ip_addr' => [], // IPアドレス
+	        'created_at' => [], // 生成日時
+	        'updated_at' => [], // 更新日
+	    ];
+	    
+	    $fieldDataDb = $this->getFieldDataFromDb();
+	    foreach($fieldDataDb as $entD){
+	        $field = $entD->Field;
+	        if (empty($fieldData[$field])) $fieldData[$field] = [];
+	            
+	        $fEnt['Field'] = $entD->Field;
+	        $fEnt['Type'] = $entD->Type;
+	        $fEnt['Collation'] = $entD->Collation;
+	        $fEnt['Null'] = $entD->Null;
+	        $fEnt['Key'] = $entD->Key;
+	        $fEnt['Default'] = $entD->Default;
+	        $fEnt['Extra'] = $entD->Extra;
+	        $fEnt['Privileges'] = $entD->Privileges;
+	        $fEnt['Comment'] = $entD->Comment;
+	        
+	        $fieldData[$field] = $fEnt;
+	    }
+	    
+	    // 型長とデータ型を取得する
+	    foreach($fieldData as &$fEnt){
+	        $data_type = $fEnt['Type'];
+	        
+	        // 型長を取得する
+	        $matches = null;
+	        preg_match('/\d+/', $data_type, $matches);
+	        $fEnt['long'] = $matches[0] ?? null;
+	        
+	        // データ型を取得する
+	        $fEnt['type'] = preg_replace('/\([^)]+\)/', '', $data_type); // カッコとカッコ内の文字列を削除した文字列を取得する
+
+	    }
+	    unset($fEnt);
+
+	    return $fieldData;
+	}
+	
+	
 	/**
 	 *
 	 * @param [] $searches 検索データ
@@ -289,5 +353,12 @@ class Neko extends CrudBase
 	}
 	// CBBXE
 	
+	
+	private function getFieldDataFromDb(){
+	    $sql="SHOW FULL COLUMNS FROM nekos";
+	    $res = DB::select($sql);
+	    
+	    return $res;
+	}
 }
 

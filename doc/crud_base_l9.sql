@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- ホスト: 127.0.0.1
--- 生成日時: 2022-08-09 10:36:21
--- サーバのバージョン： 10.4.21-MariaDB
--- PHP のバージョン: 8.0.12
+-- 生成日時: 2023-03-22 03:26:11
+-- サーバのバージョン： 10.4.27-MariaDB
+-- PHP のバージョン: 8.0.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- データベース: `mpa_l9`
+-- データベース: `crud_base_l9`
 --
 
 -- --------------------------------------------------------
@@ -39,7 +39,7 @@ CREATE TABLE `clients` (
   `ip_addr` varchar(40) DEFAULT NULL COMMENT 'IPアドレス',
   `created_at` datetime DEFAULT NULL COMMENT '生成日時',
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '更新日'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- テーブルのデータのダンプ `clients`
@@ -61,11 +61,11 @@ INSERT INTO `clients` (`id`, `client_name`, `tell`, `address`, `note`, `sort_no`
 
 CREATE TABLE `failed_jobs` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uuid` varchar(255) NOT NULL,
+  `connection` text NOT NULL,
+  `queue` text NOT NULL,
+  `payload` longtext NOT NULL,
+  `exception` longtext NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -77,7 +77,7 @@ CREATE TABLE `failed_jobs` (
 
 CREATE TABLE `migrations` (
   `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -99,22 +99,22 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 --
 
 CREATE TABLE `nekos` (
-  `id` int(11) NOT NULL,
-  `neko_val` int(11) DEFAULT NULL,
-  `neko_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `neko_date` date DEFAULT NULL,
+  `id` int(11) NOT NULL COMMENT 'ID',
+  `neko_val` int(11) DEFAULT NULL COMMENT 'ネコ数値',
+  `neko_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT 'ネコ名',
+  `neko_date` date DEFAULT NULL COMMENT 'ネコ日付',
   `neko_type` int(11) DEFAULT NULL COMMENT '猫種別',
-  `neko_dt` datetime DEFAULT NULL,
+  `neko_dt` datetime DEFAULT NULL COMMENT 'ネコ日時',
   `neko_flg` tinyint(4) DEFAULT 0 COMMENT 'ネコフラグ',
   `img_fn` varchar(256) DEFAULT NULL COMMENT '画像ファイル名',
-  `note` text CHARACTER SET utf8 DEFAULT NULL COMMENT '備考',
+  `note` text CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '備考',
   `sort_no` int(11) DEFAULT 0 COMMENT '順番',
   `delete_flg` tinyint(1) DEFAULT 0 COMMENT '無効フラグ',
   `update_user_id` int(11) DEFAULT NULL COMMENT '更新者',
-  `ip_addr` varchar(40) CHARACTER SET utf8 DEFAULT NULL COMMENT 'IPアドレス',
+  `ip_addr` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT 'IPアドレス',
   `created_at` datetime DEFAULT NULL COMMENT '生成日時',
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '更新日'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- テーブルのデータのダンプ `nekos`
@@ -289,10 +289,10 @@ CREATE TABLE `neko_types` (
   `sort_no` int(11) DEFAULT 0 COMMENT '順番',
   `delete_flg` tinyint(1) DEFAULT 0 COMMENT '無効フラグ',
   `update_user_id` int(11) DEFAULT NULL COMMENT '更新ユーザーID',
-  `ip_addr` varchar(40) CHARACTER SET utf8 DEFAULT NULL COMMENT 'IPアドレス',
+  `ip_addr` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT 'IPアドレス',
   `created_at` datetime DEFAULT NULL COMMENT '生成日時',
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '更新日'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- テーブルのデータのダンプ `neko_types`
@@ -331,8 +331,8 @@ INSERT INTO `neko_types` (`id`, `neko_type_name`, `sort_no`, `delete_flg`, `upda
 --
 
 CREATE TABLE `password_resets` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -344,11 +344,11 @@ CREATE TABLE `password_resets` (
 
 CREATE TABLE `personal_access_tokens` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_type` varchar(255) NOT NULL,
   `tokenable_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `abilities` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `token` varchar(64) NOT NULL,
+  `abilities` text DEFAULT NULL,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -378,7 +378,7 @@ CREATE TABLE `sales` (
   `ip_addr` varchar(40) DEFAULT NULL COMMENT 'IPアドレス',
   `created_at` datetime DEFAULT NULL COMMENT '生成日時',
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '更新日'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- テーブルのデータのダンプ `sales`
@@ -416,11 +416,11 @@ INSERT INTO `sales` (`id`, `client_id`, `sales_amt`, `status`, `billing_date`, `
 --
 
 CREATE TABLE `sessions` (
-  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(255) NOT NULL,
   `user_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `payload` longtext NOT NULL,
   `last_activity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -429,6 +429,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
+('1uUjWLDsCHV9Jqgl8UHPQOXD8yLBve0d7gL0GG0Y', 100, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoieU0yN21qOGZpY3FZVVJzQ3NtcGxhOGViSGFoc0tZTGZnYVBBeW9mUiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly9sb2NhbGhvc3QvY3J1ZF9iYXNlX2w5L2Rldi9wdWJsaWMvbmVrbyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEwMDtzOjQ6ImF1dGgiO2E6MTp7czoyMToicGFzc3dvcmRfY29uZmlybWVkX2F0IjtpOjE2Nzk0NTA2ODU7fXM6MTc6Im5la29fc2VhcmNoZXNfa2V5IjthOjIyOntzOjExOiJtYWluX3NlYXJjaCI7TjtzOjI6ImlkIjtOO3M6ODoibmVrb192YWwiO047czo5OiJuZWtvX25hbWUiO047czo5OiJuZWtvX2RhdGUiO047czo5OiJuZWtvX3R5cGUiO047czo3OiJuZWtvX2R0IjtOO3M6ODoibmVrb19mbGciO047czo2OiJpbWdfZm4iO047czo0OiJub3RlIjtOO3M6Nzoic29ydF9ubyI7TjtzOjEwOiJkZWxldGVfZmxnIjtOO3M6MTQ6InVwZGF0ZV91c2VyX2lkIjtOO3M6NzoiaXBfYWRkciI7TjtzOjEwOiJjcmVhdGVkX2F0IjtOO3M6MTA6InVwZGF0ZWRfYXQiO047czoxMToidXBkYXRlX3VzZXIiO047czo0OiJzb3J0IjtOO3M6NDoiZGVzYyI7TjtzOjg6InBlcl9wYWdlIjtOO3M6MTc6InRoaXNfcGFnZV92ZXJzaW9uIjtzOjU6IjEuMC4xIjtzOjExOiJuZXdfdmVyc2lvbiI7aTowO319', 1679450830),
+('3TD8wvVURXyhdCjuxJrwHqGqFH4KpXpqGiYIGUNP', 100, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiZnAyNmpQMDhxYVNhMVBoMXR5UFFKZWtZVWt4UE5CbGROQVJKSlZXNCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly9sb2NhbGhvc3QvY3J1ZF9iYXNlX2w5L2Rldi9wdWJsaWMvbmVrbyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEwMDtzOjQ6ImF1dGgiO2E6MTp7czoyMToicGFzc3dvcmRfY29uZmlybWVkX2F0IjtpOjE2Nzg5NTEyMTM7fXM6MTc6Im5la29fc2VhcmNoZXNfa2V5IjthOjIyOntzOjExOiJtYWluX3NlYXJjaCI7TjtzOjI6ImlkIjtOO3M6ODoibmVrb192YWwiO047czo5OiJuZWtvX25hbWUiO047czo5OiJuZWtvX2RhdGUiO047czo5OiJuZWtvX3R5cGUiO047czo3OiJuZWtvX2R0IjtOO3M6ODoibmVrb19mbGciO047czo2OiJpbWdfZm4iO047czo0OiJub3RlIjtOO3M6Nzoic29ydF9ubyI7TjtzOjEwOiJkZWxldGVfZmxnIjtOO3M6MTQ6InVwZGF0ZV91c2VyX2lkIjtOO3M6NzoiaXBfYWRkciI7TjtzOjEwOiJjcmVhdGVkX2F0IjtOO3M6MTA6InVwZGF0ZWRfYXQiO047czoxMToidXBkYXRlX3VzZXIiO047czo0OiJzb3J0IjtOO3M6NDoiZGVzYyI7TjtzOjg6InBlcl9wYWdlIjtOO3M6MTc6InRoaXNfcGFnZV92ZXJzaW9uIjtzOjU6IjEuMC4xIjtzOjExOiJuZXdfdmVyc2lvbiI7aToxO319', 1678951245),
 ('5pKMGNt7wmXPvuhSM1Lw6nNJm79FDKQCdPVqUmPX', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiVlNpUEJkSjV2YjZ1OUJrWTJCZjkwV1kyb1NtUzM0TWpPZVRLUmNhUCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly9sb2NhbGhvc3QvbXBhX2w5L2Rldi9wdWJsaWMvc2FsZXMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyO3M6NDoiYXV0aCI7YToxOntzOjIxOiJwYXNzd29yZF9jb25maXJtZWRfYXQiO2k6MTY1ODM4MjgwMjt9czoxODoic2FsZXNfc2VhcmNoZXNfa2V5IjthOjE4OntzOjExOiJtYWluX3NlYXJjaCI7TjtzOjI6ImlkIjtOO3M6MTE6ImNsaWVudF9uYW1lIjtOO3M6Njoic3RhdHVzIjtOO3M6MTI6ImJpbGxpbmdfZGF0ZSI7TjtzOjExOiJiaWxsaW5nX2FtdCI7TjtzOjEyOiJwYXltZW50X2RhdGUiO047czoxMToicGF5bWVudF9hbXQiO047czoxMDoiY29tbWlzc2lvbiI7TjtzOjM6InRheCI7TjtzOjQ6Im5vdGUiO047czoxMDoiZGVsZXRlX2ZsZyI7TjtzOjExOiJ1cGRhdGVfdXNlciI7TjtzOjQ6InNvcnQiO047czo0OiJkZXNjIjtOO3M6ODoicGVyX3BhZ2UiO047czoxNzoidGhpc19wYWdlX3ZlcnNpb24iO3M6NToiMS4wLjEiO3M6MTE6Im5ld192ZXJzaW9uIjtpOjA7fX0=', 1658390256),
 ('5SgVSxbAdve8pEoGjFVbMWJ06ACsiiKiifprzTOS', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiM1JEbFFYTFhHT3BVZ0RyVmhXSjVJSFA2RjRKYVg0UEhRaWJ5eHBWYSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6OTk6Imh0dHA6Ly9sb2NhbGhvc3Qvc2FsZXNfbW5nL2Rldi9wdWJsaWMvY2xpZW50P25ld192ZXJzaW9uPTEmc29ydD1jbGllbnRfbmFtZSZ0aGlzX3BhZ2VfdmVyc2lvbj0xLjAuMSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7czo0OiJhdXRoIjthOjE6e3M6MjE6InBhc3N3b3JkX2NvbmZpcm1lZF9hdCI7aToxNjU3Nzk5MjM2O31zOjE5OiJjbGllbnRfc2VhcmNoZXNfa2V5IjthOjEzOntzOjExOiJtYWluX3NlYXJjaCI7TjtzOjI6ImlkIjtOO3M6MTE6ImNsaWVudF9uYW1lIjtOO3M6NDoidGVsbCI7TjtzOjc6ImFkZHJlc3MiO047czo0OiJub3RlIjtOO3M6MTA6ImRlbGV0ZV9mbGciO047czoxMToidXBkYXRlX3VzZXIiO047czo0OiJzb3J0IjtzOjExOiJjbGllbnRfbmFtZSI7czo0OiJkZXNjIjtOO3M6ODoicGVyX3BhZ2UiO047czoxNzoidGhpc19wYWdlX3ZlcnNpb24iO3M6NToiMS4wLjEiO3M6MTE6Im5ld192ZXJzaW9uIjtpOjA7fX0=', 1657799241),
 ('DOX1IFFdybStd7J2otXL60O2lhHAnSYmw5cfCIIw', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoibnRJSFFGcXNscnlNNTdQa3dKdThvUWpDdlZhY0dQSWViTjhLa3BrWiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDQ6Imh0dHA6Ly9sb2NhbGhvc3Qvc2FsZXNfbW5nL2Rldi9wdWJsaWMvY2xpZW50Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MjtzOjQ6ImF1dGgiO2E6MTp7czoyMToicGFzc3dvcmRfY29uZmlybWVkX2F0IjtpOjE2NTc4MDcwOTE7fXM6MTk6ImNsaWVudF9zZWFyY2hlc19rZXkiO2E6MTM6e3M6MTE6Im1haW5fc2VhcmNoIjtOO3M6MjoiaWQiO047czoxMToiY2xpZW50X25hbWUiO047czo0OiJ0ZWxsIjtOO3M6NzoiYWRkcmVzcyI7TjtzOjQ6Im5vdGUiO047czoxMDoiZGVsZXRlX2ZsZyI7TjtzOjExOiJ1cGRhdGVfdXNlciI7TjtzOjQ6InNvcnQiO047czo0OiJkZXNjIjtOO3M6ODoicGVyX3BhZ2UiO047czoxNzoidGhpc19wYWdlX3ZlcnNpb24iO3M6NToiMS4wLjEiO3M6MTE6Im5ld192ZXJzaW9uIjtpOjA7fX0=', 1657817399),
@@ -442,19 +444,19 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 
 CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL COMMENT 'ユーザー名/アカウント名',
-  `email` varchar(255) CHARACTER SET utf8mb4 NOT NULL COMMENT 'メールアドレス',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ユーザー名/アカウント名',
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'メールアドレス',
   `email_verified_at` timestamp NULL DEFAULT NULL COMMENT 'Eメール検証済時刻(Laravel内部処理用)',
-  `nickname` varchar(50) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '名前',
-  `password` varchar(255) CHARACTER SET utf8mb4 NOT NULL COMMENT 'パスワード',
-  `remember_token` varchar(100) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '維持用トークン(Laravel内部処理用)',
-  `role` enum('master','developer','admin','client','oparator') CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '権限',
-  `temp_hash` varchar(50) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '仮登録ハッシュコード(Laravel内部処理用)',
+  `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '名前',
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'パスワード',
+  `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '維持用トークン(Laravel内部処理用)',
+  `role` enum('master','developer','admin','client','oparator') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '権限',
+  `temp_hash` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '仮登録ハッシュコード(Laravel内部処理用)',
   `temp_datetime` datetime DEFAULT NULL COMMENT '仮登録制限時刻(Laravel内部処理用)',
   `sort_no` int(11) DEFAULT 0 COMMENT '順番',
   `delete_flg` tinyint(1) DEFAULT 0 COMMENT '削除フラグ',
   `update_user_id` int(11) DEFAULT NULL COMMENT '更新ユーザーID',
-  `ip_addr` varchar(40) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '更新IPアドレス',
+  `ip_addr` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新IPアドレス',
   `created_at` datetime DEFAULT NULL COMMENT '生成日時B',
   `updated_at` datetime DEFAULT NULL COMMENT '更新日時B'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -574,7 +576,7 @@ ALTER TABLE `migrations`
 -- テーブルの AUTO_INCREMENT `nekos`
 --
 ALTER TABLE `nekos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=211;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=211;
 
 --
 -- テーブルの AUTO_INCREMENT `neko_types`
