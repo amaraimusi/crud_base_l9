@@ -92,6 +92,7 @@ class NekoController extends CrudBaseController{
 				'data'=>$data,
 				'searches'=>$searches,
 				'userInfo'=>$userInfo,
+				'fieldData'=>$fieldData,
 				'this_page_version'=>$this->this_page_version,
 				
 				// CBBXS-3020B
@@ -102,7 +103,8 @@ class NekoController extends CrudBaseController{
 		return view('neko.index', [
 			    'data'=>$data,
 			    'searches'=>$searches,
-			    'userInfo'=>$userInfo,
+				'userInfo'=>$userInfo,
+				'fieldData'=>$fieldData,
 			    'this_page_version'=>$this->this_page_version,
 			    
 			    // CBBXS-3020B

@@ -53,61 +53,34 @@ class Neko extends CrudBase
 	 * @return [] $fieldData フィールドデータ
 	 */
 	public function getFieldData(){
-	    $fieldData = [
-	        'id' => [], // ID
-	        'neko_val' => [], // ネコ数値
-	        'neko_name' => [], // ネコ名
-	        'neko_date' => [], // ネコ日付
-	        'neko_type' => [ // 猫種別
-	            'outer_table' => 'neko_types',
-	            'outer_field' => 'neko_type_name', 
-	        ],
-	        'neko_dt' => [], // ネコ日時
-	        'neko_flg' => [], // ネコフラグ
-	        'img_fn' => [], // 画像ファイル名
-	        'note' => [], // 備考
-	        'sort_no' => [], // 順番
-	        'delete_flg' => [], // 無効フラグ
-	        'update_user_id' => [], // 更新者
-	        'ip_addr' => [], // IPアドレス
-	        'created_at' => [], // 生成日時
-	        'updated_at' => [], // 更新日
-	    ];
-	    
-	    $fieldDataDb = $this->getFieldDataFromDb();
-	    foreach($fieldDataDb as $entD){
-	        $field = $entD->Field;
-	        if (empty($fieldData[$field])) $fieldData[$field] = [];
-	            
-	        $fEnt['Field'] = $entD->Field;
-	        $fEnt['Type'] = $entD->Type;
-	        $fEnt['Collation'] = $entD->Collation;
-	        $fEnt['Null'] = $entD->Null;
-	        $fEnt['Key'] = $entD->Key;
-	        $fEnt['Default'] = $entD->Default;
-	        $fEnt['Extra'] = $entD->Extra;
-	        $fEnt['Privileges'] = $entD->Privileges;
-	        $fEnt['Comment'] = $entD->Comment;
-	        
-	        $fieldData[$field] = $fEnt;
-	    }
-	    
-	    // 型長とデータ型を取得する
-	    foreach($fieldData as &$fEnt){
-	        $data_type = $fEnt['Type'];
-	        
-	        // 型長を取得する
-	        $matches = null;
-	        preg_match('/\d+/', $data_type, $matches);
-	        $fEnt['long'] = $matches[0] ?? null;
-	        
-	        // データ型を取得する
-	        $fEnt['type'] = preg_replace('/\([^)]+\)/', '', $data_type); // カッコとカッコ内の文字列を削除した文字列を取得する
+		$fieldData = [
+				'id' => [], // ID
+				'neko_val' => [], // ネコ数値
+				'neko_name' => [], // ネコ名
+				'neko_date' => [], // ネコ日付
+				'neko_type' => [ // 猫種別
+					'outer_table' => 'neko_types',
+					'outer_field' => 'neko_type_name', 
+				],
+				'neko_dt' => [], // ネコ日時
+				'neko_flg' => [], // ネコフラグ
+				'img_fn' => [], // 画像ファイル名
+				'note' => [], // 備考
+				'sort_no' => [], // 順番
+				'delete_flg' => [], // 無効フラグ
+				'update_user_id' => [], // 更新者
+				'ip_addr' => [], // IPアドレス
+				'created_at' => [], // 生成日時
+				'updated_at' => [], // 更新日
+		];
+		
+		// フィールドデータへＤＢからのフィールド詳細情報を追加
+		$fieldData = $this->addFieldDetailsFromDB($fieldData, 'nekos');
+		
+		// フィールドデータに登録対象フラグを追加します。
+		$fieldData = $this->addRegFlgToFieldData($fieldData, $this->fillable);
 
-	    }
-	    unset($fEnt);
-
-	    return $fieldData;
+		return $fieldData;
 	}
 	
 	
@@ -124,7 +97,7 @@ class Neko extends CrudBase
 			leftJoin('users', 'nekos.update_user_id', '=', 'users.id');
 		
 		$query = $query->select(
-		    // CBBXS-3034
+			// CBBXS-3034
 			'nekos.id as id',
 			'nekos.neko_val as neko_val',
 			'nekos.neko_name as neko_name',
@@ -136,13 +109,13 @@ class Neko extends CrudBase
 			'nekos.note as note',
 			'nekos.sort_no as sort_no',
 			'nekos.delete_flg as delete_flg',
-		    'nekos.update_user_id as update_user_id',
-		    'users.nickname as update_user',
+			'nekos.update_user_id as update_user_id',
+			'users.nickname as update_user',
 			'nekos.ip_addr as ip_addr',
 			'nekos.created_at as created_at',
 			'nekos.updated_at as updated_at',
 
-		    // CBBXE
+			// CBBXE
 			);
 		
 		// メイン検索
@@ -190,86 +163,86 @@ class Neko extends CrudBase
 	 */
 	private function addWheres($query, $searches){
 		
-	    // CBBXS-3003
+		// CBBXS-3003
 
-	    // id
-	    if(!empty($searches['id'])){
-	        $query = $query->where('nekos.id',$searches['id']);
-	    }
+		// id
+		if(!empty($searches['id'])){
+			$query = $query->where('nekos.id',$searches['id']);
+		}
 
-	    // neko_val
-	    if(!empty($searches['neko_val'])){
-	        $query = $query->where('nekos.neko_val',$searches['neko_val']);
-	    }
+		// neko_val
+		if(!empty($searches['neko_val'])){
+			$query = $query->where('nekos.neko_val',$searches['neko_val']);
+		}
 
-	    // neko_name
-	    if(!empty($searches['neko_name'])){
-	        $query = $query->where('nekos.neko_name', 'LIKE', "%{$searches['neko_name']}%");
-	    }
+		// neko_name
+		if(!empty($searches['neko_name'])){
+			$query = $query->where('nekos.neko_name', 'LIKE', "%{$searches['neko_name']}%");
+		}
 
-	    // neko_date
-	    if(!empty($searches['neko_date'])){
-	        $query = $query->where('nekos.neko_date',$searches['neko_date']);
-	    }
+		// neko_date
+		if(!empty($searches['neko_date'])){
+			$query = $query->where('nekos.neko_date',$searches['neko_date']);
+		}
 
-	    // 猫種別
-	    if(!empty($searches['neko_type'])){
-	        $query = $query->where('nekos.neko_type',$searches['neko_type']);
-	    }
+		// 猫種別
+		if(!empty($searches['neko_type'])){
+			$query = $query->where('nekos.neko_type',$searches['neko_type']);
+		}
 
-	    // neko_dt
-	    if(!empty($searches['neko_dt'])){
-	        $query = $query->where('nekos.neko_dt',$searches['neko_dt']);
-	    }
+		// neko_dt
+		if(!empty($searches['neko_dt'])){
+			$query = $query->where('nekos.neko_dt',$searches['neko_dt']);
+		}
 
-	    // 無効フラグ
-	    if(!empty($searches['delete_flg'])){
-	        $query = $query->where('nekos.delete_flg',$searches['delete_flg']);
-	    }else{
-	        $query = $query->where('nekos.delete_flg', 0);
-	    }
+		// 無効フラグ
+		if(!empty($searches['delete_flg'])){
+			$query = $query->where('nekos.delete_flg',$searches['delete_flg']);
+		}else{
+			$query = $query->where('nekos.delete_flg', 0);
+		}
 
-	    // 画像ファイル名
-	    if(!empty($searches['img_fn'])){
-	        $query = $query->where('nekos.img_fn', 'LIKE', "%{$searches['img_fn']}%");
-	    }
+		// 画像ファイル名
+		if(!empty($searches['img_fn'])){
+			$query = $query->where('nekos.img_fn', 'LIKE', "%{$searches['img_fn']}%");
+		}
 
-	    // 備考
-	    if(!empty($searches['note'])){
-	        $query = $query->where('nekos.note', 'LIKE', "%{$searches['note']}%");
-	    }
+		// 備考
+		if(!empty($searches['note'])){
+			$query = $query->where('nekos.note', 'LIKE', "%{$searches['note']}%");
+		}
 
-	    // 順番
-	    if(!empty($searches['sort_no'])){
-	        $query = $query->where('nekos.sort_no',$searches['sort_no']);
-	    }
+		// 順番
+		if(!empty($searches['sort_no'])){
+			$query = $query->where('nekos.sort_no',$searches['sort_no']);
+		}
 
-	    // 無効フラグ
-	    if(!empty($searches['delete_flg'])){
-	        $query = $query->where('nekos.delete_flg',$searches['delete_flg']);
-	    }else{
-	        $query = $query->where('nekos.delete_flg', 0);
-	    }
+		// 無効フラグ
+		if(!empty($searches['delete_flg'])){
+			$query = $query->where('nekos.delete_flg',$searches['delete_flg']);
+		}else{
+			$query = $query->where('nekos.delete_flg', 0);
+		}
 
-	    // 更新者
-	    if(!empty($searches['update_user'])){
-	        $query = $query->where('users.nickname',$searches['update_user']);
-	    }
+		// 更新者
+		if(!empty($searches['update_user'])){
+			$query = $query->where('users.nickname',$searches['update_user']);
+		}
 
-	    // IPアドレス
-	    if(!empty($searches['ip_addr'])){
-	        $query = $query->where('nekos.ip_addr', 'LIKE', "%{$searches['ip_addr']}%");
-	    }
+		// IPアドレス
+		if(!empty($searches['ip_addr'])){
+			$query = $query->where('nekos.ip_addr', 'LIKE', "%{$searches['ip_addr']}%");
+		}
 
-	    // 生成日時
-	    if(!empty($searches['created_at'])){
-	        $query = $query->where('nekos.created_at',$searches['created_at']);
-	    }
+		// 生成日時
+		if(!empty($searches['created_at'])){
+			$query = $query->where('nekos.created_at',$searches['created_at']);
+		}
 
-	    // 更新日
-	    if(!empty($searches['updated_at'])){
-	        $query = $query->where('nekos.updated_at',$searches['updated_at']);
-	    }
+		// 更新日
+		if(!empty($searches['updated_at'])){
+			$query = $query->where('nekos.updated_at',$searches['updated_at']);
+		}
 
 		// CBBXE
 		
@@ -338,27 +311,22 @@ class Neko extends CrudBase
 	 *  @return [] ネコ種別リスト
 	 */
 	public function getNekoTypeList(){
-	    
-	    $query = DB::table('neko_types')->
-	       select(['id', 'neko_type_name'])->
-	       where('delete_flg',0);
-	    
-	    $res = $query->get();
-	    $list = [];
-	    foreach($res as $ent){
-	        $list[$ent->id] = $ent->neko_type_name;
-	    }
+		
+		$query = DB::table('neko_types')->
+		   select(['id', 'neko_type_name'])->
+		   where('delete_flg',0);
+		
+		$res = $query->get();
+		$list = [];
+		foreach($res as $ent){
+			$list[$ent->id] = $ent->neko_type_name;
+		}
 
-	    return $list;
+		return $list;
 	}
 	// CBBXE
 	
 	
-	private function getFieldDataFromDb(){
-	    $sql="SHOW FULL COLUMNS FROM nekos";
-	    $res = DB::select($sql);
-	    
-	    return $res;
-	}
+
 }
 
