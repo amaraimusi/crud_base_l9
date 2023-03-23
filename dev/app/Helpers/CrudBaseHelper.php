@@ -349,4 +349,75 @@ class CrudBaseHelper
         echo "</select>";
     }
     
+    
+    /**
+     * CrudBase.jsまたは、関連スクリプト群の読み込み部分HTMLコードを作成する
+     * @param string $mode モード 0:CrudBase.min.jsを読み込む   1:CrudBaseを構成するスクリプトを別個で読み込む
+     * @param string $this_page_version バージョン
+     * @return string HTMLコード → <script>～
+     */
+    public function crudBaseJs($mode, $this_page_version){
+
+    	if($mode == 0){
+    		return $this->crudBaseJsDist($this_page_version);
+    	}else{
+    		return $this->crudBaseJsDev($this_page_version);
+    	}
+
+    }
+    
+    
+    /**
+     * CrudBase.min.jsを読み込むHTMLコードを作成する
+     * @param string $this_page_version バージョン
+     * @return string HTMLコード → <script>～
+     */
+    public function crudBaseJsDist($this_page_version){
+    	$url = url('js/CrudBase/dist/CrudBase.min.js') ;
+    	$ver_str = '?v=' . $this_page_version;
+    	$html = "<script src='{$url}{$ver_str}' defer></script>";
+    	return $html;
+    }
+    
+    
+    /**
+     * CrudBase関連スクリプト群の読み込み部分HTMLコードを作成する（スクリプト別個読込版）
+     * @param string $this_page_version バージョン
+     * @return string HTMLコード → <script>～
+     */
+    public function crudBaseJsDev($this_page_version){
+    	$path = public_path('js/CrudBase/src') ;
+    	$jsPaths = glob($path . '/*.js'); // ディレクトリ内のすべてのjsファイルを取得
+    	
+    	$jsFiles = [];
+    	foreach($jsPaths as $js_path){
+    		$jsFiles[] = basename($js_path);
+    	}
+    	
+    	$jsUrls = [];
+    	foreach($jsFiles as $fn){
+    		$jsUrls[] = url('js/CrudBase/src/' . $fn);
+    	}
+    	
+    	$ver_str = '?v=' . $this_page_version;
+    	
+    	$readScripts = [];
+    	foreach($jsUrls as $js_url){
+    		$readScripts[] = "<script src='{$js_url}{$ver_str}' defer></script>";
+    	}
+    	
+    	$html = implode('', $readScripts);
+    	return  $html;
+    	
+    }
+    
+    
 }
+
+
+
+
+
+
+
+

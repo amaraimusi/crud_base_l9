@@ -11,11 +11,8 @@ $cbh = new CrudBaseHelper($crudBaseData);
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<script src="{{ asset('/js/app.js') }}" defer></script>
-	<script src="{{ asset('/js/common/jquery-3.6.0.min.js') }}" defer></script>
-	<script src="{{ asset('/js/common/clm_show_hide.js')  . $ver_str}} }}" defer></script>
-	<script src="{{ asset('/js/common/AutoSave.js')  . $ver_str}} }}" defer></script>
-	<script src="{{ asset('/js/common/RowExchange.js')  . $ver_str}} }}" defer></script>
-	<script src="{{ asset('/js/common/CrudBaseHelper.js')  . $ver_str}} }}" defer></script>
+	<script src="{{ asset('/js/jquery-3.6.1.min.js') }}" defer></script>
+	{!! $cbh->crudBaseJs(1, $this_page_version) !!}
 	<script src="{{ asset('/js/Neko/index.js')  . $ver_str}} }}" defer></script>
 	
 	<link href="{{ asset('/css/app.css')  . $ver_str}}" rel="stylesheet">
