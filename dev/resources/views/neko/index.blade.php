@@ -17,7 +17,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 	
 	<link href="{{ asset('/css/app.css')  . $ver_str}}" rel="stylesheet">
 	<link href="{{ asset('/js/font/css/open-iconic.min.css') }}" rel="stylesheet">
-	<link href="{{ asset('/css/common/clm_show_hide.css')  . $ver_str}}" rel="stylesheet">
+	{!! $cbh->crudBaseCss(0, $this_page_version) !!}
 	<link href="{{ asset('/css/common/common.css')  . $ver_str}}" rel="stylesheet">
 	<link href="{{ asset('/css/Neko/index.css')  . $ver_str}}" rel="stylesheet">
 	
