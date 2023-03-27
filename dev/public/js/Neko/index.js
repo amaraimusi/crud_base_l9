@@ -51,6 +51,9 @@ $(()=>{
 		chs.reset(); // 列表示切替機能内のローカルストレージをクリア
 	}
 	
+    // 一覧中のサムネイル画像をクリックしたら画像をモーダル化しつつ大きく表示する。
+    let showModalBigImg = new ShowModalBigImg('.js_show_modal_big_img');
+    
 });
 
 

@@ -162,10 +162,7 @@ class CrudBaseHelper
      * @return string html
      */
     public static function tdImg($ent, $field){
-//         dump('ヌガー');//■■■□□□■■■□□□)
-//         dump($ent->$field);//■■■□□□■■■□□□)
-//         $class_name = get_class($ent);
-//         dump($class_name);//■■■□□□■■■□□□)
+
         $fp = $ent->$field ?? null;
         
         if(empty($fp)){

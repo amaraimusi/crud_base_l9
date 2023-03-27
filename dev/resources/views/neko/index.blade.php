@@ -158,7 +158,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 				<td>{{ $nekoTypeList[$ent->neko_type] ?? '' }}</td>
 				<td>{!! $cbh->tdDate($ent->neko_dt) !!}</td>
 				<td>{!! $cbh->tdFlg($ent->neko_flg) !!}</td>
-				<td>{{$ent->img_fn}}</td>
+				<td>{!! $cbh->tdImg($ent, 'img_fn') !!}</td>
 				<td>{!! $cbh->tdNote($ent->note, 'note', 30) !!}</td>
 				<td>{{$ent->sort_no}}</td>
 				<td>{!! $cbh->tdDeleteFlg($ent->delete_flg) !!}</td>
