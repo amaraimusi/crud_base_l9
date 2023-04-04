@@ -108,12 +108,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 			<div class="row">
 				<label for="img_fn" class="col-12 col-md-5 col-form-label">画像ファイル名</label>
 				<div class="col-12 col-md-7">
-					<div class='cbf_input' style="width:180px;height:auto;">
-						<label for="img_fn" class="fuk_label" >
-							<input type="file" id="img_fn" name="img_fn" class="img_fn" style="display:none" accept="image/*" title="画像ファイルをドラッグ＆ドロップ(複数可)" data-inp-ex='image_fuk' data-fp='' />
-							<span class='fuk_msg' style="padding:20%">画像ファイルをドラッグ＆ドロップ(複数可)</span>
-						</label>
-					</div>
+					{!! $cbh->imgInput('img_fn') !!}
 				</div>
 			</div>
 

@@ -471,6 +471,31 @@ class CrudBaseHelper
     }
     
     
+    /**
+     * 画像アップロード要素を作成する
+     * @param string $xid ファイル要素のid属性
+     * @param string $name ファイル要素のname属性→省略可：省略時は$xidがセットされる。
+     */
+    public function imgInput($xid, $name = ''){
+    	
+    	if(empty($name=='')) $name = $xid;
+    	
+    	$html = "
+			<div class='cbf_input' style='width:100%;height:auto;'>
+			
+				<label for='img_fn' class='fuk_label' >
+					<input type='file' id='{$xid}' name='{$name}' class='img_fn' style='display:none' accept='image/*' title='画像ファイルをドラッグ＆ドロップ(複数可)' data-inp-ex='image_fuk' data-fp='' />
+					<span class='fuk_msg' style='padding:20%'>画像ファイルをドラッグ＆ドロップ(複数可)</span>
+				</label>
+				
+			</div>
+		";
+    	
+    	return $html;
+    }
+    
+    
+    
 }
 
 
