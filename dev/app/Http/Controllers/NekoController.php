@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-//use App\Http\Controllers\Controller;■■■□□□■■■□□□
 use Illuminate\Http\Request;
 use App\Models\Neko;
 use CrudBase\CrudBase;
-//use App\Consts\ConstCrudBase;
 use \App\Consts\ConstCrudBase;
 
 
@@ -357,10 +355,11 @@ class NekoController extends CrudBaseController{
 		$model->ip_addr = $userInfo['ip_addr'];
 
  		// CBBXS-XXX
- 		// ファイルアップロードとファイル名のDB保存
- 		if(!empty($_FILES)){
+ 		// ファイルアップロード処理
+		if(!empty($_FILES)){
  			$ent = (array)$model;
- 			$img_fn = CrudBase::makeFilePath($_FILES, "storage/neko/y%Y/{$ent['id']}/%unique/orig/%fn", $ent, 'img_fn');
+ 			$img_fn =$this->makeFilePath($_FILES, "storage/neko/y%Y/{$model->id}/%unique/orig/%fn", $ent, 'img_fn');
+ 			
  			$fileUploadK = CrudBase::factoryFileUploadK();
  			
  			// ▼旧ファイルを4階層上のディレクトリごと削除する。

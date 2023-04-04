@@ -54,7 +54,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 
 <div>
 	<div class="form_w" >
-		<form method="POST" action="{{ url('neko/update') }}" onsubmit="return checkDoublePress()">
+		<form method="POST" action="{{ url('neko/update') }}" onsubmit="return checkDoublePress()" enctype="multipart/form-data">
 			@csrf
 			
 			<input type="hidden" name="id" value="{{old('id', $ent->id)}}" />

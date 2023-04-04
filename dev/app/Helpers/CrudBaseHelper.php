@@ -478,7 +478,7 @@ class CrudBaseHelper
      */
     public function imgInput($xid, $name = ''){
     	
-    	if(empty($name=='')) $name = $xid;
+    	if(empty($name)) $name = $xid;
     	
     	$html = "
 			<div class='cbf_input' style='width:100%;height:auto;'>
