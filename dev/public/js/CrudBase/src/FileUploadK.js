@@ -12,8 +12,8 @@
  * ファイルの初期表示
  * 
  * @license MIT
- * @version 1.3.9
- * @date 2018-7-6 | 2022-6-10
+ * @version 1.3.10
+ * @date 2018-7-6 | 2023-4-4
  * @history 
  *  - 2021-04-29 var 1.3.0 大幅なバージョンアップ
  *  - 2018-10-2 var 1.2.6 「Now Loading...」メッセージを表示する
@@ -131,7 +131,7 @@ class FileUploadK{
 	 * 
 	 * @param fue_id ファイルアップロード要素のid属性
 	 * @param option 
-	 *  - valid_ext バリデーション拡張子(詳細はconstructor()の引数を参照）
+	 *  - valid_ext バリデーション拡張子 | 許可拡張子文字列の配列、もしくは'image', 'audio', 'video', 'often_use'のいずれかの文字列を指定する。
 	 *  - pacb プレビュー後コールバック関数
 	 *  - pacb_param pacbに渡すパラメータ
 	 *  - img_width プレビュー画像サイスX　（画像ファイルのみ影響）
@@ -139,7 +139,6 @@ class FileUploadK{
 	 *  - midway_dp 中間ディレクトリパス
 	 */
 	addEvent(fue_id,option){
-		
 		if(option == null) option = {};
 		
 		// ファイルアップロード要素の親ラベル（DnD要素）を取得する
@@ -1107,6 +1106,7 @@ class FileUploadK{
 				elm = box[fue_id]['fue'];
 			}else{
 				elm = this.unit.find('#' + fue_id);
+                if(elm[0] == null) throw Error(`「${fue_id}」要素が見つかりません`);
 				box[fue_id]['fue'] = elm;
 			}
 			return elm; 
@@ -1194,7 +1194,7 @@ class FileUploadK{
 	 * @param int fue_id FU要素ID
 	 * @param object box データボックス
 	 * @param object option
-	 *  - valid_ext バリデーション拡張子
+	 *  - valid_ext バリデーション拡張子 | 許可拡張子文字列の配列、もしくは'image', 'audio', 'video', 'often_use'のいずれかの文字列を指定する。
 	 * @return データボックス
 	 */
 	_setToBox(fue_id,box,option){
@@ -1255,7 +1255,7 @@ class FileUploadK{
 	
 	/**
 	 * バリデーション情報を作成する。
-	 * @param string valid_ext バリデーション拡張子
+	 * @param string valid_ext バリデーション拡張子 | 許可拡張子文字列の配列、もしくは'image', 'audio', 'video', 'often_use'のいずれかの文字列を指定する。
 	 * @param int max_size 最大容量
 	 * @return object バリデーション情報
 	 */

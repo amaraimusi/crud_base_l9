@@ -279,6 +279,23 @@ class CrudBaseController extends Controller{
 	    print($buf); // CSVデータの書き出し
 	    
 	}
+	
+	
+	/**
+	 * パス情報を取得する
+	 * @return [] パス情報
+	 */
+	protected function getPaths(){
+		$public_url = url('/');
+		$current_path = url()->current();
+		$current_url_full = url()->full();
+		
+		return [
+				'public_url' => $public_url,
+				'current_path' => $current_path,
+				'current_url_full' => $current_url_full,
+		];
+	}
 
 	
 	

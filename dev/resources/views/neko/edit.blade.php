@@ -1,5 +1,7 @@
 <?php 
 $ver_str = '?v=' . $this_page_version;
+
+$cbh = new CrudBaseHelper($crudBaseData);
 ?>
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -9,12 +11,13 @@ $ver_str = '?v=' . $this_page_version;
 	
 	<script src="{{ asset('/js/app.js') }}" defer></script>
 	<script src="{{ asset('/js/common/jquery-3.6.0.min.js') }}" defer></script>
+	{!! $cbh->crudBaseJs(1, $this_page_version) !!}
 	<script src="{{ asset('/js/Neko/edit.js')  . $ver_str}} }}" defer></script>
 	
 	<link href="{{ asset('/css/app.css')  . $ver_str}}" rel="stylesheet">
 	<link href="{{ asset('/js/font/css/open-iconic.min.css') }}" rel="stylesheet">
 	<link href="{{ asset('/css/common/common.css')  . $ver_str}}" rel="stylesheet">
-	<link href="{{ asset('/css/common/style.css') }}" rel="stylesheet">
+	{!! $cbh->crudBaseCss(0, $this_page_version) !!}
 	<link href="{{ asset('/css/Neko/edit.css')  . $ver_str}}" rel="stylesheet">
 	
 	<title>ネコ管理・編集フォーム</title>
@@ -105,9 +108,16 @@ $ver_str = '?v=' . $this_page_version;
 			<div class="row">
 				<label for="img_fn" class="col-12 col-md-5 col-form-label">画像ファイル名</label>
 				<div class="col-12 col-md-7">
-					<input name="img_fn" type="text"  class="form-control form-control-lg" placeholder="画像ファイル名" value="{{old('img_fn', $ent->img_fn)}}">
+					<div class='cbf_input' style="width:180px;height:auto;">
+						<label for="img_fn" class="fuk_label" >
+							<input type="file" id="img_fn" name="img_fn" class="img_fn" style="display:none" accept="image/*" title="画像ファイルをドラッグ＆ドロップ(複数可)" data-inp-ex='image_fuk' data-fp='' />
+							<span class='fuk_msg' style="padding:20%">画像ファイルをドラッグ＆ドロップ(複数可)</span>
+						</label>
+					</div>
 				</div>
 			</div>
+
+			
 			<div class="row">
 				<label for="note" class="col-12 col-md-5 col-form-label">備考</label>
 				<div class="col-12 col-md-7">
@@ -136,5 +146,10 @@ $ver_str = '?v=' . $this_page_version;
 </div><!-- container-fluid -->
 
 @include('layouts.common_footer')
+
+<!-- JSON埋め込み -->
+<input type="hidden" id="csrf_token" value="{{ csrf_token() }}" >
+{!! $cbh->embedJson('crud_base_json', $crudBaseData) !!}
+
 </body>
 </html>

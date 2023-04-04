@@ -1,5 +1,7 @@
 <?php 
 $ver_str = '?v=' . $this_page_version;
+
+$cbh = new CrudBaseHelper($crudBaseData);
 ?>
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -119,6 +121,7 @@ $ver_str = '?v=' . $this_page_version;
 
 <!-- JSON埋め込み -->
 <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" >
+{!! $cbh->embedJson('crud_base_json', $crudBaseData) !!}
 
 </body>
 </html>

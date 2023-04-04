@@ -79,6 +79,7 @@ class NekoController extends CrudBaseController{
 		session(['neko_searches_key' => $searches]); // セッションに検索データを書き込む
 
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
+		$paths = $this->getPaths(); // パス情報を取得する
 		
 		$model = new Neko();
 		$fieldData = $model->getFieldData();
@@ -92,6 +93,7 @@ class NekoController extends CrudBaseController{
 				'data'=>$data,
 				'searches'=>$searches,
 				'userInfo'=>$userInfo,
+				'paths'=>$paths,
 				'fieldData'=>$fieldData,
 				'this_page_version'=>$this->this_page_version,
 				
@@ -105,14 +107,14 @@ class NekoController extends CrudBaseController{
 			    'searches'=>$searches,
 				'userInfo'=>$userInfo,
 				'fieldData'=>$fieldData,
-			    'this_page_version'=>$this->this_page_version,
+				'this_page_version'=>$this->this_page_version,
+				'crudBaseData'=>$crudBaseData,
 			    
 			    // CBBXS-3020B
 			    'nekoTypeList'=>$nekoTypeList,
 			    // CBBXE
 		    
 				
-				'crudBaseData'=>$crudBaseData,
 				
 	   ]);
 		
@@ -131,6 +133,7 @@ class NekoController extends CrudBaseController{
 		if(\Auth::id() == null) return redirect('login');
 		
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
+		$paths = $this->getPaths(); // パス情報を取得する
 		
 		$model = new Neko();
 		
@@ -138,12 +141,21 @@ class NekoController extends CrudBaseController{
 		$nekoTypeList = $model->getNekoTypeList(); // ネコ種別リスト
 		// CBBXE
 		
+		$crudBaseData = [
+				'nekoTypeList'=>$nekoTypeList,
+				'userInfo'=>$userInfo,
+				'paths'=>$paths,
+				'this_page_version'=>$this->this_page_version,
+		];
+		
 		return view('neko.create', [
-			'userInfo'=>$userInfo,
-		    'this_page_version'=>$this->this_page_version,
-		    // CBBXS-3037B
-		    'nekoTypeList'=>$nekoTypeList,
-		    // CBBXE
+				'userInfo'=>$userInfo,
+				'this_page_version'=>$this->this_page_version,
+				'crudBaseData' => $crudBaseData,
+				
+		    	// CBBXS-3037B
+		    	'nekoTypeList'=>$nekoTypeList,
+		    	// CBBXE
 			
 		]);
 		
@@ -214,6 +226,7 @@ class NekoController extends CrudBaseController{
 		
 		$model = new Neko();
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
+		$paths = $this->getPaths(); // パス情報を取得する
 		
 		$id = $request->id;
 		if(!is_numeric($id)){
@@ -222,12 +235,26 @@ class NekoController extends CrudBaseController{
 		}
 		
 		$ent = Neko::find($id);
+		
+		// CBBXS-3037
+		$nekoTypeList = $model->getNekoTypeList(); // ネコ種別リスト
+		// CBBXE
+		
+		$crudBaseData = [
+				'ent'=>$ent,
+				'userInfo'=>$userInfo,
+				'paths'=>$paths,
+				'this_page_version'=>$this->this_page_version,
+				'nekoTypeList'=>$nekoTypeList,
+		];
+		
 
 		return view('neko.show', [
-			'ent'=>$ent,
-			'userInfo'=>$userInfo,
-			'this_page_version'=>$this->this_page_version,
-			
+				'ent'=>$ent,
+				'userInfo'=>$userInfo,
+				'this_page_version'=>$this->this_page_version,
+				'nekoTypeList'=>$nekoTypeList,
+				'crudBaseData' => $crudBaseData,
 		]);
 		
 	}
@@ -246,6 +273,7 @@ class NekoController extends CrudBaseController{
 
 		$model = new Neko();
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
+		$paths = $this->getPaths(); // パス情報を取得する
 		
 		$id = $request->id;
 		if(!is_numeric($id)){
@@ -259,13 +287,23 @@ class NekoController extends CrudBaseController{
 		$nekoTypeList = $model->getNekoTypeList(); // ネコ種別リスト
 		// CBBXE
 		
+		$crudBaseData = [
+				'ent'=>$ent,
+				'userInfo'=>$userInfo,
+				'paths'=>$paths,
+				'this_page_version'=>$this->this_page_version,
+				'nekoTypeList'=>$nekoTypeList,
+		];
+		
 		return view('neko.edit', [
-			'ent'=>$ent,
-			'userInfo'=>$userInfo,
-		    'this_page_version'=>$this->this_page_version,
-		    // CBBXS-3038B
-		    'nekoTypeList'=>$nekoTypeList,
-		    // CBBXE
+				'ent'=>$ent,
+				'userInfo'=>$userInfo,
+				'this_page_version'=>$this->this_page_version,
+				'crudBaseData'=>$crudBaseData,
+				
+			    // CBBXS-3038B
+			    'nekoTypeList'=>$nekoTypeList,
+				// CBBXE
 			
 		]);
 		
