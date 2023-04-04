@@ -22,7 +22,7 @@ class NekoController extends CrudBaseController{
 	 * @return \Illuminate\View\View
 	 */
 	public function index(Request $request){
-	    
+
 		// ログアウトになっていたらログイン画面にリダイレクト
 		if(\Auth::id() == null) return redirect('login');
 		
@@ -355,8 +355,28 @@ class NekoController extends CrudBaseController{
 		$model->delete_flg = 0;
 		$model->update_user_id = $userInfo['id'];
 		$model->ip_addr = $userInfo['ip_addr'];
-		
- 		$model->update();
+
+ 		// CBBXS-XXX
+ 		// ファイルアップロードとファイル名のDB保存
+ 		if(!empty($_FILES)){
+ 			$ent = (array)$model;
+ 			$img_fn = CrudBase::makeFilePath($_FILES, "storage/neko/y%Y/{$ent['id']}/%unique/orig/%fn", $ent, 'img_fn');
+ 			$fileUploadK = CrudBase::factoryFileUploadK();
+ 			
+ 			// ▼旧ファイルを4階層上のディレクトリごと削除する。
+ 			$ary = explode("/", $img_fn);
+ 			$ary = array_slice($ary, 0, 4);
+ 			$del_dp = implode('/', $ary);
+ 			$fileUploadK->removeDirectory($del_dp); // 旧ファイルを指定ディレクトリごと削除
+ 			
+ 			// ファイル配置＆DB保存
+ 			$fileUploadK->putFile1($_FILES, 'img_fn', $img_fn);
+ 			$model->img_fn = $img_fn;
+ 			
+ 		}
+ 		// CBBXE
+
+ 		$model->update(); // DB更新
 		
 		return redirect('/neko');
 		
