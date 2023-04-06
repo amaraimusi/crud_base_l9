@@ -54,7 +54,7 @@ class FileUploadK{
 	 *          拡張子コンマ連結: 'jpg,png,gif'
 	 * - valid_mime_flg バリデーションMIMEフラグ 0:バリデーション行わない(デフォ) , 1:バリデーションを行う
 	 * - max_size 最大容量
-	 * 
+	 * - exist_fn 既存・識別子　hidden要素のname属性名に使用される。省略時は「_exist」がセットされる。
 	 * @param callbacks
 	 * - function fileputEvent(box) ファイル配置イベント    DnD直後およびファイル選択直後のイベント
 	 */
@@ -110,7 +110,7 @@ class FileUploadK{
 		}
 		
 		if(param['max_size'] == null) param['max_size'] = 5000000; // 5MB
-		
+		if(param['exist_fn'] == null) param['exist_fn'] = '_exist';
 		
 		// バリデーション情報を作成する。
 		var valid_ext = null;
@@ -242,11 +242,32 @@ class FileUploadK{
 		var midway_dp = '';
 		if(option['midway_dp']) midway_dp = option['midway_dp'];
 		
-		// ファイルをXHRでプリロードする
+		
 		for(var i in fps){
 			var fp = midway_dp + fps[i];
-			this._preloadByXhr(fp,bData);
+			this._preloadByXhr(fp,bData); // ファイルをXHRでプリロードする
 		}
+	
+		// 既存ファイル名要素にファイルパスリストをセットする。
+		this._setToExistFn(fue_id, fps);
+	}
+	
+	/**
+	* 既存ファイル名要素にファイルパスリストをセットする。
+	*/
+	_setToExistFn(fue_id, fps){
+		
+		let existFnElm = this._getElement(fue_id,'exist_fn'); // 既存ファイル名要素(hidden要素）
+		
+		let fps_str = '';
+		for(let i in fps){
+			fps_str += fps[i] + ',';
+		}
+		
+		fps_str = fps_str.substr(0,fps_str.length-1); // 末尾の一文字を削除する
+		
+		existFnElm.val(fps_str);
+		
 	}
 	
 	
@@ -313,15 +334,16 @@ class FileUploadK{
 	 * @param int fue_id FU要素ID
 	 * @param object box データボックス
 	 */
-	_addRelatedElements(parLabel,fue_id,box){
-		
-		
-		
+	_addRelatedElements(parLabel, fue_id, box){
+
+		let exist_id = fue_id + this.param.exist_fn;
+
 		let html = `
 			<div class='fuk_box1'>
 				<div class='fuk_preview' style='display:inline-block'></div>
 				<div class='fuk_clear_btn_w'>
 					<input type='button' value='Clear' class='btn btn-secondary btn-sm fuk_clear_btn' data-fue-id='${fue_id}' />
+                    <input type='hidden' id='${exist_id}' name='${exist_id}' class='fuk_exist_fn' value=''>
 				</div>
 			</div>
 		`;
@@ -893,6 +915,10 @@ class FileUploadK{
 
 		var parLbl = this._getElement(fue_id,'label');
 		parLbl.css({'width':'100%','height':'100%'});
+		
+		// 既存ファイル名要素(hidden要素)の値をクリアする。
+		var existFnElm = this._getElement(fue_id,'exist_fn');
+		existFnElm.val('');
 
 		// ファイルデータもクリアする。
 		this.box[fue_id]['fileData'] ={};
@@ -1180,6 +1206,20 @@ class FileUploadK{
 				if(label == null) return null;
 				elm = label.find('.fuk_clear_btn_w');
 				box[fue_id]['clear_btn_w'] = elm;
+			}
+			return elm; 
+		}
+		
+		// 既存ファイル名要素を取得
+		else if(key == 'exist_fn'){
+			var elm = null;
+			if(box[fue_id]['exist_fn']){
+				elm = box[fue_id]['exist_fn'];
+			}else{
+				var label = this._getElement(fue_id,'label');
+				if(label == null) return null;
+				elm = label.find('.fuk_exist_fn');
+				box[fue_id]['exist_fn'] = elm;
 			}
 			return elm; 
 		}

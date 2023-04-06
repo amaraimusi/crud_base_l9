@@ -21,24 +21,24 @@ class Neko extends CrudBase
 	 * @var array<int, string>
 	 */
 	protected $fillable = [
-		// CBBXS-3009
-		'id',
-		'neko_val',
-		'neko_name',
-		'neko_date',
-		'neko_type',
-		'neko_dt',
-		'neko_flg',
-		'img_fn',
-		'note',
-		'sort_no',
-		'delete_flg',
-		'update_user_id',
-		'ip_addr',
-		'created_at',
-		'updated_at',
-
-		// CBBXE
+			// CBBXS-3009
+			'id',
+			'neko_val',
+			'neko_name',
+			'neko_date',
+			'neko_type',
+			'neko_dt',
+			'neko_flg',
+			'img_fn',
+			'note',
+			'sort_no',
+			'delete_flg',
+			'update_user_id',
+			'ip_addr',
+			'created_at',
+			'updated_at',
+	
+			// CBBXE
 	];
 	
 	

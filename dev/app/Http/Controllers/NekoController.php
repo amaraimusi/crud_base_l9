@@ -326,7 +326,7 @@ class NekoController extends CrudBaseController{
 			'neko_val' => 'nullable|numeric',
 			'neko_name' => 'nullable|max:255',
 			'neko_date' => 'nullable|date',
-			'img_fn' => 'nullable|max:256',
+			'img_fn' => 'nullable|max:500000', // 最大アップロードは500MBまで
 			'sort_no' => 'nullable|numeric',
 			'update_user_id' => 'nullable|numeric',
 			'ip_addr' => 'nullable|max:40',
@@ -354,26 +354,11 @@ class NekoController extends CrudBaseController{
 		$model->update_user_id = $userInfo['id'];
 		$model->ip_addr = $userInfo['ip_addr'];
 
- 		// CBBXS-XXX
- 		// ファイルアップロード処理
-		if(!empty($_FILES)){
- 			$ent = (array)$model;
- 			$img_fn =$this->makeFilePath($_FILES, "storage/neko/y%Y/{$model->id}/%unique/orig/%fn", $ent, 'img_fn');
- 			
- 			$fileUploadK = CrudBase::factoryFileUploadK();
- 			
- 			// ▼旧ファイルを4階層上のディレクトリごと削除する。
- 			$ary = explode("/", $img_fn);
- 			$ary = array_slice($ary, 0, 4);
- 			$del_dp = implode('/', $ary);
- 			$fileUploadK->removeDirectory($del_dp); // 旧ファイルを指定ディレクトリごと削除
- 			
- 			// ファイル配置＆DB保存
- 			$fileUploadK->putFile1($_FILES, 'img_fn', $img_fn);
- 			$model->img_fn = $img_fn;
- 			
- 		}
- 		// CBBXE
+		// ▼ ファイルアップロード関連
+		$fileUploadK = CrudBase::factoryFileUploadK();
+		$ent = $model->toArray();
+		$ent['img_fn_exist'] = $request->img_fn_exist; // 既存・画像ファイル名 img_fnの付属パラメータ
+		$model->img_fn = $fileUploadK->uploadForLaravelMpa($_FILES, $ent, 'img_fn', 'img_fn_exist');
 
  		$model->update(); // DB更新
 		
