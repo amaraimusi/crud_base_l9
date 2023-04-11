@@ -130,20 +130,19 @@ class NekoController extends CrudBaseController{
 		// ログアウトになっていたらログイン画面にリダイレクト
 		if(\Auth::id() == null) return redirect('login');
 		
+		$model = new Neko();
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
 		$paths = $this->getPaths(); // パス情報を取得する
-		
-		$model = new Neko();
 		
 		// CBBXS-3037
 		$nekoTypeList = $model->getNekoTypeList(); // ネコ種別リスト
 		// CBBXE
 		
 		$crudBaseData = [
-				'nekoTypeList'=>$nekoTypeList,
 				'userInfo'=>$userInfo,
 				'paths'=>$paths,
 				'this_page_version'=>$this->this_page_version,
+				'nekoTypeList'=>$nekoTypeList,
 		];
 		
 		return view('neko.create', [
@@ -168,23 +167,24 @@ class NekoController extends CrudBaseController{
 	 */
 	public function store(Request $request){
 		
-		if(\Auth::id() == null) die;
+		if(\Auth::id() == null) die();
+		
+		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
 
 		$request->validate([
-			// CBBXS-3030
-			'id' => 'nullable|numeric',
-			'neko_val' => 'nullable|numeric',
-			'neko_name' => 'nullable|max:255',
-			'neko_date' => 'nullable|date',
-			'img_fn' => 'nullable|max:256',
-			'sort_no' => 'nullable|numeric',
-			'update_user_id' => 'nullable|numeric',
-			'ip_addr' => 'nullable|max:40',
+				// CBBXS-3030
+				'id' => 'nullable|numeric',
+				'neko_val' => 'nullable|numeric',
+				'neko_name' => 'nullable|max:255',
+				'neko_date' => 'nullable|date',
+				'img_fn' => 'nullable|max:500000', // 最大アップロードは500MBまで
+				'sort_no' => 'nullable|numeric',
+				'update_user_id' => 'nullable|numeric',
+				'ip_addr' => 'nullable|max:40',
 
 			// CBBXE
 		]);
 		
-		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
 		
 		$model = new Neko();
 		// CBBXS-3032
@@ -203,8 +203,15 @@ class NekoController extends CrudBaseController{
 		$model->delete_flg = 0;
 		$model->update_user_id = $userInfo['id'];
 		$model->ip_addr = $userInfo['ip_addr'];
+		
+		$model->save(); // DBへ新規追加と同時に$modelに新規追加した行のidがセットされる。
 
-		$model->save();
+		// ▼ ファイルアップロード関連
+		$fileUploadK = CrudBase::factoryFileUploadK();
+		$ent = $model->toArray();
+		//$ent['img_fn_exist'] = $request->img_fn_exist; // 既存・画像ファイル名 img_fnの付属パラメータ
+		$model->img_fn = $fileUploadK->uploadForLaravelMpa($_FILES, $ent, 'img_fn');
+		$model->update(); // ファイル名をモデルにセットしたのでモデルをDB更新する。
 		
 		return redirect('/neko');
 		

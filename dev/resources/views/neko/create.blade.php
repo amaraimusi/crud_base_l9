@@ -55,7 +55,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 
 <div>
 	<div class="form_w" >
-		<form method="POST" action="{{ url('neko/store') }}" onsubmit="return checkDoublePress()">
+		<form method="POST" action="{{ url('neko/store') }}" onsubmit="return checkDoublePress()" enctype="multipart/form-data">
 			@csrf
 			<!-- CBBXS-3006 -->
 			<div class="row">
@@ -106,21 +106,10 @@ $cbh = new CrudBaseHelper($crudBaseData);
 			<div class="row">
 				<label for="img_fn" class="col-12 col-md-5 col-form-label">画像ファイル名</label>
 				<div class="col-12 col-md-7">
-					<input name="img_fn" type="text"  class="form-control form-control-lg" placeholder="画像ファイル名" value="{{old('img_fn')}}">
+					{!! $cbh->imgInput('img_fn') !!}
 				</div>
 			</div>
-			
-			<div class="row">
-				<div class='cbf_inp_label_long' >画像ファイル名: </div>
-				<div class='cbf_input' style="width:180px;height:auto;">
-					<label for="img_fn_e" class="fuk_label" >
-						<input type="file" id="img_fn_e" class="img_fn" style="display:none" accept="image/*" title="画像ファイルをドラッグ＆ドロップ(複数可)" data-inp-ex='image_fuk' data-fp='' />
-						<span class='fuk_msg' style="padding:20%">画像ファイルをドラッグ＆ドロップ(複数可)</span>
-					</label>
-				</div>
-			</div>
-			
-			
+
 			<div class="row">
 				<label for="note" class="col-12 col-md-5 col-form-label">備考</label>
 				<div class="col-12 col-md-7">

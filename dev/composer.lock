@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/amaraimusi/CrudBase.git",
-                "reference": "ea693494e4f186a7a85b69ecae4adfc79c7cfc0b"
+                "reference": "2589bb246cdd8235381d67e905ae5e1100f905e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amaraimusi/CrudBase/zipball/ea693494e4f186a7a85b69ecae4adfc79c7cfc0b",
-                "reference": "ea693494e4f186a7a85b69ecae4adfc79c7cfc0b",
+                "url": "https://api.github.com/repos/amaraimusi/CrudBase/zipball/2589bb246cdd8235381d67e905ae5e1100f905e7",
+                "reference": "2589bb246cdd8235381d67e905ae5e1100f905e7",
                 "shasum": ""
             },
             "require-dev": {
@@ -53,7 +53,7 @@
                 "issues": "https://github.com/amaraimusi/CrudBase/issues",
                 "source": "https://github.com/amaraimusi/CrudBase/tree/master"
             },
-            "time": "2023-04-06T08:20:02+00:00"
+            "time": "2023-04-11T03:37:05+00:00"
         },
         {
             "name": "brick/math",
