@@ -61,19 +61,19 @@ $cbh = new CrudBaseHelper($crudBaseData);
 			<div class="row">
 				<label for="neko_val" class="col-12 col-md-5 col-form-label">neko_val</label>
 				<div class="col-12 col-md-7">
-					<input name="neko_val" type="text"  class="form-control form-control-lg" placeholder="neko_val" value="{{old('neko_val')}}">
+					<input name="neko_val" type="text"  class="form-control form-control-lg" placeholder="neko_val" value="{{old('neko_val', $ent->neko_val)}}">
 				</div>
 			</div>
 			<div class="row">
 				<label for="neko_name" class="col-12 col-md-5 col-form-label">neko_name</label>
 				<div class="col-12 col-md-7">
-					<input name="neko_name" type="text"  class="form-control form-control-lg" placeholder="neko_name" value="{{old('neko_name')}}">
+					<input name="neko_name" type="text"  class="form-control form-control-lg" placeholder="neko_name" value="{{old('neko_name', $ent->neko_name)}}">
 				</div>
 			</div>
 			<div class="row">
 				<label for="neko_date" class="col-12 col-md-5 col-form-label">neko_date</label>
 				<div class="col-12 col-md-7">
-					<input name="neko_date" type="date"  class="form-control form-control-lg" placeholder="neko_date" value="{{old('neko_date')}}">
+					<input name="neko_date" type="date"  class="form-control form-control-lg" placeholder="neko_date" value="{{old('neko_date', $ent->neko_date)}}">
 				</div>
 			</div>
 			<div class="row">
@@ -81,7 +81,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 				<div class="col-12 col-md-7">
 					<select name="neko_type" class="form-control form-control-lg">
 						@foreach ($nekoTypeList as $neko_type => $neko_type_name)
-							<option value="{{ $neko_type }}" @selected(old('neko_type') == $neko_type)>
+							<option value="{{ $neko_type }}" @selected(old('neko_type', $ent->neko_type) == $neko_type)>
 								{{ $neko_type_name }}
 							</option>
 						@endforeach
@@ -91,15 +91,15 @@ $cbh = new CrudBaseHelper($crudBaseData);
 			<div class="row">
 				<label for="neko_dt" class="col-12 col-md-5 col-form-label">neko_dt</label>
 				<div class="col-12 col-md-7">
-					<input name="neko_dt" type="text"  class="form-control form-control-lg" placeholder="neko_dt" value="{{old('neko_dt')}}">
+					<input name="neko_dt" type="text"  class="form-control form-control-lg" placeholder="neko_dt" value="{{old('neko_dt', $ent->neko_dt)}}">
 				</div>
 			</div>
 			<div class="row">
 				<label for="neko_flg" class="col-12 col-md-5 col-form-label">ネコフラグ</label>
 				<div class="col-12 col-md-7">
 					<select name="neko_flg" class="form-control form-control-lg">
-							<option value="0" @selected(old('neko_flg') == 0)>OFF</option>
-							<option value="1" @selected(old('neko_flg') == 1)>ON</option>
+							<option value="0" @selected(old('neko_flg', $ent->neko_flg) == 0)>OFF</option>
+							<option value="1" @selected(old('neko_flg', $ent->neko_flg) == 1)>ON</option>
 					</select>
 				</div>
 			</div>
@@ -113,7 +113,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 			<div class="row">
 				<label for="note" class="col-12 col-md-5 col-form-label">備考</label>
 				<div class="col-12 col-md-7">
-					<textarea name="note" id="note" class="form-control form-control-lg" placeholder="備考"  maxlength="2000">{{old('note')}}</textarea>
+					<textarea name="note" id="note" class="form-control form-control-lg" placeholder="備考"  maxlength="2000">{{old('note', $ent->note)}}</textarea>
 				</div>
 			</div>
 

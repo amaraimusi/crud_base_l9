@@ -23,11 +23,9 @@ function _initFileUploadK(crudBaseData){
     
     let ent = crudBaseData.ent;
     fileUploadK.addEvent('img_fn', {'valid_ext':'image'});
-
-/**■■■□□□■■■□□□
     let fps = [ent.img_fn];
     let midway_dp = crudBaseData.paths.public_url + '/';
-    fileUploadK.setFilePaths('img_fn', fps, {'midway_dp':midway_dp,}); */
+    fileUploadK.setFilePaths('img_fn', fps, {'midway_dp':midway_dp,});
 }
 
 

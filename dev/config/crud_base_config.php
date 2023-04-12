@@ -69,43 +69,6 @@ $crudBaseConfig = [
 	
 ];
 
-// 汎用メソッドクラス
-//require_once 'crud_base_function.php';
-//require_once $crud_base_path . 'CrudBaseU.php'; ■■■□□□■■■□□□
-//■■■□□□■■■□□□
-// // 権限データ
-// global $crudBaseAuthorityData;
-// $crudBaseAuthorityData = [
-// 	'master'=>[
-// 		'name'=>'master',
-// 		'wamei'=>'マスター',
-// 		'level'=>41,
-// 	],
-// 	'developer'=>[
-// 		'name'=>'developer',
-// 		'wamei'=>'開発者',
-// 		'level'=>40,
-// 	],
-// 	'admin'=>[
-// 		'name'=>'admin',
-// 		'wamei'=>'管理者',
-// 		'level'=>30,
-// 	],
-// 	'client'=>[
-// 		'name'=>'client',
-// 		'wamei'=>'クライアント',
-// 		'level'=>20,
-// 	],
-// 	'oparator'=>[
-// 		'name'=>'oparator',
-// 		'wamei'=>'オペレータ',
-// 		'level'=>10,
-// 	],
-	
-// ];
-
-
-// require_once 'crud_base_const.php';
 
 /**
  * DB設定

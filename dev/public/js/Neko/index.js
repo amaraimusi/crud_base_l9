@@ -11,14 +11,6 @@ var autoSave;
 $(()=>{
 	
 	baseXHelper = new BaseXHelper();
-	
-    /** ■■■□□□■■■□□□
-    
-	let data_json = $('#data_json').val();
-	
-	let search_json = $('#search_json').val();
-	searches = JSON.parse(search_json);
-    */
     
     let crud_base_json = $('#crud_base_json').val();
     crudBaseData = JSON.parse(crud_base_json);

@@ -131,6 +131,30 @@ class NekoController extends CrudBaseController{
 		if(\Auth::id() == null) return redirect('login');
 		
 		$model = new Neko();
+		
+		$copy_id = $request->id; // 複製元のid。空なら普通の新規入力になる
+		
+		$ent = $model->find($copy_id); // 複製元のエンティティを取得
+		
+		// 複製元のエンティティが空であれば、通常の新規入力になる。新規入力のデフォルト値をセットする。
+		if($ent==null){
+			$ent = $model->get();
+			// CBBXS-4002
+			$ent->neko_val= '';
+			$ent->neko_name= '';
+			$ent->neko_date= '';
+			$ent->neko_type= 0;
+			$ent->neko_dt= '';
+			$ent->neko_flg= '';
+			$ent->img_fn= '';
+			$ent->note= '';
+			$ent->sort_no= '';
+			$ent->delete_flg= '';
+			// CBBXE
+		}
+		
+		if($ent->neko_dt == '0000-00-00 00:00:00') $ent->neko_dt = '';
+		
 		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
 		$paths = $this->getPaths(); // パス情報を取得する
 		
@@ -139,6 +163,7 @@ class NekoController extends CrudBaseController{
 		// CBBXE
 		
 		$crudBaseData = [
+				'ent'=>$ent->toArray(),
 				'userInfo'=>$userInfo,
 				'paths'=>$paths,
 				'this_page_version'=>$this->this_page_version,
@@ -146,6 +171,7 @@ class NekoController extends CrudBaseController{
 		];
 		
 		return view('neko.create', [
+				'ent'=>$ent,
 				'userInfo'=>$userInfo,
 				'this_page_version'=>$this->this_page_version,
 				'crudBaseData' => $crudBaseData,
@@ -209,8 +235,9 @@ class NekoController extends CrudBaseController{
 		// ▼ ファイルアップロード関連
 		$fileUploadK = CrudBase::factoryFileUploadK();
 		$ent = $model->toArray();
-		//$ent['img_fn_exist'] = $request->img_fn_exist; // 既存・画像ファイル名 img_fnの付属パラメータ
-		$model->img_fn = $fileUploadK->uploadForLaravelMpa($_FILES, $ent, 'img_fn');
+		$ent['img_fn_exist'] = $request->img_fn_exist; // 既存・画像ファイル名 img_fnの付属パラメータ
+		$model->img_fn = $fileUploadK->uploadForLaravelMpa($_FILES, $ent, 'img_fn', 'img_fn_exist');
+
 		$model->update(); // ファイル名をモデルにセットしたのでモデルをDB更新する。
 		
 		return redirect('/neko');
@@ -293,7 +320,7 @@ class NekoController extends CrudBaseController{
 		// CBBXE
 		
 		$crudBaseData = [
-				'ent'=>$ent,
+				'ent'=>$ent->toArray(),
 				'userInfo'=>$userInfo,
 				'paths'=>$paths,
 				'this_page_version'=>$this->this_page_version,
