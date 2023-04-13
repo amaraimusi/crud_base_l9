@@ -54,8 +54,16 @@ $cbh = new CrudBaseHelper($crudBaseData);
 
 <div>
 	<div class="form_w" >
-		<form method="POST" action="{{ url('neko/update') }}" onsubmit="return checkDoublePress()" enctype="multipart/form-data">
+		<form id="form1" method="POST" action="{{ url('neko/update') }}" enctype="multipart/form-data">
 			@csrf
+			
+			<div class="row">
+				<div class="col-12" style="text-align:right">
+					<button  class="btn btn-warning btn-lg js_submit_btn" onclick="return onSubmit1()">変更</button>
+					<div class="text-danger js_valid_err_msg"></div>
+					<div class="text-success js_submit_msg" style="display:none" >データベースに登録中です...</div>
+				</div>
+			</div>
 			
 			<input type="hidden" name="id" value="{{old('id', $ent->id)}}" />
 			
@@ -63,13 +71,13 @@ $cbh = new CrudBaseHelper($crudBaseData);
 			<div class="row">
 				<label for="neko_val" class="col-12 col-md-5 col-form-label">neko_val</label>
 				<div class="col-12 col-md-7">
-					<input name="neko_val" type="text"  class="form-control form-control-lg" placeholder="neko_val" value="{{old('neko_val', $ent->neko_val)}}">
+					<input name="neko_val" type="number"  class="form-control form-control-lg" placeholder="neko_val" value="{{old('neko_val', $ent->neko_val)}}">
 				</div>
 			</div>
 			<div class="row">
 				<label for="neko_name" class="col-12 col-md-5 col-form-label">neko_name</label>
 				<div class="col-12 col-md-7">
-					<input name="neko_name" type="text"  class="form-control form-control-lg" placeholder="neko_name" value="{{old('neko_name', $ent->neko_name)}}">
+					<input name="neko_name" type="text"  class="form-control form-control-lg" placeholder="neko_name" value="{{old('neko_name', $ent->neko_name)}}" required  title="猫名を入力してください。">
 				</div>
 			</div>
 			<div class="row">
@@ -93,7 +101,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 			<div class="row">
 				<label for="neko_dt" class="col-12 col-md-5 col-form-label">neko_dt</label>
 				<div class="col-12 col-md-7">
-					<input name="neko_dt" type="text"  class="form-control form-control-lg" placeholder="neko_dt" value="{{old('neko_dt', $ent->neko_dt)}}">
+					<input name="neko_dt" type="text"  class="form-control form-control-lg" placeholder="neko_dt" value="{{old('neko_dt', $ent->neko_dt)}}" pattern="[0-9]{4}(-|/)[0-9]{1,2}(-|/)[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}" title="日時（Y-m-d H:i:s)を入力してください。(例  2012-12-12 12:12:12)">
 				</div>
 			</div>
 			<div class="row">
@@ -106,7 +114,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 				</div>
 			</div>
 			<div class="row">
-				<label for="img_fn" class="col-12 col-md-5 col-form-label">画像ファイル名</label>
+				<label class="col-12 col-md-5 col-form-label">画像ファイル名</label>
 				<div class="col-12 col-md-7">
 					{!! $cbh->imgInput('img_fn') !!}
 				</div>
@@ -124,8 +132,9 @@ $cbh = new CrudBaseHelper($crudBaseData);
 
 			<div class="row">
 				<div class="col-12" style="text-align:right">
-					<button id="submit_btn" class="btn btn-warning btn-lg">変更</button>
-					<div id="submit_msg" class="text-success" style="display:none" >データベースに登録中です...</div>
+					<button  class="btn btn-warning btn-lg js_submit_btn" onclick="return onSubmit1()">変更</button>
+					<div class="text-danger js_valid_err_msg"></div>
+					<div class="text-success js_submit_msg" style="display:none" >データベースに登録中です...</div>
 				</div>
 			</div>
 			
