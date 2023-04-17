@@ -45,4 +45,41 @@ function g_automateTextareaHeight(slt){
             $(e.target).height(0).innerHeight(e.target.scrollHeight);
         });
 }
+
+/**
+ * メイン一覧テーブルの列詳細情報を取得する
+ * @param string tbl_xid メイン一覧テーブルのid属性
+ * @return [] 列詳細情報
+ */
+function g_getColumnInfo(tbl_xid){
+	
+	let clmInfo = [];
+    let jqThList = $(`#${tbl_xid} thead th`);
+	
+	jqThList.each((i,elm) => {
+		let jqElm = $(elm);
+		let th_html = jqElm.html();
+		
+		let field = '';
+		let tbl_name='';
+		let infoElm = jqElm.find("[name='field_info']");
+		if(infoElm[0]){
+			field = infoElm.val();
+			tbl_name = infoElm.attr('data-table');
+		}
+		
+		let ent = {
+			'th_html':th_html,
+			'field':field,
+			'tbl_name':tbl_name,
+			'index':i,
+		};
+		
+		clmInfo.push(ent);
+	});
+	
+	return clmInfo;
+	
+	
+}
     

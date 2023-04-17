@@ -66,7 +66,9 @@ class CrudBaseHelper
             $url = "?{$query_param_str}&sort={$field}";
         }
         
-        $html = "<a href='{$url}'>{$arrow}{$wamei}</a>";
+        $html = "
+			<a href='{$url}' data-field='{$field}'>{$arrow}{$wamei}</a>
+		";
 
         return $html;
     }
@@ -96,6 +98,9 @@ class CrudBaseHelper
         if(empty($flg)){
             $notation = "<span class='text-secondary'>OFF</span>";
         }
+        
+        $notation .= "<input type='hidden' class='js_original_value'  value='{$flg}'>";
+        
         return $notation;
     }
     
@@ -147,7 +152,7 @@ class CrudBaseHelper
         
         $td = "
 			<div>
-				<input type='hidden' name='{$field}' value='{$v}' />
+				<input type='hidden' name='{$field}' value='{$v}' class='js_original_value' />
 				<div class='{$field}' style='white-space:pre-wrap; word-wrap:break-word;'>{$v2}</div>
                 {$note_detail_open_html}
 			</div>";
@@ -178,9 +183,24 @@ class CrudBaseHelper
             <a href='{$fp}' class='js_show_modal_big_img'>
                 <img src='{$thum_fp}' />
             </a>
+			<input type='hidden' class='js_original_value' value='{$fp}' >
         ";
         return $html;
     }
+    
+    /**
+     * リスト系の表示
+     *
+     */
+    public static function tdList($value, &$list){
+    	
+    	$text = $list[$value] ?? '';
+    	$value2 = h($value);
+    	$html = "<span>{$text}</span><input type='hidden' class='js_original_value' value='$value2'>";
+    	
+    	return $html;
+    }
+    
     
     
     /**

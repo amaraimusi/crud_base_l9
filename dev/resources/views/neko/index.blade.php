@@ -117,31 +117,32 @@ $cbh = new CrudBaseHelper($crudBaseData);
 	</div>
 	
 	<div class="tool_btn_w">
-		<a href="neko/create" class="btn btn-success">新規登録</a>
+		<a href="neko/create" class="btn btn-success">新規登録・MPA型</a>
+		<button type="button" class="btn btn-success" onclick="showForm();">新規登録・SPA型</button>
 	</div>
 </div>
 
 <div id="auto_save" class="text-success"></div><!-- 自動保存のメッセージ表示区分 -->
 
-<table id="neko_mng_tbl" class="table table-striped table-bordered table-condensed" style="margin-top:20px;">
+<table id="main_tbl" class="table table-striped table-bordered table-condensed" style="margin-top:20px;">
 	<thead>
 		<tr>
 			<!-- CBBXS-3035 -->
-			<th>{!! $cbh->sortLink($searches, 'neko', 'id', 'id') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_val', 'neko_val') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_name', 'neko_name') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_date', 'neko_date') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_type', '猫種別') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_dt', 'neko_dt') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'neko_flg', 'ネコフラグ') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'img_fn', '画像ファイル名') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'note', '備考') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'sort_no', '順番') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'delete_flg', '無効フラグ') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'update_user_id', '更新者') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'ip_addr', 'IPアドレス') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'created_at', '生成日時') !!}</th>
-			<th>{!! $cbh->sortLink($searches, 'neko', 'updated_at', '更新日') !!}</th>
+			<th data-field='id'>{!! $cbh->sortLink($searches, 'neko', 'id', 'id') !!}</th>
+			<th data-field='neko_val'>{!! $cbh->sortLink($searches, 'neko', 'neko_val', 'neko_val') !!}</th>
+			<th data-field='neko_name'>{!! $cbh->sortLink($searches, 'neko', 'neko_name', 'neko_name') !!}</th>
+			<th data-field='neko_date'>{!! $cbh->sortLink($searches, 'neko', 'neko_date', 'neko_date') !!}</th>
+			<th data-field='neko_type'>{!! $cbh->sortLink($searches, 'neko', 'neko_type', '猫種別') !!}</th>
+			<th data-field='neko_dt'>{!! $cbh->sortLink($searches, 'neko', 'neko_dt', 'neko_dt') !!}</th>
+			<th data-field='neko_flg'>{!! $cbh->sortLink($searches, 'neko', 'neko_flg', 'ネコフラグ') !!}</th>
+			<th data-field='img_fn'>{!! $cbh->sortLink($searches, 'neko', 'img_fn', '画像ファイル名') !!}</th>
+			<th data-field='note'>{!! $cbh->sortLink($searches, 'neko', 'note', '備考') !!}</th>
+			<th data-field='sort_no'>{!! $cbh->sortLink($searches, 'neko', 'sort_no', '順番') !!}</th>
+			<th data-field='delete_flg'>{!! $cbh->sortLink($searches, 'neko', 'delete_flg', '無効フラグ') !!}</th>
+			<th data-field='update_user_id'>{!! $cbh->sortLink($searches, 'neko', 'update_user_id', '更新者') !!}</th>
+			<th data-field='ip_addr'>{!! $cbh->sortLink($searches, 'neko', 'ip_addr', 'IPアドレス') !!}</th>
+			<th data-field='created_at'>{!! $cbh->sortLink($searches, 'neko', 'created_at', '生成日時') !!}</th>
+			<th data-field='updated_at'>{!! $cbh->sortLink($searches, 'neko', 'updated_at', '更新日') !!}</th>
 
 			<!-- CBBXE -->
 			<th style="width:280px"></th>
@@ -152,10 +153,10 @@ $cbh = new CrudBaseHelper($crudBaseData);
 			<tr>
 				<!-- CBBXS-3005 -->
 				<td>{{$ent->id}}</td>
-				<td>{{$ent->neko_val}}</td>
+				<td>{{$ent->neko_val}}cm<span class='js_original_value' style="display:none">{{$ent->neko_val}}</span></td>
 				<td>{{$ent->neko_name}}</td>
 				<td>{!! $cbh->tdDate($ent->neko_date) !!}</td>
-				<td>{{ $nekoTypeList[$ent->neko_type] ?? '' }}</td>
+				<td>{!! $cbh->tdList($ent->neko_type, $nekoTypeList) !!}</td>
 				<td>{!! $cbh->tdDate($ent->neko_dt) !!}</td>
 				<td>{!! $cbh->tdFlg($ent->neko_flg) !!}</td>
 				<td>{!! $cbh->tdImg($ent, 'img_fn') !!}</td>
@@ -172,7 +173,8 @@ $cbh = new CrudBaseHelper($crudBaseData);
 					
 					{!! $cbh->rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
 					<a href="neko/show?id={{$ent->id}}" class="btn btn-info btn-sm text-light">詳細</a>
-					<a href="neko/edit?id={{$ent->id}}" class="btn btn-primary btn-sm">編集</a>
+					<button type="button" class="btn btn-primary btn-sm" onclick="clickEditBtn(this)">編集</button>
+					<a href="neko/edit?id={{$ent->id}}" class="btn btn-primary btn-sm">編集・MPA型</a>
 					<a href="neko/create?id={{$ent->id}}" class="btn btn-success btn-sm">複製</a>
 					{!! $cbh->disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
 					{!! $cbh->destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
@@ -187,7 +189,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 <div>{{$data->appends(request()->query())->links('pagination::bootstrap-4')}} </div><!-- ページネーション -->
 
 
-@include('neko.create_s')
+@include('neko.form_spa')
 
 
 </main>
