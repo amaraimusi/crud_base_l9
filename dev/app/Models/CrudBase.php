@@ -77,10 +77,15 @@ class CrudBase extends Model{
     		$fEnt['Collation'] = $entD->Collation;
     		$fEnt['Null'] = $entD->Null;
     		$fEnt['Key'] = $entD->Key;
-    		$fEnt['Default'] = $entD->Default;
     		$fEnt['Extra'] = $entD->Extra;
     		$fEnt['Privileges'] = $entD->Privileges;
     		$fEnt['Comment'] = $entD->Comment;
+    		
+    		if($entD->Default == 'current_timestamp()'){
+    			$fEnt['Default'] = null;
+    		}else{
+    			$fEnt['Default'] = $entD->Default;
+    		}
     		
     		$fieldData[$field] = $fEnt;
     	}

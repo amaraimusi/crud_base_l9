@@ -275,11 +275,14 @@ function _showForm(row_index){
 	
 	let ent = {};
 	if(row_index == null){
-		
+		// デフォルトエンティティを取得する
+		ent = crudBase.getDefaultEntity();
 	}else{
 		// メイン一覧テーブルの行インデックスに紐づく行からエンティティを取得する
 		ent = crudBase.getEntityByRowIndex(row_index);
 	}
+	
+	crudBase.setEntToForm(ent); // 入力フォームにエンティティを反映する
 
 	//■■■□□□■■■□□□
 	// 編集フォームと新規入力フォームで処理は異なる。

@@ -24,6 +24,7 @@
 			<div class='cbf_inp' >ID: </div>
 			<div class='cbf_input'>
 				<span class="id"></span>
+				<input type="hidden" name="id" value=''  />
 			</div>
 		</div>
 		

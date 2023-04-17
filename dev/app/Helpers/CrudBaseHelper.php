@@ -114,6 +114,9 @@ class CrudBaseHelper
         if(!empty($delete_flg)){
             $notation = "<span class='text-secondary'>無効</span>";
         }
+        
+        $notation .= "<input type='hidden' class='js_original_value'  value='{$delete_flg}'>";
+        
         return $notation;
     }
     
