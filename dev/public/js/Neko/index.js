@@ -273,8 +273,11 @@ function clickEditBtn(btn){
  */
 function _showForm(row_index){
 	
+	let inp_mode = 'create'; // 新規入力モード
+	if(row_index != null) inp_mode = 'edit'; // 編集モード
+	
 	let ent = {};
-	if(row_index == null){
+	if(inp_mode == 'create'){
 		// デフォルトエンティティを取得する
 		ent = crudBase.getDefaultEntity();
 	}else{
@@ -294,8 +297,20 @@ function _showForm(row_index){
 	//CrudBase.jsという名前からCrudBaseメジェーバージョンの番号.jsという名前にしよう。
 	//
 	
-	jqMainTbl.hide();
-	jqForm.show();
+	// 新規入力モード、編集モードのそれぞれの表示切替
+	if(inp_mode=='create'){
+		$('.js_create_mode').show();
+		$('.js_edit_mode').hide();
+	}else{
+		$('.js_create_mode').hide();
+		$('.js_edit_mode').show();
+	}
+	
+	$('.js_valid_err_msg').html(''); // エラーメッセージをクリア
+	$('.js_registering_msg').html(''); // 登録中のメッセージをクリア
+
+	jqMainTbl.hide(); // メイン一覧テーブルを隠す
+	jqForm.show(); // 入力フォームを表示する
 	
 }
 
