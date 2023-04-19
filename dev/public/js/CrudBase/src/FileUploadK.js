@@ -1318,7 +1318,7 @@ class FileUploadK{
 		}
 		
 		else if(valid_ext == 'image'){
-			validExts = ['jpg','jpeg','png','gif','bpg','svg'];
+			validExts = ['jpg','jpeg','png','gif','bpg','svg','pdf'];
 		}
 		
 		else if(valid_ext == 'audio'){
@@ -1336,8 +1336,8 @@ class FileUploadK{
 				'zip','lzh', 'tar',
 				'xls', 'xlsx', 'doc', 'docx',
 				'txt', 'csv', 'xml', 
-				'mp3', 'wav','ogg', 'm4a',
-				'avi', 'mp4', 'mpg',
+				'mp3', 'wav','ogg', 
+				'avi', 'mp4', 'mpg','m4a','avi','mov','webm',
 				'ppt', 'pptx', 
 				'mdb', 'accdb',  
 				];

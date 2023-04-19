@@ -26,6 +26,14 @@ $(()=>{
 	
 	// 列の順番である列インデックスをフィールドデータにセットします。
 	crudBaseData.fieldData = crudBase.setColumnIndex(crudBaseData.fieldData); 
+	
+	// 入力フォームのtag名やtype名などをフィールドデータにセットします。
+	crudBaseData.fieldData = crudBase.setFormInfoToFileData(crudBaseData.fieldData); 
+	
+	// ファイルアップロード要素にカスタマイズを施します。← カスタマイズにより、画像プレビューやファイル情報を表示などができるようになります。
+	crudBase.customizeFileUpload(crudBaseData.fieldData);
+	
+	
 	console.log(crudBaseData.fieldData);//■■■□□□■■■□□□
 
 	csrf_token = $('#csrf_token').val();
@@ -59,8 +67,8 @@ $(()=>{
 	jqMainTbl = $('#main_tbl'); // 一覧テーブル
 	jqForm = $('#form_spa'); // SPA型・入力フォーム
 	
-	
-	let clmInfo = g_getColumnInfo('main_tbl');
+	//■■■□□□■■■□□□
+	//let clmInfo = g_getColumnInfo('main_tbl');
 
     
 });
