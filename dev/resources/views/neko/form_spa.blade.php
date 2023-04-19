@@ -111,7 +111,7 @@
 	<div class="row mt-2">
 		<div class='col-md-2' >備考 </div>
 		<div class='col-md-10'>
-			<textarea name="note" class="form-control form-control-lg " maxlength="2000" title="2000文字以内で入力してください" data-folding-ta="40" style="height:100px;width:100%"></textarea>
+			<textarea name="note" class="form-control form-control-lg " maxlength="2000" title="2000文字以内で入力してください" data-folding-ta="40" ></textarea>
 			<div class="text-danger" data-valid-err="note"></div>
 		</div>
 	</div>

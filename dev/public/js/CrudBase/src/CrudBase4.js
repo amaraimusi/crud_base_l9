@@ -393,6 +393,46 @@ class CrudBase4{
 		
 	}
 	
+	/**
+	* 入力フォーム要素内のテキストエリアの高さを自動調整する
+	* @param ｛｝ fieldData フィールドデータ
+	*/
+	automateTextareaHeight(fieldData){
+		for(let field in fieldData){
+			let fieldEnt = fieldData[field];
+			if(fieldEnt.form_tag == 'textarea'){
+				let jqInp = this._getInpFromForm(field); // フォームから入力要素を取得する
+				this._automateTextareaHeight(jqInp);　// テキストエリアの高さを自動調整する。
+				
+			}
+		}
+	}
+	
+
+	/**
+	* テキストエリアの高さを自動調整する。
+	* @param elm object テキストエリア要素
+	*/
+	_automateTextareaHeight(elm){
+		let jqElm = null;
+		if (elm instanceof jQuery) {
+			jqElm = elm;
+		}else{
+			jqElm = jQuery(elm);
+		}
+		
+		// 文字入力した時に高さ自動調整
+		jqElm.attr("rows", 1).on("input", e => {
+			$(e.target).height(0).innerHeight(e.target.scrollHeight);
+		});
+		
+		// クリックしたときに自動調整
+		jqElm.attr("rows", 1).click("input", e => {
+			$(e.target).height(0).innerHeight(e.target.scrollHeight);
+		});
+	}
+	
+	
 	
 	// Check empty.
 	_empty(v){

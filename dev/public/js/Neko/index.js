@@ -33,6 +33,9 @@ $(()=>{
 	// ファイルアップロード要素にカスタマイズを施します。← カスタマイズにより、画像プレビューやファイル情報を表示などができるようになります。
 	crudBase.customizeFileUpload(crudBaseData.fieldData);
 	
+	// 入力フォーム要素内のテキストエリアの高さを自動調整する
+	crudBase.automateTextareaHeight(crudBaseData.fieldData);
+	
 	
 	console.log(crudBaseData.fieldData);//■■■□□□■■■□□□
 
