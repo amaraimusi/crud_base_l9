@@ -176,11 +176,37 @@ class CrudBase4{
 	
 	
 	/**
-	* メイン一覧テーブルの行インデックスに紐づく行からエンティティを取得する
+	* メイン一覧テーブルの行インデックスに紐づく行からエンティティを取得する。→crudDataBaseの一覧データにマージしてから取得
 	* @param int row_index 行インデックス
 	* @return {} エンティティ
 	*/
 	getEntityByRowIndex(row_index){
+		
+		// メイン一覧テーブルの行インデックスに紐づく行からエンティティを取得する。
+		let rowEnt = this._getEntityByRowIndex(row_index);
+		
+		// CrudBaseDataからidに紐づくエンティティを取得する
+		let ent = this.getEntityFromCrudBaseData(rowEnt.id);
+
+		// 行要素から取得したエンティティを一覧データのエンティティにマージする。
+		for(let field in rowEnt){
+			ent[field] = rowEnt[field];
+		}
+		
+		// CrudBaseDataへエンティティをセットする。
+		this.setEntityToCrudBaseData(ent);
+		
+		return ent;
+
+	}
+	
+	
+	/**
+	* メイン一覧テーブルの行インデックスに紐づく行からエンティティを取得する
+	* @param int row_index 行インデックス
+	* @return {} エンティティ
+	*/
+	_getEntityByRowIndex(row_index){
 		
 		let ent = {}; // エンティティ
 		
@@ -217,11 +243,50 @@ class CrudBase4{
 			ent[fieldEnt.Field] = value; // エンティティへtd要素内から取得した値をセットする。
 
 		});
-		
+
+
 		return ent;
+		
 		
 	}
 	
+
+	/**
+	* CrudBaseDataからidに紐づくエンティティを取得する
+	* @param int id ID
+	* @return {} エンティティ
+	*/
+	getEntityFromCrudBaseData(id){
+		let data = this.crudBaseData.data.data;
+
+		for(let i in data){
+			let ent = data[i];
+			if(ent.id == id){
+				return ent;
+			}
+		}
+		
+		return null;
+		
+	}
+	
+
+	/**
+	* CrudBaseDataへエンティティをセットする
+	* @param {} pEnt エンティティ
+	*/
+	setEntityToCrudBaseData(pEnt){
+		let data = this.crudBaseData.data.data;
+
+		for(let i in data){
+			let ent = data[i];
+			if(ent.id == pEnt.id){
+				data[i] = pEnt;
+				break;
+			}
+		}
+	}
+		
 	
 	/**
 	* フィールドデータから列インデックスに紐づくフィールドエンティティを取得する。
@@ -284,17 +349,6 @@ class CrudBase4{
 	
 	
 	/**
-	* フォームから入力要素を取得する
-	* @param string field フィールド名
-	* @return object 入力要素オブジェクト
-	*/
-	_getInpFromForm(field){
-		let jqInp = this.jqForm.find(`[name='${field}']`);
-		return jqInp;
-	}
-	
-	
-	/**
 	* フォームから表示要素を取得する
 	* @param string field フィールド名
 	* @return object 表示要素オブジェクト
@@ -351,7 +405,7 @@ class CrudBase4{
 			else if(typ=='radio'){
 
 				let radioParent = inp.parent();
-				let opElm = radioParent.find("[name='" + field + "'][value='" + val1 + "']");
+				let opElm = radioParent.find("[value='" + val1 + "']");
 				if(opElm[0]){
 					opElm.prop("checked",true);
 				}else{
@@ -433,6 +487,185 @@ class CrudBase4{
 	}
 	
 	
+	/**
+	* 入力フォームからエンティティを取得する
+	* @param {} フィールドデータ←省略可
+	* @return {} エンティティ
+	*/
+	getEntByForm(fieldData){
+		
+		if(fieldData == null) fieldData = this.crudBaseData.fieldData;
+		
+		let fEnt = {};
+		for(let field in fieldData){
+
+			let fieldEnt = fieldData[field];
+
+			let jqInp = this._getInpFromForm(field); // フォームから入力要素を取得する
+			
+			if(jqInp[0]){
+				fEnt[field] = this._getValueFromForm(jqInp, field);// 入力要素から値を取得する
+			}
+			
+		}
+		
+		// CrudBaseDataの一覧データから取得したエンティティに入力フォームから取得したエンティティをマージする。
+		let ent = {};
+		if(fEnt.id){
+			ent = this.getEntityFromCrudBaseData(fEnt.id);
+			for(let field in fEnt){
+				ent[field] = fEnt[field];
+			}
+		}else{
+			ent = fEnt;
+		}
+		
+		return ent;
+	}
+
+	
+	/**
+	* 入力要素から値を取得する
+	* @param string field フィールド
+	* @param object jqInp 入力要素オブジェクト
+	* @return mixed 入力要素から取得した値
+	*/
+	_getValueFromForm(jqInp, field){
+
+		let tag_name = jqInp.get(0).tagName; // 入力要素のタグ名を取得する
+		tag_name = tag_name.toLowerCase(); // 小文字化
+		
+		// input要素へのセット
+		if(tag_name == 'input'){
+
+			let typ = jqInp.attr('type'); // type属性を取得
+
+			// チェックボックス要素へのセット
+			if(typ=='checkbox'){
+				
+				if(jqInp.prop('checked')){
+					return 1;
+				}else{
+					return 0;
+				}
+
+			}
+
+			// ラジオボタン要素へのセット
+			else if(typ=='radio'){
+
+				let opElm = jqInp.find(":checked");
+				if(opElm[0]){
+					return opElm.val();
+				}else{
+					return null;
+				}
+
+			}
+			
+			// file要素へのセット 
+			//※注意→ ファイル名にはパスが含まれないので注意すること。バックエンド側でパスを生成するためである。
+			else if(typ=='file'){
+				let fileUploadK = this.fileUploadKList[field];
+				let fileNameList = fileUploadK.getFileNames(field);
+
+				if(fileNameList[0]){
+					return fileNameList[0];
+				}
+				return null;
+
+			}
+
+			// type属性がtext,hidden,date,numberなど。
+			else{
+				return jqInp.val();
+			}
+
+		}
+		
+		// SELECTへのセット
+		else if(tag_name == 'select'){
+			return jqInp.val();
+		}
+
+		// テキストエリア用のセット
+		else if(tag_name == 'textarea'){
+			return jqInp.val();
+		}
+		
+		
+	}
+	
+	
+	/**
+	* バリデーション
+	* @param {} fieldData フィールドデータ←省略可
+	* @param {} origMsgList オリジナルメッセージリスト(省略可)→キーはフィールド
+	* @return string エラーメッセージ群テキスト
+	*/
+	validation(fieldData, origMsgList){
+		
+		if(fieldData == null) fieldData = this.crudBaseData.fieldData;
+		if(origMsgList == null) origMsgList = {};
+		
+		let err_msgs_text = '' // エラーメッセージ群テキスト
+		
+		for(let field in fieldData){
+			
+			let jqInp = this._getInpFromForm(field); // 入力要素を取得する 
+			if(jqInp[0] == null) continue;
+			
+			let jqErr = this._getErrFromForm(field); // 入力エラー表示要素を取得する
+
+			// バリデーションチェックをする。
+			if(jqInp[0].checkValidity()){
+				// 正常
+				
+				if(jqErr[0]) jqErr.html(''); // エラー表示要素に空文字をセット
+				
+			}else{
+				// 入力エラーあり
+				
+				let err_msg;
+				if(origMsgList[field]){
+					err_msg = origMsgList[field];
+				}else{
+					err_msg = jqInp.attr('title'); // 入力要素のtitle属性からエラーメッセージを取得する
+				}
+				
+				if(jqErr[0]) jqErr.html(err_msg); // エラー表示要素にエラーメッセージをセットする。
+				err_msgs_text += `<div>${err_msg}</div>`; // エラーメッセージ群テキストにエラーメッセージを追記
+				
+			}
+				
+		}
+		
+		return err_msgs_text;
+
+	}
+	
+	
+	/**
+	* 入力エラー表示要素を取得する
+	* @param string field フィールド名
+	* @return object 入力エラー表示要素
+	*/
+	_getErrFromForm(field){
+		
+		if(this.jqErrs == null) this.jqErrs = {};
+		if(this.jqErrs[field] === undefined){
+			let jqErr = this.jqForm.find(`[data-valid-err='${field}']`);
+			if(jqErr[0] == null){
+				this.jqErrs[field] = 0;
+			}else{
+				this.jqErrs[field] = jqErr;
+			}
+		}
+		
+		return this.jqErrs[field]
+		 
+	}
+	
 	
 	// Check empty.
 	_empty(v){
@@ -474,6 +707,29 @@ class CrudBase4{
 			return data;
 		}
 	}
+	
+	
+	/**
+	* フォームから入力要素を取得する
+	* @param string field フィールド名
+	* @return object 入力要素オブジェクト
+	*/
+	_getInpFromForm(field){
+		
+		if(this.jqInps == null) this.jqInps = {};
+		if(this.jqInps[field] === undefined){
+			let jqInp = this.jqForm.find(`[name='${field}']`);
+			if(jqInp[0] == null){
+				this.jqInps[field] = 0;
+			}else{
+				this.jqInps[field] = jqInp;
+			}
+		}
+		
+		return this.jqInps[field]
+		 
+	}
+	
 	
 	
 	

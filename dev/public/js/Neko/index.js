@@ -7,8 +7,10 @@ var searches; // 検索データ
 var csrf_token; // CSRFトークン
 var baseXHelper; // 基本X
 //var formModalCat; // 入力フォームのモーダル制御オブジェクト//■■■□□□■■■□□□
+var jqMain; // メインコンテンツ
 var jqMainTbl; // 一覧テーブルのjQueryオブジェクト
 var jqForm; // SPA型入力フォームのjQueryオブジェクト
+var jqValidErrMsg; // バリデーションエラーメッセージ表示要素
 
 var autoSave;
 $(()=>{
@@ -67,8 +69,11 @@ $(()=>{
     let showModalBigImg = new ShowModalBigImg('.js_show_modal_big_img');
     
 
+    jqMain =  $('main'); // メインコンテンツ
 	jqMainTbl = $('#main_tbl'); // 一覧テーブル
 	jqForm = $('#form_spa'); // SPA型・入力フォーム
+	jqValidErrMsg = $('.js_valid_err_msg'); // バリデーションエラーメッセージ表示要素
+	
 	
 	//■■■□□□■■■□□□
 	//let clmInfo = g_getColumnInfo('main_tbl');
@@ -297,16 +302,6 @@ function _showForm(row_index){
 	}
 	
 	crudBase.setEntToForm(ent); // 入力フォームにエンティティを反映する
-
-	//■■■□□□■■■□□□
-	// 編集フォームと新規入力フォームで処理は異なる。
-	// 編集フォームの場合、一覧データの行データであるエンティティが必要である。
-	//crudBaseDataに一覧データが格納されているはず。idだけ分かればそこからエンティティを取得できる。
-	// formにエンティティをセットする処理がある。旧CrudBaseを参考にできるだろう。なおname属性で対象フィールドを特定するようにする。
-	//旧CrudBaseではclass属性で対象要素指定していたが、class属性で指定する方法は廃止する。
-	//改行やらXSS対策の問題があるが旧CrudBaseと同様な方法を採用しよう。
-	//CrudBase.jsという名前からCrudBaseメジェーバージョンの番号.jsという名前にしよう。
-	//
 	
 	// 新規入力モード、編集モードのそれぞれの表示切替
 	if(inp_mode=='create'){
@@ -320,7 +315,7 @@ function _showForm(row_index){
 	$('.js_valid_err_msg').html(''); // エラーメッセージをクリア
 	$('.js_registering_msg').html(''); // 登録中のメッセージをクリア
 
-	jqMainTbl.hide(); // メイン一覧テーブルを隠す
+	jqMain.hide(); // メイン一覧テーブルを隠す
 	jqForm.show(); // 入力フォームを表示する
 	
 }
@@ -329,17 +324,25 @@ function _showForm(row_index){
  * SPA型・入力フォーム画面を閉じる
  */
 function closeForm(){
-	jqMainTbl.show();
+	jqMain.show();
 	jqForm.hide();
 }
 
 /**
- * SPA型・入力フォーム画面の登録ボタン押下アクション
+ * SPA型・入力フォーム画面の登録ボタン、または変更ボタン押下アクション
+ * @note 新規入力、編集、複製に関わらず当メソッドを呼び出す。
  */
 function regAction(){
 	
 	// バリデーション
-	// フォームから
+	let err_msg = crudBase.validation(null);
+	jqValidErrMsg.html(err_msg);
+	
+	// 入力フォームからエンティティを取得する
+	let ent = crudBase.getEntByForm();
+	
+	console.log('regAction:ent');//■■■□□□■■■□□□
+	console.log(ent);//■■■□□□■■■□□□
 }
 
 

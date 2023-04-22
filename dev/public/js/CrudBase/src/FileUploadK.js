@@ -12,8 +12,8 @@
  * ファイルの初期表示
  * 
  * @license MIT
- * @version 1.3.10
- * @date 2018-7-6 | 2023-4-4
+ * @version 1.3.11
+ * @date 2018-7-6 | 2023-4-21
  * @history 
  *  - 2021-04-29 var 1.3.0 大幅なバージョンアップ
  *  - 2018-10-2 var 1.2.6 「Now Loading...」メッセージを表示する
@@ -250,6 +250,8 @@ class FileUploadK{
 	
 		// 既存ファイル名要素にファイルパスリストをセットする。
 		this._setToExistFn(fue_id, fps);
+		
+		this.midway_dp = midway_dp; // 中間パス
 	}
 	
 	/**
@@ -408,6 +410,7 @@ class FileUploadK{
 		
 		// バリデーション確認
 		fileData = this._validCheck(fue_id, fileData, comeform); 
+
 		this.box[fue_id]['fileData'] = fileData;
 		
 		
@@ -1402,31 +1405,49 @@ class FileUploadK{
 	
 	
 	/**
-	 * ファイル名リストを取得
+	 * ファイル名リストを取得(パスを省いたファイル名のリスト）
 	 * @param int fue_id ファイル要素のID属性値（省略可）
 	 * @return array ファイル名リスト
 	 */
 	getFileNames(fue_id){
-		
+
 		var fns = [];
 		if(fue_id == null){
 			for(var fue_id in this.box){
-				var fileData = this.box[fue_id]['fileData'];
-				for(var i in fileData){
-					var fEnt = fileData[i];
-					fns.push(fEnt.fn);
-				}
+				var fns2 = this._getFileNames(fue_id);
+				fns.concat(fns2);
+				
 			}
 		}else{
-			var fileData = this.box[fue_id]['fileData'];
-			for(var i in fileData){
-				var fEnt = fileData[i];
-				fns.push(fEnt.fn);
-			}
+			fns = this._getFileNames(fue_id);
 		}
 		return fns;
 	}
 	
+	/**
+	 * ファイル名リストを取得
+	 * @param int fue_id ファイル要素のID属性
+	 * @return array ファイル名リスト
+	 */
+	_getFileNames(fue_id){
+		let fns = [];
+		var fileData = this.box[fue_id]['fileData'];
+		if(!this._empty(fileData)){
+			for(var i in fileData){
+				var fEnt = fileData[i];
+				fns.push(fEnt.fn);
+			}
+		}else{
+			var bData = this.box[fue_id]['bData'];
+			if(bData){
+				for(var i in bData){
+					let fn = bData[i].fn;
+					fns.push(fn);
+				}
+			}
+		}
+		return fns;
+	}
 	
 	
 	/**
@@ -1551,6 +1572,21 @@ class FileUploadK{
 		var a=s.lastIndexOf(mark);
 		var s2=s.substring(a+mark.length,s.length);
 		return s2;
+	}
+	
+	
+	// Check empty.
+	_empty(v){
+		if(v == null || v == '' || v=='0'){
+			return true;
+		}else{
+			if(typeof v == 'object'){
+				if(Object.keys(v).length == 0){
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 	
 

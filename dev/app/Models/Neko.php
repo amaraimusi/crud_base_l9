@@ -68,10 +68,11 @@ class Neko extends CrudBase
 				'note' => [], // 備考
 				'sort_no' => [], // 順番
 				'delete_flg' => [], // 無効フラグ
-				'update_user_id' => [], // 更新者
+				'update_user_id' => [], // 更新ユーザーID
 				'ip_addr' => [], // IPアドレス
 				'created_at' => [], // 生成日時
 				'updated_at' => [], // 更新日
+				'update_user' => [], // 更新者
 		];
 		
 		// フィールドデータへＤＢからのフィールド詳細情報を追加

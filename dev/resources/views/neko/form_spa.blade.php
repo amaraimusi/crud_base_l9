@@ -12,8 +12,8 @@
 		
 			<span class="text-danger js_valid_err_msg">エラーメッセージ</span>
 			<span class="text-success js_registering_msg"  >データベースに登録中です...</span>
-			<button type="button" class="btn btn-success  btn-lg js_submit_btn js_create_mode" onclick="createReg();">登録</button>
-			<button type="button" class="btn btn-warning  btn-lg js_submit_btn js_edit_mode" onclick="editReg();">変更</button>
+			<button type="button" class="btn btn-success  btn-lg js_submit_btn js_create_mode" onclick="regAction();">登録</button>
+			<button type="button" class="btn btn-warning  btn-lg js_submit_btn js_edit_mode" onclick="regAction();">変更</button>
 			<button type="button" class="btn btn-outline-secondary btn-lg close" aria-label="閉じる" onclick="closeForm()" >閉じる</button>
 		</div>
 	</div>
@@ -34,7 +34,7 @@
 	<div class="row mt-2">
 		<div class='col-md-2 ' >ネコ名</div>
 		<div class='col-md-10'>
-			<input type="text" name="neko_name" class="form-control form-control-lg " value=""  maxlength="255" title="ネコ名は255文字以内で入力してください" />
+			<input type="text" name="neko_name" class="form-control form-control-lg " value=""  maxlength="255"  required title="ネコ名は255文字以内で入力してください" />
 			<span class="text-danger" data-valid-err='neko_name'></span>
 		</div>
 	</div>
@@ -72,7 +72,7 @@
 	<div class="row mt-2">
 		<div class='col-md-2' >ネコ日時</div>
 		<div class='col-md-10'>
-			<input type="text" name="neko_dt" class="form-control form-control-lg " value=""  pattern="([0-9]{4})(\/|-)([0-9]{1,2})(\/|-)([0-9]{1,2}) \d{2}:\d{2}:\d{2}" title="日時形式（Y-m-d H:i:s）で入力してください(例：2012-12-12 12:12:12)" />
+			<input type="datetime-local" name="neko_dt" class="form-control form-control-lg " value=""  pattern="([0-9]{4})(\/|-)([0-9]{1,2})(\/|-)([0-9]{1,2}) \d{2}:\d{2}:\d{2}" title="日時形式（Y-m-d H:i:s）で入力してください(例：2012-12-12 01:02:03)" />
 			<span class="text-danger" data-valid-err="neko_dt" ></span>
 		</div>
 	</div>
@@ -111,7 +111,7 @@
 	<div class="row mt-2">
 		<div class='col-md-2' >備考 </div>
 		<div class='col-md-10'>
-			<textarea name="note" class="form-control form-control-lg " maxlength="2000" title="2000文字以内で入力してください" data-folding-ta="40" ></textarea>
+			<textarea name="note" class="form-control form-control-lg " maxlength="2000" title="2000文字以内で入力してください" ></textarea>
 			<div class="text-danger" data-valid-err="note"></div>
 		</div>
 	</div>
@@ -124,19 +124,19 @@
 		
 			<span class="text-danger js_valid_err_msg">エラーメッセージ</span>
 			<span class="text-success js_registering_msg"  >データベースに登録中です...</span>
-			<button type="button" class="btn btn-success  btn-lg js_submit_btn js_create_mode" onclick="createReg();">登録</button>
-			<button type="button" class="btn btn-warning  btn-lg js_submit_btn js_edit_mode" onclick="editReg();">変更</button>
+			<button type="button" class="btn btn-success  btn-lg js_submit_btn js_create_mode" onclick="saveAction();">登録</button>
+			<button type="button" class="btn btn-warning  btn-lg js_submit_btn js_edit_mode" onclick="saveAction();">変更</button>
 			<button type="button" class="btn btn-outline-secondary btn-lg close" aria-label="閉じる" onclick="closeForm()" >閉じる</button>
 		</div>
 	</div>
 	
-	<div class="cbf_inp_wrap" style="padding:5px;">
-		<input type="button" value="更新情報" class="btn btn-secondary btn-sm" onclick="$('#ajax_crud_edit_form_update').toggle(300)" /><br>
-		<aside id="ajax_crud_edit_form_update" style="display:none">
-			更新日時: <span class="modified"></span><br>
-			生成日時: <span class="created"></span><br>
-			ユーザー名: <span class="update_user"></span><br>
-			IPアドレス: <span class="ip_addr"></span><br>
+	<div class="cbf_inp_wrap js_edit_mode" style="padding:5px;">
+		<input type="button" value="更新情報" class="btn btn-secondary btn-sm" onclick="$('#edit_detail_info').toggle(300)" /><br>
+		<aside id="edit_detail_info" style="display:none">
+			<div>更新日時: <span data-display="updated_at"></span></div>
+			<div>生成日時: <span data-display="created_at"></span></div>
+			<div>更新ユーザー名: <span data-display="update_user"></span></div>
+			<div>IPアドレス: <span data-display="ip_addr"></span></div>
 		</aside>
 	</div>
 

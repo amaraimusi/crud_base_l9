@@ -52,6 +52,8 @@ $cbh = new CrudBaseHelper($crudBaseData);
 @endif
 <div id="err" class="text-danger"></div>
 
+<main>
+
 <!-- 検索フォーム -->
 <form method="GET" action="neko">
 		
@@ -189,11 +191,12 @@ $cbh = new CrudBaseHelper($crudBaseData);
 <div>{{$data->appends(request()->query())->links('pagination::bootstrap-4')}} </div><!-- ページネーション -->
 
 
+</main>
+
 @include('neko.form_spa')
 
 
-</main>
-</div><!-- d-flex -->
+
 
 </div><!-- container-fluid -->
 
