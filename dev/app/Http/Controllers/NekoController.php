@@ -118,6 +118,26 @@ class NekoController extends CrudBaseController{
 		
 	}
 	
+	/**
+	 * SPA型・入力フォームの登録アクション
+	 * @return string
+	 */
+	public function regAction(){
+		
+		// ログアウトになっていたらログイン画面にリダイレクト
+		if(\Auth::id() == null) return redirect('login');
+		
+		$json=$_POST['key1'];
+		$res = json_decode($json,true);
+		$res['name'] = '新しい猫';
+		$res['age'] = 1;
+		$res['date'] = '2020-7-23';
+		
+		$json = json_encode($res, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
+		
+		return $json;
+	}
+	
 	
 	/**
 	 * 新規入力画面の表示アクション

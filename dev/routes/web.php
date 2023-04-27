@@ -48,6 +48,7 @@ Route::get('client/csv_download', 'App\Http\Controllers\ClientController@csv_dow
 
 // ネコ管理画面
 Route::get('neko', 'App\Http\Controllers\NekoController@index');
+Route::post('neko/reg_action', 'App\Http\Controllers\NekoController@regAction');
 Route::get('neko/create', 'App\Http\Controllers\NekoController@create');
 Route::post('neko/store', 'App\Http\Controllers\NekoController@store');
 Route::get('neko/show', 'App\Http\Controllers\NekoController@show');

@@ -1,16 +1,19 @@
-var crudBase; // CRUD支援オブジェクト
-var csh; // 列表示切替機能
-var rowExchange; // 行入替機能
-var crudBaseData;
-var data; // 一覧データ
-var searches; // 検索データ
-var csrf_token; // CSRFトークン
-var baseXHelper; // 基本X
-//var formModalCat; // 入力フォームのモーダル制御オブジェクト//■■■□□□■■■□□□
-var jqMain; // メインコンテンツ
-var jqMainTbl; // 一覧テーブルのjQueryオブジェクト
-var jqForm; // SPA型入力フォームのjQueryオブジェクト
-var jqValidErrMsg; // バリデーションエラーメッセージ表示要素
+let crudBase; // CRUD支援オブジェクト
+let csh; // 列表示切替機能
+let rowExchange; // 行入替機能
+let crudBaseData;
+let data; // 一覧データ
+let searches; // 検索データ
+let csrf_token; // CSRFトークン
+let baseXHelper; // 基本X
+//let formModalCat; // 入力フォームのモーダル制御オブジェクト//■■■□□□■■■□□□
+let jqMain; // メインコンテンツ
+let jqMainTbl; // 一覧テーブルのjQueryオブジェクト
+let jqForm; // SPA型入力フォームのjQueryオブジェクト
+let jqValidErrMsg; // バリデーションエラーメッセージ表示要素
+let jqRegistMsg; // 登録成功メッセージ要素	←「登録中」、「登録しました」などのメッセージを表示する。
+let jqCreateMode; // 新規入力モード ←新規入力モードのみ表示するセレクタ
+let jqEditMode; // 編集モード ←編集モードのみ表示するセレクタ
 
 var autoSave;
 $(()=>{
@@ -24,7 +27,10 @@ $(()=>{
     searches = crudBaseData.searches;
     
 	// CRUD支援オブジェクト
-	crudBase = new CrudBase4(crudBaseData);
+	crudBase = new CrudBase4(crudBaseData,{
+		'main_tbl_slt': '#main_tbl', // メイン一覧テーブル ←メイン一覧である<table>のセレクタ。
+		'form_slt': '#form_spa', // 入力フォーム ← SPA型・入力フォーム。入力フォーム一つに、新規入力モード、編集モード、複製モードが含まれる。
+	});
 	
 	// 列の順番である列インデックスをフィールドデータにセットします。
 	crudBaseData.fieldData = crudBase.setColumnIndex(crudBaseData.fieldData); 
@@ -37,9 +43,6 @@ $(()=>{
 	
 	// 入力フォーム要素内のテキストエリアの高さを自動調整する
 	crudBase.automateTextareaHeight(crudBaseData.fieldData);
-	
-	
-	console.log(crudBaseData.fieldData);//■■■□□□■■■□□□
 
 	csrf_token = $('#csrf_token').val();
 	
@@ -68,13 +71,13 @@ $(()=>{
     // 一覧中のサムネイル画像をクリックしたら画像をモーダル化しつつ大きく表示する。
     let showModalBigImg = new ShowModalBigImg('.js_show_modal_big_img');
     
-
     jqMain =  $('main'); // メインコンテンツ
 	jqMainTbl = $('#main_tbl'); // 一覧テーブル
 	jqForm = $('#form_spa'); // SPA型・入力フォーム
 	jqValidErrMsg = $('.js_valid_err_msg'); // バリデーションエラーメッセージ表示要素
-	
-	
+	jqRegistMsg = $('.js_registering_msg'); // 登録成功メッセージ要素	←「登録中」、「登録しました」などのメッセージを表示する。
+	jqCreateMode = $('.js_create_mode'); // 新規入力モードのみ表示する要素
+	jqEditMode = $('.js_edit_mode'); // 編集モードのみ表示する要素
 	//■■■□□□■■■□□□
 	//let clmInfo = g_getColumnInfo('main_tbl');
 
@@ -305,15 +308,15 @@ function _showForm(row_index){
 	
 	// 新規入力モード、編集モードのそれぞれの表示切替
 	if(inp_mode=='create'){
-		$('.js_create_mode').show();
-		$('.js_edit_mode').hide();
+		jqCreateMode.show();
+		jqEditMode.hide();
 	}else{
-		$('.js_create_mode').hide();
-		$('.js_edit_mode').show();
+		jqCreateMode.hide();
+		jqEditMode.show();
 	}
 	
-	$('.js_valid_err_msg').html(''); // エラーメッセージをクリア
-	$('.js_registering_msg').html(''); // 登録中のメッセージをクリア
+	jqValidErrMsg .html(''); // エラーメッセージをクリア
+	jqRegistMsg.html(''); // 登録中のメッセージをクリア
 
 	jqMain.hide(); // メイン一覧テーブルを隠す
 	jqForm.show(); // 入力フォームを表示する
@@ -334,15 +337,24 @@ function closeForm(){
  */
 function regAction(){
 	
-	// バリデーション
+	// バリデーションによる入力チェック
 	let err_msg = crudBase.validation(null);
 	jqValidErrMsg.html(err_msg);
 	
 	// 入力フォームからエンティティを取得する
 	let ent = crudBase.getEntByForm();
 	
-	console.log('regAction:ent');//■■■□□□■■■□□□
-	console.log(ent);//■■■□□□■■■□□□
+	jqRegistMsg.html('登録中です...');
+	
+	// SPA型・登録アクション
+	crudBase.regAction(ent,'neko/reg_action', {
+		'callback': (param)=>{
+			// DB登録後のコールバック処理内容
+			jqRegistMsg.html('登録しました。'); 
+		}
+	});
+	
+	
 }
 
 

@@ -29,17 +29,22 @@ class CrudBase4{
 	* コンストラクタ
 	* @param {} crudBaseData 
 	* @param {} options オプションパラメータ　←省略可能
+	*     - string main_tbl_slt メインテーブル一覧のセレクタ
+	*     - string form_slt 入力フォームのセレクタ
 	*/
 	constructor(crudBaseData, options){
         this.crudBaseData = crudBaseData;
 		
 		if (options == null) options = {};
-		if(options.main_tbl_slt == null) options.main_tbl_slt= '#main_tbl'; // メイン一覧テーブルのセレクタ
-		if(options.form_slt == null) options.form_slt= '#form_spa'; // 入力フォームのセレクタ
+		//if(options.main_slt == null) options.mainl_slt= 'main'; // メイン区分 ←入力フォームが表示されている時に隠す範囲のセレクタ。
+		if(options.main_tbl_slt == null) options.main_tbll_slt= '#main_tbl'; // メイン一覧テーブル ←メイン一覧である<table>のセレクタ。
+		if(options.form_slt == null) options.forml_slt= '#form_spa'; // 入力フォーム ← SPA型・入力フォーム。入力フォーム一つに、新規入力モード、編集モード、複製モードが含まれる。
+
 		this.options = options;
 		
-		this.jqMainTbl = jQuery(options.main_tbl_slt); // メインテーブル一覧の要素オブジェクト
-		this.jqForm = jQuery(options.form_slt); // 入力フォームの要素オブジェクト
+		this.jqMainTbl = jQuery(options.main_tbl_slt); // メイン一覧テーブル
+		this.jqForm = jQuery(options.form_slt); // 入力フォーム
+
 		
     }
     
@@ -731,7 +736,71 @@ class CrudBase4{
 	}
 	
 	
+	/**
+	* SPA型・登録アクション
+	* @param {} ent エンティティ
+	* @param {} options オプション
+	*    - string csrf_token CSRFトークン
+	*    - function callback 登録後に実行するコールバック関数
+	* @param string csrf_token CSRFトークン（省略可）
+	* @return object 入力要素オブジェクト
+	*/	
+	regAction(ent, ajax_url, options){
+		
+		if(options == null) options = {};
+		if(options.csrf_token == null) options.csrf_token = this._getCsrfToken();
+		let csrf_token = options.csrf_token
+
+		let fd = new FormData(); // 送信フォームデータ
+		let data = {'ent':ent}; // バックエンド側に送信するデータ
+		let json = JSON.stringify(data);
+		fd.append( "key1", json );
+		
+		// CSRFトークンを送信フォームデータにセットする。
+		let token = jQuery('#csrf_token').val();
+		fd.append( "_token", token );
+		
+		fetch(ajax_url, {
+			method: 'POST',
+			body: fd,
+		})
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			if(options.callback){
+				options.callback(); // コールバックを実行する
+			}
+		})
+		.catch(error => {
+			
+			console.error(error);
+			alert('通信エラー');
+			
+		});
+	}
 	
+	
+	/**
+	* CSRFトークンを取得する
+	* @return CSRFトークン
+	* @throw CSRFトークン取得失敗
+	*/
+	_getCsrfToken(){
+		let csrf_token = '';
+		
+		if(this.crudBaseData.csrf_token) return this.crudBaseData.csrf_token;
+		
+		let csrfTokenElm = $('#csrf_token');
+		if(csrfTokenElm[0]){
+			return csrfTokenElm.val();
+		}
+
+		throw Error('システムエラー23042515A:CSRFトークンが取得できませんでした。');
+		
+	}
+	
+
 	
 }
 
