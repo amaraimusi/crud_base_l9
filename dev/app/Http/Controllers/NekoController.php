@@ -128,7 +128,10 @@ class NekoController extends CrudBaseController{
 		if(\Auth::id() == null) return redirect('login');
 		
 		$json=$_POST['key1'];
+		
 		$res = json_decode($json,true);
+		
+		dump($res);//■■■□□□■■■□□□)
 		$res['name'] = '新しい猫';
 		$res['age'] = 1;
 		$res['date'] = '2020-7-23';

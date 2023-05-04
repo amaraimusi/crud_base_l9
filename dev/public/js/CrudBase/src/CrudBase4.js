@@ -31,6 +31,7 @@ class CrudBase4{
 	* @param {} options オプションパラメータ　←省略可能
 	*     - string main_tbl_slt メインテーブル一覧のセレクタ
 	*     - string form_slt 入力フォームのセレクタ
+	*     - string err_slt エラー表示場所のセレクタ
 	*/
 	constructor(crudBaseData, options){
         this.crudBaseData = crudBaseData;
@@ -39,11 +40,13 @@ class CrudBase4{
 		//if(options.main_slt == null) options.mainl_slt= 'main'; // メイン区分 ←入力フォームが表示されている時に隠す範囲のセレクタ。
 		if(options.main_tbl_slt == null) options.main_tbll_slt= '#main_tbl'; // メイン一覧テーブル ←メイン一覧である<table>のセレクタ。
 		if(options.form_slt == null) options.forml_slt= '#form_spa'; // 入力フォーム ← SPA型・入力フォーム。入力フォーム一つに、新規入力モード、編集モード、複製モードが含まれる。
+		if(options.err_slt == null) options.err_slt= '#err';
 
 		this.options = options;
 		
 		this.jqMainTbl = jQuery(options.main_tbl_slt); // メイン一覧テーブル
 		this.jqForm = jQuery(options.form_slt); // 入力フォーム
+		this.jqErr = jQuery(options.err_slt); // エラー表示要素
 
 		
     }
@@ -765,7 +768,16 @@ class CrudBase4{
 			body: fd,
 		})
 		.then(response => {
-			return response.json();
+			
+			return response.text()
+				.then(text => {
+					try {
+						return JSON.parse(text);
+					} catch (e) {
+						this.jqErr.html(`<strong>バックエンド側でエラーが起きました。</strong><br>${text}`);
+					}
+				});
+
 		})
 		.then(data => {
 			if(options.callback){
@@ -773,9 +785,9 @@ class CrudBase4{
 			}
 		})
 		.catch(error => {
-			
-			console.error(error);
-			alert('通信エラー');
+
+			console.log(error.message);
+			alert('エラー');
 			
 		});
 	}
