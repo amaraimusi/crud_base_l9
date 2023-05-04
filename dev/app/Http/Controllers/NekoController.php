@@ -119,7 +119,7 @@ class NekoController extends CrudBaseController{
 	}
 	
 	/**
-	 * SPA型・入力フォームの登録アクション
+	 * SPA型・入力フォームの登録アクション | 新規入力アクション、編集更新アクション、複製入力アクションに対応しています。
 	 * @return string
 	 */
 	public function regAction(){
@@ -131,12 +131,52 @@ class NekoController extends CrudBaseController{
 		
 		$res = json_decode($json,true);
 		
-		dump($res);//■■■□□□■■■□□□)
-		$res['name'] = '新しい猫';
-		$res['age'] = 1;
-		$res['date'] = '2020-7-23';
+		$ent = $res['ent'];
+
+		// IDフィールドです。 IDが空である場合、 新規入力アクションという扱いになります。なお、複製入力アクションは新規入力アクションに含まれます。
+		$id = !empty($ent['id']) ? $ent['id'] : null;
 		
-		$json = json_encode($res, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
+		// モデルを生成します。 新規入力アクションは真っ新なモデルを生成しますが、編集更新アクションの場合は、行データが格納されたモデルを生成します。
+		$model = empty($id) ? new Neko() : Neko::find($id);
+		
+		$userInfo = $this->getUserInfo(); // ログインユーザーのユーザー情報を取得する
+		
+		if(empty($ent['neko_date'])) $ent['neko_date'] = null;
+		if(empty($ent['neko_dt'])) $ent['neko_dt'] = null;
+		
+		// CBBXS-XXXX
+		$model->neko_val = $ent['neko_val']; // neko_val
+		$model->neko_name = $ent['neko_name']; // neko_name
+		$model->neko_date = $ent['neko_date']; // neko_date
+		$model->neko_type = $ent['neko_type']; // 猫種別
+		$model->neko_dt = $ent['neko_dt']; // neko_dt
+		$model->neko_flg = $ent['neko_flg']; // ネコフラグ
+		$model->img_fn = $ent['img_fn']; // 画像ファイル名
+		$model->note = $ent['note']; // 備考
+		
+		// CBBXE
+		
+		$model->delete_flg = 0;
+		$model->update_user_id = $userInfo['id'];
+		$model->ip_addr = $userInfo['ip_addr'];
+		
+		
+		if(empty($id)){
+			$model->save(); // DBへ新規追加: 同時に$modelに新規追加した行のidがセットされる。
+		}else{
+			$model->update(); // DB更新
+		}
+		
+		// ▼ ファイルアップロード関連
+		$fileUploadK = CrudBase::factoryFileUploadK();
+		$ent = $model->toArray();
+		//$ent['img_fn_exist'] = $request->img_fn_exist; // 既存・画像ファイル名 img_fnの付属パラメータ■■■□□□■■■□□□
+		$model->img_fn = $fileUploadK->uploadForLaravelMpa($_FILES, $ent, 'img_fn', 'img_fn_exist');
+		$model->update(); // DB更新
+
+		$ent = $model->toArray();
+		
+		$json = json_encode($ent, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 		
 		return $json;
 	}

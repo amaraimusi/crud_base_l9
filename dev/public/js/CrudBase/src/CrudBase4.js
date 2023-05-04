@@ -759,6 +759,10 @@ class CrudBase4{
 		let json = JSON.stringify(data);
 		fd.append( "key1", json );
 		
+		for(let fu_field in this.fileUploadKList){
+			fd = this._setFilesToFd(fd, fu_field);
+		}
+
 		// CSRFトークンを送信フォームデータにセットする。
 		let token = jQuery('#csrf_token').val();
 		fd.append( "_token", token );
@@ -790,6 +794,38 @@ class CrudBase4{
 			alert('エラー');
 			
 		});
+	}
+	
+	
+	/**
+	 * FDにファイルオブジェクトをセットする
+	 * @param FileData fd FD
+	 * @param string field フィールド
+	 * @return FileData FD
+	 */
+	_setFilesToFd(fd, field){
+		
+		let fileUploadK = this.fileUploadKList[field];
+		let box = fileUploadK.box;
+
+		for(let fu_id in box){
+
+			let files = box[fu_id]['files']; // FDにセット予定のファイルオブジェクトを取得する
+
+			if(files == null) continue;
+			if(files[0] == null) continue;
+			
+			let fileData = box[fu_id]['fileData']; // エラーチェックのためにフィールドデータを取得 （フィールドデータにはFU要素やDnD由来のMIME,サイズ、ファイル名がセットされている。）
+			if(fileData[0] == null) continue;
+			let fEnt = fileData[0]; // フィールドエンティティを取得 (単一アップロードなので一行目のみ取得)
+			if(fEnt.err_flg == false){ // エラーでない場合
+				fd.append(field, files[0]); // FDにファイルオブジェクトをセットする
+			}
+
+		}
+
+		return fd;
+
 	}
 	
 	

@@ -124,8 +124,8 @@
 		
 			<span class="text-danger js_valid_err_msg">エラーメッセージ</span>
 			<span class="text-success js_registering_msg"  >データベースに登録中です...</span>
-			<button type="button" class="btn btn-success  btn-lg js_submit_btn js_create_mode" onclick="saveAction();">登録</button>
-			<button type="button" class="btn btn-warning  btn-lg js_submit_btn js_edit_mode" onclick="saveAction();">変更</button>
+			<button type="button" class="btn btn-success  btn-lg js_submit_btn js_create_mode" onclick="regAction();">登録</button>
+			<button type="button" class="btn btn-warning  btn-lg js_submit_btn js_edit_mode" onclick="regAction();">変更</button>
 			<button type="button" class="btn btn-outline-secondary btn-lg close" aria-label="閉じる" onclick="closeForm()" >閉じる</button>
 		</div>
 	</div>
