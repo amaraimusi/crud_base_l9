@@ -270,7 +270,7 @@ function openNoteDetail(btnElm,field){
 function clickCreateBtn(btn){
 	
 	// SPA型・入力フォーム画面を開く
-	_showForm();
+	_showForm(null, 'create');
 }
 
 /**
@@ -282,32 +282,47 @@ function clickEditBtn(btn){
     let row_index = crudBase.getRowIndexFromButtonPosition(btn);
 	
 	// SPA型・入力フォーム画面を開く
-	_showForm(row_index);
+	_showForm(row_index, 'edit');
+}
+
+/**
+ * SPA型・複製ボタン押下時の処理
+ */
+function clickCopyBtn(btn){
+	
+    // 現在のボタンの位置から行インデックスを取得します。
+    let row_index = crudBase.getRowIndexFromButtonPosition(btn);
+	
+	// SPA型・入力フォーム画面を開く
+	_showForm(row_index, 'copy');
 }
 
 /**
  * SPA型・入力フォーム画面を開く
  * @note フォーム画面はSPA型であり、新規入力と編集に対応する
  * @param int row_index 行インデックス ← メイン一覧テーブルの行番　← 未セットなら新規入力、セットすれば編集という扱いになる。
+ * @param string inp_mode 入力モード　create:新規入力モード, edit:編集モード, copy:複製モード
  */
-function _showForm(row_index){
+function _showForm(row_index, inp_mode){
 	
-	let inp_mode = 'create'; // 新規入力モード
-	if(row_index != null) inp_mode = 'edit'; // 編集モード
 	
 	let ent = {};
 	if(inp_mode == 'create'){
 		// デフォルトエンティティを取得する
 		ent = crudBase.getDefaultEntity();
-	}else{
+	}else if(inp_mode == 'edit' || inp_mode == 'copy'){
 		// メイン一覧テーブルの行インデックスに紐づく行からエンティティを取得する
 		ent = crudBase.getEntityByRowIndex(row_index);
+		
+	}else{
+		throw new Error('システムエラー23051109A');
 	}
 	
-	crudBase.setEntToForm(ent); // 入力フォームにエンティティを反映する
+	// 入力フォームにエンティティを反映する
+	crudBase.setEntToForm(ent, row_index, inp_mode); 
 	
-	// 新規入力モード、編集モードのそれぞれの表示切替
-	if(inp_mode=='create'){
+	// 新規入力モード、編集モードのそれぞれの表示切替。 複製は新規入力モード扱い
+	if(inp_mode=='create' || inp_mode=='copy'){
 		jqCreateMode.show();
 		jqEditMode.hide();
 	}else{
@@ -341,6 +356,8 @@ function regAction(){
 	let err_msg = crudBase.validation(null);
 	jqValidErrMsg.html(err_msg);
 	
+	if(err_msg != '') return;
+	
 	// 入力フォームからエンティティを取得する
 	let ent = crudBase.getEntByForm();
 	
@@ -351,6 +368,8 @@ function regAction(){
 		'callback': (param)=>{
 			// DB登録後のコールバック処理内容
 			jqRegistMsg.html('登録しました。'); 
+				jqMain.show();
+				jqForm.hide();
 		}
 	});
 	

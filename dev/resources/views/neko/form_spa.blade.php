@@ -42,7 +42,7 @@
 	<div class="row mt-2">
 		<div class='col-md-2' >ネコ数値 </div>
 		<div class='col-md-10'>
-			<input type="number" name="neko_val" class="form-control form-control-lg " value="" pattern="^[0-9]+$"  title="ネコ数値は数値を入力してください" />
+			<input type="number" name="neko_val" class="form-control form-control-lg " value="" pattern="^[0-9]+$"  title="ネコ数値は数値を入力してください" required />
 			<span class="text-danger" data-valid-err="neko_val" ></span>
 		</div>
 	</div>
@@ -61,7 +61,7 @@
 		<div class='col-md-10'>
 			<select name="neko_type" class="form-control form-control-lg">
 				@foreach ($nekoTypeList as $neko_type => $neko_type_name)
-					<option value="{{ $neko_type }}" @selected(old('neko_type', $ent->neko_type) == $neko_type)>
+					<option value="{{ $neko_type }}" @selected(old('neko_type', $searches['neko_type']) == $neko_type)>
 						{{ $neko_type_name }}
 					</option>
 				@endforeach

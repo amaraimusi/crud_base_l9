@@ -32,6 +32,7 @@ class CrudBase4{
 	*     - string main_tbl_slt メインテーブル一覧のセレクタ
 	*     - string form_slt 入力フォームのセレクタ
 	*     - string err_slt エラー表示場所のセレクタ
+	*     - string create_tr_place	新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
 	*/
 	constructor(crudBaseData, options){
         this.crudBaseData = crudBaseData;
@@ -41,6 +42,7 @@ class CrudBase4{
 		if(options.main_tbl_slt == null) options.main_tbll_slt= '#main_tbl'; // メイン一覧テーブル ←メイン一覧である<table>のセレクタ。
 		if(options.form_slt == null) options.forml_slt= '#form_spa'; // 入力フォーム ← SPA型・入力フォーム。入力フォーム一つに、新規入力モード、編集モード、複製モードが含まれる。
 		if(options.err_slt == null) options.err_slt= '#err';
+		if(options.create_tr_place == null) options.create_tr_place= 0; // 新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
 
 		this.options = options;
 		
@@ -74,7 +76,7 @@ class CrudBase4{
 	
 	/**
 	* 列インデックス情報を取得します。
-	* @return {} 列インデックス情報
+	* @return {} 列インデックス情報:キーはフィールド、値は列番号
 	*/
 	getColumnIndexs(){
 		let clmIndexs = {}; // 列インデックス情報
@@ -335,8 +337,10 @@ class CrudBase4{
 	/**
 	* 入力フォームにエンティティを反映する
 	* @param {} ent エンティティ
+	* @param int row_index 行インデックス ← メイン一覧テーブルの行番
+	* @param string inp_mode 入力モード: create:新規入力モード, edit:編集モード, copy:複製モード
 	*/
-	setEntToForm(ent){
+	setEntToForm(ent, row_index, inp_mode){
 		
 		for(let field in ent){
 			let value = ent[field];
@@ -352,6 +356,9 @@ class CrudBase4{
 				jqDisplay.html(value2);
 			}
 		}
+		
+		this.row_index = row_index;
+		this.inp_mode = inp_mode;
 
 	}
 	
@@ -784,6 +791,13 @@ class CrudBase4{
 
 		})
 		.then(data => {
+			
+			// メイン一覧テーブルの行数を取得する
+			let row_count = this._getRowCountFromMainTable();
+			if(row_count == 0) location.reload(true); // メイン一覧テーブルの行数が0件ならブラウザリロードする。
+			this.row_count = row_count;
+			
+			this.setEntToRow(data); // メイン一覧の行にエンティティをセットする。
 			if(options.callback){
 				options.callback(); // コールバックを実行する
 			}
@@ -794,6 +808,18 @@ class CrudBase4{
 			alert('エラー');
 			
 		});
+	}
+	
+				// 
+	/**
+	 * メイン一覧テーブルの行数を取得する
+	 * @return int メイン一覧テーブルの行数
+	 */
+	_getRowCountFromMainTable(){
+		
+		let row_count = this.jqMainTbl.find('tbody tr').length;
+		return row_count;
+		
 	}
 	
 	
@@ -846,6 +872,81 @@ class CrudBase4{
 
 		throw Error('システムエラー23042515A:CSRFトークンが取得できませんでした。');
 		
+	}
+	
+	/**
+	* メイン一覧の行にエンティティをセットする。
+	* @param {} ent エンティティ
+	*/
+	setEntToRow(ent){
+		console.log('ent');//■■■□□□■■■□□□
+		console.log(ent);//■■■□□□■■■□□□
+		
+		let fieldData = this.crudBaseData.fieldData;
+		console.log(fieldData);//■■■□□□■■■□□□
+		
+		
+		// 新規入力モードまたは複製モード、もしくはidが空である場合、メイン一覧テーブルに新しい行を作成する。
+		if(this.inp_mode == 'create' || this.inp_mode == 'copy' || this._empty(ent.id)){
+			console.log('新規入寮の行作成');//■■■□□□■■■□□□
+			let res = this._createNewRow(); // メイン一覧テーブルに新しい行を作成する。
+			
+		}
+		
+//			* @param int row_index 行インデックス ← メイン一覧テーブルの行番
+//	* @param string inp_mode 入力モード: 新規入力モードか編集モードを表す値
+//			this.row_index = row_index;
+//		this.inp_mode = inp_mode;
+//'create' or 'edit'
+		
+		// 新規入力モードである場合
+		//	options.create_tr_place	新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
+		
+		//　	データ件数が0件であるなら、ブラウザリロードする。
+		// 	新しい行を作成する
+		//	メイン一覧テーブルから先頭の行を新規行HTMLとして取得する
+		//	新規入力追加場所フラグを見てメイン一覧テーブルの先頭または末尾に追加する。
+		//	新行のクリーニングを行う
+		//		ボタン群の列以外はクリアする。→カスタム系はコールバックで対処するよう促す。
+		//	ボタン群にidをセットする
+		// 編集モードである場合
+		// ※新規入力モードで行を挿入した時、行インデックスはズレるので要テストする。たぶん問題ないと思うが。
+		
+		let clmIndexList = this.getColumnIndexs(); // 列インデックス情報を取得します。
+		for(let field in clmIndexList){
+			
+			// 列番号を取得する
+			let clm_index = clmIndexList[field] ?? null;
+			if(clm_index == null) continue;
+			
+			// エンティティから値を取得し、XSSサニタイズする。
+			let value = ent[field] ?? '';
+			let value2 = this._xssSanitize(value);
+			
+			
+			
+			// CrudBaseData内で保持するデータにも反映すること。
+			
+//			this.row_index = row_index;
+//			this.inp_mode = inp_mode;
+			
+			console.log('field=' + field + ':' + 'clm_index=' +  clm_index);//■■■□□□■■■□□□
+			let fdEnt = fieldData[field];
+			
+			if(fdEnt == null){
+				continue;
+			}
+			
+		}
+		
+	}
+	
+	/**
+	* メイン一覧テーブルに新しい行を作成する。
+	*/
+	_createNewRow(){
+		
+		// ■■■□□□■■■□□□作成中
 	}
 	
 

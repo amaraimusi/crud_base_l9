@@ -176,8 +176,9 @@ $cbh = new CrudBaseHelper($crudBaseData);
 					{!! $cbh->rowExchangeBtn($searches) !!}<!-- 行入替ボタン -->
 					<a href="neko/show?id={{$ent->id}}" class="btn btn-info btn-sm text-light">詳細</a>
 					<button type="button" class="btn btn-primary btn-sm" onclick="clickEditBtn(this)">編集</button>
+					<button type="button" class="btn btn-success btn-sm" onclick="clickCopyBtn(this)">複製</button>
 					<a href="neko/edit?id={{$ent->id}}" class="btn btn-primary btn-sm">編集・MPA型</a>
-					<a href="neko/create?id={{$ent->id}}" class="btn btn-success btn-sm">複製</a>
+					<a href="neko/create?id={{$ent->id}}" class="btn btn-success btn-sm">複製・MPA型</a>
 					{!! $cbh->disabledBtn($searches, $ent->id) !!}<!-- 削除/削除取消ボタン（無効/有効ボタン） -->
 					{!! $cbh->destroyBtn($searches, $ent->id) !!}<!-- 抹消ボタン -->
 					
