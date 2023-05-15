@@ -267,7 +267,7 @@ class CrudBase4{
 	* @return {} エンティティ
 	*/
 	getEntityFromCrudBaseData(id){
-		let data = this.crudBaseData.data.data;
+		let data = this.crudBaseData.list_data.data;
 
 		for(let i in data){
 			let ent = data[i];
@@ -286,7 +286,7 @@ class CrudBase4{
 	* @param {} pEnt エンティティ
 	*/
 	setEntityToCrudBaseData(pEnt){
-		let data = this.crudBaseData.data.data;
+		let data = this.crudBaseData.list_data.data;
 
 		for(let i in data){
 			let ent = data[i];
@@ -913,15 +913,9 @@ class CrudBase4{
 			// 列番号を取得する
 			let clm_index = clmIndexList[field] ?? null;
 			if(clm_index == null) continue;
-			
 
-			
 			// 行へフィールドに該当する値をセットする
-			this._setValueToRow(targetTr, ent, field);
-			
-
-			// CrudBaseData内で保持するデータにも反映すること。
-			
+			this._setValueToRow(targetTr, ent2, field);
 
 			let fdEnt = fieldData[field];
 			
@@ -931,7 +925,62 @@ class CrudBase4{
 			
 		}
 		
+		// ボタン群の各ボタンのURLのidを書き換える
+		this._replaceButtonIdsInUrls(targetTr, ent.id);
+		
+		// CrudBaseData内で保持するデータにも反映すること。
+		this._setEntityToCrudBaseData(ent2);
+		
 	}
+	
+	
+	/**
+	* CrudBaseData内で保持するデータに反映
+	* @param jQuery targetTr 行オブジェクト
+	* @param int id_prefix ID
+	*/
+	_setEntityToCrudBaseData(ent){
+		let data = this.crudBaseData.list_data.data;
+		
+		// 編集時の反映
+		for(let i in data){
+			let ent0 = data[i];
+			if(ent0.id == ent.id){
+				for(let field in ent){
+					let value = ent[field];
+					ent0[field] = value;
+				}
+				return;
+			}
+		}
+		
+		// 新規入力時の反映
+		data.push(ent);
+		
+
+	}
+			
+	
+	/**
+	* ボタン群の各ボタンのURLのidを書き換える
+	* @param jQuery targetTr 行オブジェクト
+	* @param int id_prefix ID
+	*/
+	_replaceButtonIdsInUrls(targetTr, id_prefix){
+		
+		let ankers = targetTr.find('a');
+		ankers.each((i, elm)=>{
+			let anker = $(elm);
+			let url = anker.attr('href');
+			
+			// URLのid部分を書き換える。
+			url = url.replace(/(id=)\d+/, '$1' + id_prefix);
+			
+			anker.attr('href', url);
+		});
+		
+	}
+		
 	
 	
 	/**

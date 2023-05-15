@@ -88,7 +88,7 @@ class NekoController extends CrudBaseController{
         // CBBXE
         
 		$crudBaseData = [
-				'data'=>$data,
+				'list_data'=>$data,
 				'searches'=>$searches,
 				'userInfo'=>$userInfo,
 				'paths'=>$paths,
