@@ -391,6 +391,14 @@ border-radius: 35px;
 
 
 
+
+.create_tr{
+	background-color:#fbd2ee;
+}
+
+.edit_tr{
+	background-color:#dbeaf9;
+}
 @charset "UTF-8";
 
 #crud_base_bulk_add #cbba_div{

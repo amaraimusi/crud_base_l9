@@ -147,7 +147,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 			<th data-field='updated_at'>{!! $cbh->sortLink($searches, 'neko', 'updated_at', '更新日') !!}</th>
 
 			<!-- CBBXE -->
-			<th style="width:280px"></th>
+			<th class='js_btns' 'style="width:280px"></th>
 		</tr>
 	</thead>
 	<tbody>

@@ -342,6 +342,8 @@ class CrudBase4{
 	*/
 	setEntToForm(ent, row_index, inp_mode){
 		
+		if(inp_mode == 'create' || inp_mode == 'copy') ent['id'] = null;
+		
 		for(let field in ent){
 			let value = ent[field];
 			let jqInp = this._getInpFromForm(field); // フォームから入力要素を取得する
@@ -568,13 +570,14 @@ class CrudBase4{
 
 			// ラジオボタン要素へのセット
 			else if(typ=='radio'){
-
-				let opElm = jqInp.find(":checked");
-				if(opElm[0]){
-					return opElm.val();
-				}else{
-					return null;
+				
+				let jqInp2 = this.jqForm.find(`[name='${field}']:checked`);
+				
+				if(jqInp2[0]){
+					return jqInp2.val();
 				}
+				
+				return null;
 
 			}
 			
@@ -791,7 +794,7 @@ class CrudBase4{
 
 		})
 		.then(data => {
-			
+
 			// メイン一覧テーブルの行数を取得する
 			let row_count = this._getRowCountFromMainTable();
 			if(row_count == 0) location.reload(true); // メイン一覧テーブルの行数が0件ならブラウザリロードする。
@@ -879,39 +882,31 @@ class CrudBase4{
 	* @param {} ent エンティティ
 	*/
 	setEntToRow(ent){
-		console.log('ent');//■■■□□□■■■□□□
-		console.log(ent);//■■■□□□■■■□□□
-		
+
 		let fieldData = this.crudBaseData.fieldData;
-		console.log(fieldData);//■■■□□□■■■□□□
-		
+
+		let targetTr = null; // 対象行: 新規追加した行オブジェクトか、編集中の行オブジェクト。
+		let row_index = null; // 対象行の行インデックス
 		
 		// 新規入力モードまたは複製モード、もしくはidが空である場合、メイン一覧テーブルに新しい行を作成する。
 		if(this.inp_mode == 'create' || this.inp_mode == 'copy' || this._empty(ent.id)){
-			console.log('新規入寮の行作成');//■■■□□□■■■□□□
 			let res = this._createNewRow(); // メイン一覧テーブルに新しい行を作成する。
+			row_index = res.row_index;
+			targetTr = res.newTr;
+
+		}else{
+			row_index = this.row_index; // 編集中の行インデックス
+			targetTr = this._getTrFromMainTable(row_index); // 編集中の行
+			targetTr.addClass('edit_tr'); // class属性を追加。編集した行の背景色を変える
 			
 		}
 		
-//			* @param int row_index 行インデックス ← メイン一覧テーブルの行番
-//	* @param string inp_mode 入力モード: 新規入力モードか編集モードを表す値
-//			this.row_index = row_index;
-//		this.inp_mode = inp_mode;
-//'create' or 'edit'
-		
-		// 新規入力モードである場合
-		//	options.create_tr_place	新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
-		
-		//　	データ件数が0件であるなら、ブラウザリロードする。
-		// 	新しい行を作成する
-		//	メイン一覧テーブルから先頭の行を新規行HTMLとして取得する
-		//	新規入力追加場所フラグを見てメイン一覧テーブルの先頭または末尾に追加する。
-		//	新行のクリーニングを行う
-		//		ボタン群の列以外はクリアする。→カスタム系はコールバックで対処するよう促す。
-		//	ボタン群にidをセットする
-		// 編集モードである場合
-		// ※新規入力モードで行を挿入した時、行インデックスはズレるので要テストする。たぶん問題ないと思うが。
-		
+		// デフォルトエンティティを取得し、引数のエンティティをマージする。
+		let ent2 = this.getDefaultEntity();
+		for(let field in ent){
+			ent2[field] = ent[field];
+		}
+
 		let clmIndexList = this.getColumnIndexs(); // 列インデックス情報を取得します。
 		for(let field in clmIndexList){
 			
@@ -919,18 +914,15 @@ class CrudBase4{
 			let clm_index = clmIndexList[field] ?? null;
 			if(clm_index == null) continue;
 			
-			// エンティティから値を取得し、XSSサニタイズする。
-			let value = ent[field] ?? '';
-			let value2 = this._xssSanitize(value);
+
 			
+			// 行へフィールドに該当する値をセットする
+			this._setValueToRow(targetTr, ent, field);
 			
-			
+
 			// CrudBaseData内で保持するデータにも反映すること。
 			
-//			this.row_index = row_index;
-//			this.inp_mode = inp_mode;
-			
-			console.log('field=' + field + ':' + 'clm_index=' +  clm_index);//■■■□□□■■■□□□
+
 			let fdEnt = fieldData[field];
 			
 			if(fdEnt == null){
@@ -941,13 +933,177 @@ class CrudBase4{
 		
 	}
 	
+	
+	/**
+	* 行へフィールドに該当する値をセットする
+	* @param jQuery jqTr TR要素オブジェクト
+	* @param {} ent エンティティ
+	* @param string field フィールド
+	*/
+	_setValueToRow(jqTr, ent, field){
+
+		let fieldInfo = this.crudBaseData.fieldData[field]; // フィールド情報
+		if(fieldInfo==null) return;
+		
+		let clm_index = fieldInfo.clm_index; // 列インデックス
+		let jqTd = jqTr.find('td').eq(clm_index); // 列インデックスに紐づくTD要素を取得
+		
+		let value = ent[field] ?? '';
+		let value2 = this._xssSanitize(value); // XSSサイニタイズ
+		
+		// TD要素内にjs_display_valueのclass属性を持っている表示要素を取得する。
+		let displayElm = jqTd.find('.js_display_value');
+		
+		// TD要素内にjs_original_valueのclass属性を持っている元値要素を取得する。
+		let originalElm = jqTd.find('.js_original_value');
+		
+		// 表示要素および元値要素が空である場合、TD要素内に値をセットする。
+		if(displayElm[0] == null && originalElm[0] == null){
+			jqTd.html(value2);
+		}
+		
+		// 表示要素が存在している場合
+		if(displayElm[0]){
+			// フィールド情報と値から表示値を作成する。
+			let display_value = this._createDisplayValue(fieldInfo, value2);
+			displayElm.html(display_value);
+			
+			// 表示要素の値のclass属性を変更して色を変える。
+			this._changeDisplayElmColor(displayElm, value);
+			
+			
+		}
+			
+		// 元値要素が存在している場合
+		if(originalElm[0]){
+			originalElm.val(value);// 元値要素に値をセットする。
+		}
+
+	}
+	
+	
+	/**
+	* 表示要素の値のclass属性を変更して色を変える。
+	* @param jQuery displayElm 表示要素のjQueryオブジェクト
+	* @param mixed value 値
+	*/	
+	_changeDisplayElmColor(displayElm, value){
+		if(this._empty(value)){
+			if(displayElm.hasClass('text-success')){
+				displayElm.removeClass('text-success');
+				displayElm.addClass('text-secondary');
+			}
+		}else{
+			if(displayElm.hasClass('text-secondary')){
+				displayElm.removeClass('text-secondary');
+				displayElm.addClass('text-success');
+			}
+		}
+	}
+	
+	
+	/**
+	* フィールド情報と値から表示値を作成する。
+	* @param {} fieldInfo フィールド情報
+	* @param mixed value2 値（サニタイズ済み）
+	* @return mixed 表示値
+	*/		
+	_createDisplayValue(fieldInfo, value2){
+
+		//value_typeが「フラグ」である場合
+		if(fieldInfo.value_type == 'flg'){
+			if(this._empty(value2)){
+				value2 = 'OFF';
+			}else{
+				value2 = 'ON';
+			}
+			return value2;
+		}
+		
+		//value_typeが「削除フラグ」である場合
+		if(fieldInfo.value_type == 'delete_flg'){
+			if(this._empty(value2)){
+				value2 = '有効';
+			}else{
+				value2 = '無効';
+			}
+			return value2;
+		}
+		
+		
+		//outer_listがセットされている場合
+		if(fieldInfo.outer_list != null){
+			let outerList = this.crudBaseData[fieldInfo.outer_list];
+			if(outerList == null) return '';
+			for(let outer_value in outerList){
+				if(outer_value == value2){
+					return outerList[outer_value];
+				}
+			}
+			return '';
+		}
+		
+		return value2;
+	}
+			
+			
+	
 	/**
 	* メイン一覧テーブルに新しい行を作成する。
+	* @return {}
+	*  - jQuery newTr 新しい行のjQueryオブジェクト
+	*  - int row_index 新しい行の行インデックス
 	*/
 	_createNewRow(){
 		
-		// ■■■□□□■■■□□□作成中
+		// メイン一覧テーブルから1行目のTR要素を取得します。
+		let jqTr1 = this._getTrFromMainTable(0);
+		
+		let tr_html = jqTr1[0].outerHTML;
+		
+		let newTr = null; // 新行要素
+		let row_index = null; // 行インデックス
+		
+		// 新規入力追加場所フラグが先頭を示している場合( 0:末尾 , 1:先頭)
+		if(this.options.create_tr_place == 1){
+			jqTr1.before(tr_html); // 先頭行の前に新行を挿入する。
+			newTr = this._getTrFromMainTable(0);
+			row_index = 0;
+		}
+		
+		// 新規入力追加場所フラグが末尾を示している場合
+		else{
+			// メイン一覧テーブルの行数を取得する
+			let tr_len = this._getRowCountFromMainTable();
+			let jqTrLast = this._getTrFromMainTable(tr_len - 1);
+			jqTrLast.after(tr_html);
+			row_index = tr_len;
+			newTr = this._getTrFromMainTable(row_index);
+			
+			
+		}
+		
+		newTr.addClass('create_tr'); // class属性を追加。背景色の色を変えるため。
+		
+		return {
+			'newTr': newTr,
+			'row_idex': row_index,
+		};
+
 	}
+	
+			// メイン一覧テーブルから1行目のTR要素を取得します。
+	
+	/**
+	*  メイン一覧テーブルから指定行番号にひもづくTR要素を取得します。
+	* @param int row_index 行番号 0から始まりす。すなわち1行目が0です。
+	*/
+	_getTrFromMainTable(row_index){
+		let tr = this.jqMainTbl.find('tbody tr').eq(row_index);
+		return tr;
+	}
+	
+	
 	
 
 	

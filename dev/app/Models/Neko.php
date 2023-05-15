@@ -61,13 +61,18 @@ class Neko extends CrudBase
 				'neko_type' => [ // 猫種別
 					'outer_table' => 'neko_types',
 					'outer_field' => 'neko_type_name', 
+					'outer_list'=>'nekoTypeList',
 				],
 				'neko_dt' => [], // ネコ日時
-				'neko_flg' => [], // ネコフラグ
+				'neko_flg' => [
+						'value_type'=>'flg',
+				], // ネコフラグ
 				'img_fn' => [], // 画像ファイル名
 				'note' => [], // 備考
 				'sort_no' => [], // 順番
-				'delete_flg' => [], // 無効フラグ
+				'delete_flg' => [
+						'value_type'=>'delete_flg',
+				], // 無効フラグ
 				'update_user_id' => [], // 更新ユーザーID
 				'ip_addr' => [], // IPアドレス
 				'created_at' => [], // 生成日時

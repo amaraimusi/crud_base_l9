@@ -94,9 +94,9 @@ class CrudBaseHelper
      * @return string
      */
     public static function tdFlg($flg){
-        $notation = "<span class='text-success'>ON</span>";
+        $notation = "<span class='text-success js_display_value'>ON</span>";
         if(empty($flg)){
-            $notation = "<span class='text-secondary'>OFF</span>";
+            $notation = "<span class='text-secondary js_display_value'>OFF</span>";
         }
         
         $notation .= "<input type='hidden' class='js_original_value'  value='{$flg}'>";
@@ -110,9 +110,9 @@ class CrudBaseHelper
      * @return string
      */
     public static function tdDeleteFlg($delete_flg){
-        $notation = "<span class='text-success'>有効</span>";
+        $notation = "<span class='js_display_value text-success'>有効</span>";
         if(!empty($delete_flg)){
-            $notation = "<span class='text-secondary'>無効</span>";
+            $notation = "<span class='js_display_value text-secondary'>無効</span>";
         }
         
         $notation .= "<input type='hidden' class='js_original_value'  value='{$delete_flg}'>";
@@ -156,7 +156,7 @@ class CrudBaseHelper
         $td = "
 			<div>
 				<input type='hidden' name='{$field}' value='{$v}' class='js_original_value' />
-				<div class='{$field}' style='white-space:pre-wrap; word-wrap:break-word;'>{$v2}</div>
+				<div class='{$field} js_display_value' style='white-space:pre-wrap; word-wrap:break-word;'>{$v2}</div>
                 {$note_detail_open_html}
 			</div>";
         return $td;
@@ -199,7 +199,7 @@ class CrudBaseHelper
     	
     	$text = $list[$value] ?? '';
     	$value2 = h($value);
-    	$html = "<span>{$text}</span><input type='hidden' class='js_original_value' value='$value2'>";
+    	$html = "<span class='js_display_value'>{$text}</span><input type='hidden' class='js_original_value' value='$value2'>";
     	
     	return $html;
     }
