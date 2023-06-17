@@ -155,7 +155,7 @@ $cbh = new CrudBaseHelper($crudBaseData);
 			<tr>
 				<!-- CBBXS-3005 -->
 				<td>{{$ent->id}}</td>
-				<td>{{$ent->neko_val}}cm<span class='js_original_value' style="display:none">{{$ent->neko_val}}</span></td>
+				<td><span class="js_display_value">{{$ent->neko_val}}</span>cm<span class='js_original_value' style="display:none">{{$ent->neko_val}}</span></td>
 				<td>{{$ent->neko_name}}</td>
 				<td>{!! $cbh->tdDate($ent->neko_date) !!}</td>
 				<td>{!! $cbh->tdList($ent->neko_type, $nekoTypeList) !!}</td>

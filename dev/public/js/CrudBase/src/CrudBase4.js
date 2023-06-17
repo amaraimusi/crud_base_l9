@@ -516,7 +516,7 @@ class CrudBase4{
 		let fEnt = {};
 		for(let field in fieldData){
 
-			let fieldEnt = fieldData[field];
+			let fieldInfo = fieldData[field];
 
 			let jqInp = this._getInpFromForm(field); // フォームから入力要素を取得する
 			
@@ -551,7 +551,7 @@ class CrudBase4{
 
 		let tag_name = jqInp.get(0).tagName; // 入力要素のタグ名を取得する
 		tag_name = tag_name.toLowerCase(); // 小文字化
-		
+
 		// input要素へのセット
 		if(tag_name == 'input'){
 
@@ -586,7 +586,10 @@ class CrudBase4{
 			else if(typ=='file'){
 				let fileUploadK = this.fileUploadKList[field];
 				let fileNameList = fileUploadK.getFileNames(field);
-
+				
+				console.log('field=' + field);//■■■□□□■■■□□□
+				console.log(fileNameList);//■■■□□□■■■□□□
+				
 				if(fileNameList[0]){
 					return fileNameList[0];
 				}

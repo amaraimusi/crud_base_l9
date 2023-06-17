@@ -168,11 +168,15 @@ class NekoController extends CrudBaseController{
 		}
 		
 		// ▼ ファイルアップロード関連
-		$fileUploadK = CrudBase::factoryFileUploadK();
-		$ent = $model->toArray();
-		//$ent['img_fn_exist'] = $request->img_fn_exist; // 既存・画像ファイル名 img_fnの付属パラメータ■■■□□□■■■□□□
-		$model->img_fn = $fileUploadK->uploadForLaravelMpa($_FILES, $ent, 'img_fn', 'img_fn_exist');
-		$model->update(); // DB更新
+		if(!empty($_FILES)){
+			$fileUploadK = CrudBase::factoryFileUploadK();
+			$ent = $model->toArray();
+			//$ent['img_fn_exist'] = $request->img_fn_exist; // 既存・画像ファイル名 img_fnの付属パラメータ■■■□□□■■■□□□
+			$model->img_fn = $fileUploadK->uploadForLaravelMpa($_FILES, $ent, 'img_fn', 'img_fn_exist');
+			info($model->img_fn);//■■■□□□■■■□□□)
+			//dump($model->img_fn);//■■■□□□■■■□□□)
+			$model->update(); // DB更新
+		}
 
 		$ent = $model->toArray();
 		
@@ -299,7 +303,7 @@ class NekoController extends CrudBaseController{
 		$fileUploadK = CrudBase::factoryFileUploadK();
 		$ent = $model->toArray();
 		$ent['img_fn_exist'] = $request->img_fn_exist; // 既存・画像ファイル名 img_fnの付属パラメータ
-		$model->img_fn = $fileUploadK->uploadForLaravelMpa($_FILES, $ent, 'img_fn', 'img_fn_exist');
+		$model->img_fn = $fileUploadK->uploadForLaravelMpa($_FILES, 'neko', $ent, 'img_fn', 'img_fn_exist');
 
 		$model->update(); // ファイル名をモデルにセットしたのでモデルをDB更新する。
 		
@@ -455,7 +459,7 @@ class NekoController extends CrudBaseController{
 		$fileUploadK = CrudBase::factoryFileUploadK();
 		$ent = $model->toArray();
 		$ent['img_fn_exist'] = $request->img_fn_exist; // 既存・画像ファイル名 img_fnの付属パラメータ
-		$model->img_fn = $fileUploadK->uploadForLaravelMpa($_FILES, $ent, 'img_fn', 'img_fn_exist');
+		$model->img_fn = $fileUploadK->uploadForLaravelMpa($_FILES, 'neko', $ent, 'img_fn', 'img_fn_exist');
 
  		$model->update(); // DB更新
 		

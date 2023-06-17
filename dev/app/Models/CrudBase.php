@@ -50,10 +50,34 @@ class CrudBase extends Model{
             }
             unset($val);
         }elseif(gettype($data)=='string'){
-            $data = addslashes($data);// SQLインジェクション のサニタイズ
+            $data = $this->sqlSanitize($data);// SQLインジェクション のサニタイズ
         }else{
             // 何もしない
         }
+    }
+
+    
+    /**
+     * SQLサニタイズ(※なるべくこの関数にたよらずプリペアド方式を用いること）
+     * @param string $text
+     * @return string SQLサニタイズ後のテキスト
+     */
+    public function sqlSanitize($text) {
+    	$text = trim($text);
+    	
+    	// 文字列がUTF-8でない場合、UTF-8に変換する
+    	if(!mb_check_encoding($text, 'UTF-8')){
+    		$text = str_replace(['\\', '/', '\'', '"', '`',' OR '], '', $text);
+    		$text = mb_convert_encoding($text, 'UTF-8');
+    	}
+    	
+    	// SQLインジェクションのための特殊文字をエスケープする
+    	$search = array("\\", "\x00", "\n", "\r", "'", '"', "\x1a", "`");
+    	$replace = array("\\\\", "\\0", "\\n", "\\r", "\\'", "\\\"", "\\Z", "");
+    	
+    	$text = str_replace($search, $replace, $text);
+    	
+    	return $text;
     }
     
     
