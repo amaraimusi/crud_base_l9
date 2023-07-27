@@ -519,6 +519,54 @@ class CrudBaseHelper
     
     
     
+    
+    /**
+     *
+     * 検索用の浮動小数範囲入力フォームを生成
+     *
+     * @param string $field フィールド名（ kj_ を付けないこと）
+     * @param string $wamei フィールド和名
+     */
+    public function inputKjDoubleRange($field, $wamei, $option=[]){
+    	
+    	$kj_field1 = "kj_{$field}1";
+    	$kj_field2 = "kj_{$field}2";
+    	$value1 = $this->kjs[$kj_field1];
+    	$value2 = $this->kjs[$kj_field2];
+    	
+    	// テキストの幅を自動指定する
+    	$width = '';
+    	if(!empty($option['width'])){
+    		$width = $option['width'];
+    	}else{
+    		$str_len = mb_strlen($wamei) + 1;
+    		$str_len += 3;
+    		if($str_len < 4) $str_len = 4;
+    		$width = $str_len . 'em';
+    		
+    	}
+    	
+    	echo "
+			<div class='kj_div'>
+				<div class='input number' style='display:inline-block'>
+					<input name='data[Neko][kj_{$field}1]' id='kj_{$field}1' value='{$value1}'
+						class='kjs_inp form-control' placeholder='{$wamei}～' title='{$wamei}～'
+						type='text' style='width:{$width}' pattern=\"[0-9]+([\.,][0-9]+)?\" step='0.01' >
+						<span id='kj_{$field}1_err' class='text-danger'></span>
+				</div>
+				<span>～</span>
+				<div class='input number' style='display:inline-block'>
+					<input name='data[Neko][kj_{$field}2]' id='kj_{$field}2' value='{$value2}'
+						class='kjs_inp form-control' placeholder='～{$wamei}' title='～{$wamei}'
+						type='text' style='width:{$width}' pattern=\"[0-9]+([\.,][0-9]+)?\" step='0.01' >
+					<span id='kj_{$field}2_err' class='text-danger'></span>
+				</div>
+			</div>
+		";
+    	
+    }
+    
+    
 }
 
 
